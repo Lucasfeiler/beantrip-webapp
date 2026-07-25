@@ -191,15 +191,6 @@ export const shops = [
     tags: ['light', 'medium', 'espresso', 'filter'],
   }),
   shop({
-    slug: 'emilo-kaffee',
-    name: 'Emilo Kaffee',
-    city: 'Munich',
-    neighborhood: 'Maxvorstadt',
-    address: 'Adalbertstraße 94, 80799 Munich',
-    description: 'Student-favorite roastery near the university with house-roasted beans.',
-    tags: ['light', 'medium', 'espresso', 'filter'],
-  }),
-  shop({
     slug: 'sorry-johnny-kaffeebar',
     name: 'Sorry Johnny Kaffeebar',
     city: 'Munich',
