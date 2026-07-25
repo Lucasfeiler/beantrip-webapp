@@ -119,7 +119,7 @@ export function Impressum() {
       </p>
 
       <H2>Contact</H2>
-      <p>Email: lucas.feiler99@gmail.com</p>
+      <p>Email: hello@beantrip.com</p>
 
       <H2>Responsible for content (§ 18 Abs. 2 MStV)</H2>
       <p>Lucas Feiler, address as above.</p>
