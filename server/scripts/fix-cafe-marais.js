@@ -6,6 +6,7 @@ const API_KEY = process.env.GOOGLE_PLACES_API_KEY;
 
 const SLUG = 'cafe-marais';
 const NEW_ADDRESS = 'Parkstraße 2, 80339 München';
+const NEW_NEIGHBORHOOD = 'Schwanthalerhöhe';
 const NEW_DESCRIPTION = 'Parisian-style café with marble tables, rattan chairs, and an excellent espresso menu. Authentic French pastries and a great people-watching terrace.';
 
 async function findLocation(query) {
@@ -28,7 +29,7 @@ async function main() {
     process.exit(1);
   }
 
-  const data = { address: NEW_ADDRESS, description: NEW_DESCRIPTION };
+  const data = { address: NEW_ADDRESS, neighborhood: NEW_NEIGHBORHOOD, description: NEW_DESCRIPTION };
 
   if (API_KEY) {
     const location = await findLocation(`${shop.name}, ${NEW_ADDRESS}`);

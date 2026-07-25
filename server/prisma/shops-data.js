@@ -69,7 +69,7 @@ export const shops = [
     slug: 'cafe-marais',
     name: 'Café Marais',
     city: 'Munich',
-    neighborhood: 'Glockenbach',
+    neighborhood: 'Schwanthalerhöhe',
     address: 'Parkstraße 2, 80339 München',
     description: 'Parisian-style café with marble tables, rattan chairs, and an excellent espresso menu. Authentic French pastries and a great people-watching terrace.',
     tags: ['medium', 'espresso', 'cappuccino'],
