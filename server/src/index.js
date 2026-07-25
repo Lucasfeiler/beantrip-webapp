@@ -35,4 +35,4 @@ app.use((err, _req, res, _next) => {
 });
 
 const port = process.env.PORT || 4000;
-app.listen(port, () => console.log(`coffeespots API listening on http://localhost:${port}`));
+app.listen(port, () => console.log(`beantrip API listening on http://localhost:${port}`));

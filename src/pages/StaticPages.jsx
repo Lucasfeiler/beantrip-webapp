@@ -16,7 +16,7 @@ export function Privacy() {
   return (
     <StaticPage title="Privacy Policy" updated="July 2026">
       <p>
-        CoffeeSpots ("we", "us") helps you discover specialty coffee shops. This page explains what
+        Beantrip ("we", "us") helps you discover specialty coffee shops. This page explains what
         information we collect, why, and what control you have over it.
       </p>
 
@@ -38,7 +38,7 @@ export function Privacy() {
         We don't use your data for advertising, and we don't sell your data to anyone.</p>
 
       <H2>Who we share it with</H2>
-      <p>We use a small number of service providers to run CoffeeSpots: Google (Maps, Places, and photo
+      <p>We use a small number of service providers to run Beantrip: Google (Maps, Places, and photo
         data; Firebase for photo storage and push notifications) and Resend (for account emails like
         password resets). They process data only as needed to provide these services to us.</p>
 
@@ -66,7 +66,7 @@ export function Privacy() {
 export function Terms() {
   return (
     <StaticPage title="Terms of Service" updated="July 2026">
-      <p>By creating an account or using CoffeeSpots, you agree to these terms.</p>
+      <p>By creating an account or using Beantrip, you agree to these terms.</p>
 
       <H2>Your account</H2>
       <p>You're responsible for keeping your login details secure and for what happens under your
@@ -83,12 +83,12 @@ export function Terms() {
         decline, or delay publishing a suggestion at our discretion.</p>
 
       <H2>Acceptable use</H2>
-      <p>Don't use CoffeeSpots to do anything illegal, to impersonate someone else, to scrape or misuse
+      <p>Don't use Beantrip to do anything illegal, to impersonate someone else, to scrape or misuse
         the service, or to interfere with other users' experience. We may suspend or delete accounts
         that misuse the service.</p>
 
       <H2>No warranty</H2>
-      <p>CoffeeSpots is provided "as is." Shop details like hours, addresses, and photos are gathered
+      <p>Beantrip is provided "as is." Shop details like hours, addresses, and photos are gathered
         from public sources and user contributions and may occasionally be inaccurate or out of date —
         always double-check before visiting somewhere unfamiliar.</p>
 

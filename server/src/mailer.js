@@ -12,11 +12,11 @@ function getResend() {
 
 export async function sendPasswordResetEmail(to, resetUrl) {
   const result = await getResend().emails.send({
-    from: 'CoffeeSpots <onboarding@resend.dev>',
+    from: 'Beantrip <onboarding@resend.dev>',
     to,
-    subject: 'Reset your CoffeeSpots password',
+    subject: 'Reset your Beantrip password',
     html: `
-      <p>Someone requested a password reset for your CoffeeSpots account.</p>
+      <p>Someone requested a password reset for your Beantrip account.</p>
       <p><a href="${resetUrl}">Click here to set a new password</a>. This link expires in 1 hour.</p>
       <p>If you didn't request this, you can safely ignore this email.</p>
     `,

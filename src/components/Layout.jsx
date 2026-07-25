@@ -27,7 +27,7 @@ export default function Layout({ children }) {
       <header className="border-b border-[var(--color-border)] bg-[var(--color-bg)]/80 backdrop-blur sticky top-0 z-40">
         <div className="max-w-6xl mx-auto px-5 sm:px-8 h-16 flex items-center justify-between gap-6">
           <Link to="/" className="font-display text-xl font-semibold tracking-tight shrink-0">
-            Coffee<span className="text-[var(--color-accent)]">Spots</span>
+            Bean<span className="text-[var(--color-accent)]">trip</span>
           </Link>
           <nav className="hidden sm:flex items-center gap-1 text-sm font-medium">
             {links.map((l) => (
@@ -95,7 +95,7 @@ export default function Layout({ children }) {
 
       <footer className="border-t border-[var(--color-border)] mt-20">
         <div className="max-w-6xl mx-auto px-5 sm:px-8 py-10 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-[var(--color-muted-fg)]">
-          <p>© 2026 CoffeeSpots</p>
+          <p>© 2026 Beantrip</p>
           <div className="flex items-center gap-6">
             <Link to="/privacy" className="hover:text-[var(--color-accent)]">Privacy</Link>
             <Link to="/terms" className="hover:text-[var(--color-accent)]">Terms</Link>

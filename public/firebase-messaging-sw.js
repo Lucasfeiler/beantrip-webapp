@@ -14,7 +14,7 @@ const messaging = firebase.messaging();
 
 messaging.onBackgroundMessage((payload) => {
   const { title, body } = payload.notification || {};
-  self.registration.showNotification(title || 'CoffeeSpots', {
+  self.registration.showNotification(title || 'Beantrip', {
     body: body || '',
     icon: '/app-icon.svg',
   });

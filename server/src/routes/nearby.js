@@ -45,7 +45,7 @@ nearbyRouter.get('/', async (req, res) => {
   try {
     const response = await fetch(OVERPASS_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'text/plain', 'User-Agent': 'CoffeeSpotsApp/1.0', Accept: '*/*' },
+      headers: { 'Content-Type': 'text/plain', 'User-Agent': 'BeantripApp/1.0', Accept: '*/*' },
       body: query,
     });
 

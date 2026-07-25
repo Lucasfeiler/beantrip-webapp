@@ -23,8 +23,8 @@ export default function Home() {
           Find Your Perfect Coffee
         </h1>
         <p className="mt-5 text-base sm:text-lg text-[var(--color-muted-fg)] max-w-xl">
-          Discover the world's best specialty coffee shops. Filter by roast type, brewing method,
-          and ambiance to find your next favorite spot.
+          Beantrip takes you to the world's best specialty coffee shops. Filter by roast type,
+          brewing method, and ambiance to find your next favorite spot.
         </p>
         <div className="mt-8 flex flex-wrap gap-3">
           <Link

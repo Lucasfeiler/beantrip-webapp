@@ -34,7 +34,7 @@ notificationsRouter.post('/test', async (req, res) => {
   const response = await messaging.sendEachForMulticast({
     tokens: tokens.map((t) => t.token),
     notification: {
-      title: 'CoffeeSpots',
+      title: 'Beantrip',
       body: "Notifications are working! You'll hear from us about new shops and updates.",
     },
   });

@@ -1,4 +1,4 @@
-# CoffeeSpots
+# Beantrip
 
 React + Vite frontend with an Express/Prisma/SQLite backend in [server/](server).
 
