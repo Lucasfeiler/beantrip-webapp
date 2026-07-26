@@ -51,6 +51,9 @@ export default function Profile() {
   const [emailSaved, setEmailSaved] = useState(false);
   const [changingEmail, setChangingEmail] = useState(false);
 
+  const [verifyStatus, setVerifyStatus] = useState('idle'); // idle | sending | sent | error
+  const [verifyError, setVerifyError] = useState('');
+
   const [resetSent, setResetSent] = useState(false);
   const [resetSending, setResetSending] = useState(false);
   const [resetError, setResetError] = useState('');
@@ -175,6 +178,18 @@ export default function Profile() {
     }
   };
 
+  const handleResendVerification = async () => {
+    setVerifyError('');
+    setVerifyStatus('sending');
+    try {
+      await api.resendVerification();
+      setVerifyStatus('sent');
+    } catch (err) {
+      setVerifyError(err.message);
+      setVerifyStatus('error');
+    }
+  };
+
   const handleSendPasswordReset = async () => {
     setResetError('');
     setResetSending(true);
@@ -191,6 +206,27 @@ export default function Profile() {
   return (
     <div className="max-w-sm mx-auto px-5 sm:px-8 py-16">
       <h1 className="font-display text-3xl font-semibold mb-6">Your profile</h1>
+
+      {!user.emailVerified && (
+        <div className="mb-6 bg-[var(--color-card)] border border-[var(--color-border)] rounded-xl p-4">
+          <p className="text-sm font-semibold">Verify your email</p>
+          <p className="text-sm text-[var(--color-muted-fg)] mt-1">
+            Check your inbox for a link to confirm {user.email}.
+          </p>
+          {verifyStatus === 'sent' ? (
+            <p className="text-sm text-[var(--color-accent)] font-semibold mt-2">Verification email sent.</p>
+          ) : (
+            <button
+              onClick={handleResendVerification}
+              disabled={verifyStatus === 'sending'}
+              className="text-xs font-semibold text-[var(--color-accent)] hover:underline mt-2 disabled:opacity-60"
+            >
+              {verifyStatus === 'sending' ? 'Sending…' : 'Resend verification email'}
+            </button>
+          )}
+          {verifyStatus === 'error' && <p className="text-sm text-red-600 mt-2">{verifyError}</p>}
+        </div>
+      )}
 
       <div className="flex items-center gap-4">
         {user.avatarUrl ? (

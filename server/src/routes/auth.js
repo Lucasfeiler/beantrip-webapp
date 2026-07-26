@@ -7,9 +7,15 @@ import { prisma } from '../db.js';
 import { requireAuth } from '../middleware/auth.js';
 import { authLimiter, forgotPasswordLimiter, writeLimiter } from '../middleware/rateLimit.js';
 import { getStorageBucket } from '../firebase.js';
-import { sendPasswordResetEmail } from '../mailer.js';
+import { sendPasswordResetEmail, sendVerificationEmail } from '../mailer.js';
 
 export const authRouter = Router();
+
+// CLIENT_ORIGIN is a comma-separated allow-list for CORS; the first entry
+// doubles as the canonical site URL for links sent in emails.
+function publicOrigin() {
+  return (process.env.CLIENT_ORIGIN || '').split(',')[0].trim();
+}
 
 const upload = multer({
   storage: multer.memoryStorage(),
@@ -47,9 +53,19 @@ function publicUser(user, visitCount = 0) {
     avatarUrl: user.avatarUrl,
     isAdmin: user.isAdmin,
     accountType: user.accountType,
+    emailVerified: user.emailVerified,
     createdAt: user.createdAt,
     visitCount,
   };
+}
+
+async function createAndSendVerificationEmail(user) {
+  const token = randomBytes(32).toString('hex');
+  await prisma.emailVerificationToken.create({
+    data: { userId: user.id, token, expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000) },
+  });
+  const verifyUrl = `${publicOrigin()}/verify-email?token=${token}`;
+  await sendVerificationEmail(user.email, verifyUrl);
 }
 
 authRouter.post('/register', authLimiter, async (req, res) => {
@@ -69,7 +85,45 @@ authRouter.post('/register', authLimiter, async (req, res) => {
     data: { email, passwordHash, name, accountType: accountType === 'business' ? 'business' : 'customer' },
   });
 
+  try {
+    await createAndSendVerificationEmail(user);
+  } catch (e) {
+    console.error('Failed to send verification email', e);
+  }
+
   res.status(201).json({ token: issueToken(user), user: publicUser(user) });
+});
+
+authRouter.post('/verify-email', authLimiter, async (req, res) => {
+  const { token } = req.body;
+  if (!token) return res.status(400).json({ error: 'token is required' });
+
+  const verificationToken = await prisma.emailVerificationToken.findUnique({ where: { token } });
+  if (!verificationToken || verificationToken.usedAt || verificationToken.expiresAt < new Date()) {
+    return res.status(400).json({ error: 'This verification link is invalid or has expired' });
+  }
+
+  await prisma.$transaction([
+    prisma.user.update({ where: { id: verificationToken.userId }, data: { emailVerified: true } }),
+    prisma.emailVerificationToken.update({ where: { id: verificationToken.id }, data: { usedAt: new Date() } }),
+  ]);
+
+  res.json({ ok: true });
+});
+
+authRouter.post('/resend-verification', requireAuth, forgotPasswordLimiter, async (req, res) => {
+  const user = await prisma.user.findUnique({ where: { id: req.user.sub } });
+  if (!user) return res.status(404).json({ error: 'User not found' });
+  if (user.emailVerified) return res.status(400).json({ error: 'Your email is already verified' });
+
+  try {
+    await createAndSendVerificationEmail(user);
+  } catch (e) {
+    console.error('Failed to send verification email', e);
+    return res.status(500).json({ error: 'Failed to send verification email' });
+  }
+
+  res.json({ ok: true });
 });
 
 authRouter.post('/login', authLimiter, async (req, res) => {
@@ -177,7 +231,7 @@ authRouter.post('/forgot-password', forgotPasswordLimiter, async (req, res) => {
     await prisma.passwordResetToken.create({
       data: { userId: user.id, token, expiresAt: new Date(Date.now() + 60 * 60 * 1000) },
     });
-    const resetUrl = `${process.env.CLIENT_ORIGIN}/reset-password?token=${token}`;
+    const resetUrl = `${publicOrigin()}/reset-password?token=${token}`;
     try {
       await sendPasswordResetEmail(user.email, resetUrl);
     } catch (e) {

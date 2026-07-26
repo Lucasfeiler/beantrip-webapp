@@ -30,3 +30,22 @@ export async function sendPasswordResetEmail(to, resetUrl) {
 
   return result;
 }
+
+export async function sendVerificationEmail(to, verifyUrl) {
+  const result = await getResend().emails.send({
+    from: 'Beantrip <onboarding@resend.dev>',
+    to,
+    subject: 'Verify your Beantrip email',
+    html: `
+      <p>Welcome to Beantrip! Please confirm your email address to finish setting up your account.</p>
+      <p><a href="${verifyUrl}">Click here to verify your email</a>. This link expires in 24 hours.</p>
+      <p>If you didn't create a Beantrip account, you can safely ignore this email.</p>
+    `,
+  });
+
+  if (result.error) {
+    throw new Error(`Resend API error: ${result.error.message || JSON.stringify(result.error)}`);
+  }
+
+  return result;
+}

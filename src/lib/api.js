@@ -51,6 +51,8 @@ export const api = {
   changeEmail: (email, password) => request('/api/auth/me/email', { method: 'PATCH', auth: true, body: { email, password } }),
   forgotPassword: (email) => request('/api/auth/forgot-password', { method: 'POST', body: { email } }),
   resetPassword: (token, password) => request('/api/auth/reset-password', { method: 'POST', body: { token, password } }),
+  verifyEmail: (token) => request('/api/auth/verify-email', { method: 'POST', body: { token } }),
+  resendVerification: () => request('/api/auth/resend-verification', { method: 'POST', auth: true }),
   uploadPhoto: (file) => uploadFile('/api/auth/me/photo', file),
   removePhoto: () => request('/api/auth/me/photo', { method: 'DELETE', auth: true }),
 

@@ -16,6 +16,7 @@ import Admin from './pages/Admin';
 import MyShop from './pages/MyShop';
 import Auth from './pages/Auth';
 import ResetPassword from './pages/ResetPassword';
+import VerifyEmail from './pages/VerifyEmail';
 import { Privacy, Terms, Impressum } from './pages/StaticPages';
 
 export default function App() {
@@ -39,6 +40,7 @@ export default function App() {
                   <Route path="/my-shop" element={<MyShop />} />
                   <Route path="/auth" element={<Auth />} />
                   <Route path="/reset-password" element={<ResetPassword />} />
+                  <Route path="/verify-email" element={<VerifyEmail />} />
                   <Route path="/privacy" element={<Privacy />} />
                   <Route path="/terms" element={<Terms />} />
                   <Route path="/impressum" element={<Impressum />} />
