@@ -78,8 +78,9 @@ export default function MapPage() {
 
       <div className="relative mt-8 w-full h-[600px] rounded-2xl border border-[var(--color-border)] overflow-hidden">
         {status === 'error' && (
-          <div className="absolute inset-0 flex items-center justify-center bg-[var(--color-card)] text-center px-6">
-            <p className="text-sm text-[var(--color-muted-fg)]">Couldn't load the map: {errorMessage}</p>
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-[var(--color-card)] text-center px-6 py-8 overflow-y-auto">
+            <p className="text-sm font-semibold text-red-600">Couldn't load the map</p>
+            <p className="text-sm text-[var(--color-fg)] max-w-md break-words">{errorMessage}</p>
           </div>
         )}
         {status === 'loading' && (
