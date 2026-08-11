@@ -10,6 +10,7 @@ import { nearbyRouter } from './routes/nearby.js';
 import { visitsRouter } from './routes/visits.js';
 import { notificationsRouter } from './routes/notifications.js';
 import { claimsRouter } from './routes/claims.js';
+import { photosRouter } from './routes/photos.js';
 
 const app = express();
 app.set('trust proxy', 1);
@@ -35,6 +36,7 @@ app.use('/api/nearby', nearbyRouter);
 app.use('/api/visits', visitsRouter);
 app.use('/api/notifications', notificationsRouter);
 app.use('/api/claims', claimsRouter);
+app.use('/api', photosRouter);
 
 app.use((err, _req, res, _next) => {
   console.error(err);

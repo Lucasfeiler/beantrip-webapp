@@ -27,6 +27,7 @@ model User {
   verificationTokens EmailVerificationToken[]
   ownedShops   Shop[]
   claims       ShopClaim[]
+  photos       Photo[]
 }
 
 model Shop {
@@ -54,7 +55,20 @@ model Shop {
   reviews      Review[]
   visits       Visit[]
   claims       ShopClaim[]
+  userPhotos   Photo[]
   owner        User?      @relation(fields: [ownerId], references: [id], onDelete: SetNull)
+}
+
+model Photo {
+  id                Int       @id @default(autoincrement())
+  userId            Int
+  shopId            Int
+  storageUrl        String
+  moderationStatus  String    @default("pending")
+  createdAt         DateTime  @default(now())
+  reviewedAt        DateTime?
+  user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  shop              Shop      @relation(fields: [shopId], references: [id], onDelete: Cascade)
 }
 
 model ShopClaim {

@@ -66,6 +66,12 @@ export const api = {
   updateShop: (slug, data) => request(`/api/shops/${slug}`, { method: 'PATCH', auth: true, body: data }),
   uploadShopPhoto: (slug, file) => uploadFile(`/api/shops/${slug}/photo`, file),
 
+  listShopUserPhotos: (slug) => request(`/api/shops/${slug}/photos`),
+  uploadShopUserPhoto: (slug, file) => uploadFile(`/api/shops/${slug}/photos`, file),
+  listAllPhotos: () => request('/api/photos', { auth: true }),
+  approvePhoto: (id) => request(`/api/photos/${id}/approve`, { method: 'PATCH', auth: true }),
+  rejectPhoto: (id) => request(`/api/photos/${id}/reject`, { method: 'PATCH', auth: true }),
+
   claimShop: (shopId, message) => request('/api/claims', { method: 'POST', auth: true, body: { shopId, message } }),
   myClaims: () => request('/api/claims/mine', { auth: true }),
   listClaims: () => request('/api/claims', { auth: true }),

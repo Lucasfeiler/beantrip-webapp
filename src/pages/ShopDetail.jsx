@@ -22,6 +22,11 @@ export default function ShopDetail() {
   const [reviewError, setReviewError] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
+  const [userPhotos, setUserPhotos] = useState([]);
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
+  const [photoError, setPhotoError] = useState('');
+  const [photoSubmitted, setPhotoSubmitted] = useState(false);
+
   const loadShop = () => {
     api.getShop(slug)
       .then(({ shop }) => setShop(shop))
@@ -32,12 +37,34 @@ export default function ShopDetail() {
     api.listReviews(slug).then(({ reviews }) => setReviews(reviews)).catch(() => {});
   };
 
+  const loadUserPhotos = () => {
+    api.listShopUserPhotos(slug).then(({ photos }) => setUserPhotos(photos)).catch(() => {});
+  };
+
   useEffect(() => {
     setShop(null);
     setNotFound(false);
+    setPhotoSubmitted(false);
     loadShop();
     loadReviews();
+    loadUserPhotos();
   }, [slug]);
+
+  const handlePhotoUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setPhotoError('');
+    setUploadingPhoto(true);
+    try {
+      await api.uploadShopUserPhoto(slug, file);
+      setPhotoSubmitted(true);
+    } catch (err) {
+      setPhotoError(err.message);
+    } finally {
+      setUploadingPhoto(false);
+      e.target.value = '';
+    }
+  };
 
   if (notFound) {
     return (
@@ -151,6 +178,34 @@ export default function ShopDetail() {
           <a href={shop.instagram} target="_blank" rel="noreferrer" className="text-sm font-semibold text-[var(--color-accent)] hover:underline">
             Instagram
           </a>
+        )}
+      </div>
+
+      <div className="border-t border-[var(--color-border)] mt-10 pt-8">
+        <h2 className="font-display text-xl font-semibold mb-3">Visitor Photos</h2>
+
+        {user ? (
+          <div className="mb-4">
+            <label className="inline-block text-sm font-semibold text-[var(--color-accent)] hover:underline cursor-pointer">
+              {uploadingPhoto ? 'Uploading…' : 'Add a photo'}
+              <input type="file" accept="image/jpeg,image/png,image/webp" onChange={handlePhotoUpload} disabled={uploadingPhoto} className="hidden" />
+            </label>
+            <p className="text-xs text-[var(--color-muted-fg)] mt-1">JPEG, PNG, or WebP — up to 5MB. Reviewed before it appears publicly.</p>
+            {photoSubmitted && <p className="text-sm text-[var(--color-accent)] font-semibold mt-2">Thanks! Your photo is queued for review.</p>}
+            {photoError && <p className="text-sm text-red-600 mt-2">{photoError}</p>}
+          </div>
+        ) : (
+          <p className="text-sm text-[var(--color-muted-fg)] mb-4">
+            <Link to="/auth" className="text-[var(--color-accent)] font-semibold hover:underline">Sign in</Link> to add a photo.
+          </p>
+        )}
+
+        {userPhotos.length > 0 && (
+          <div className="flex gap-2 flex-wrap mb-2">
+            {userPhotos.map((p) => (
+              <img key={p.id} src={p.storageUrl} alt={shop.name} className="w-24 h-24 rounded-lg object-cover" />
+            ))}
+          </div>
         )}
       </div>
 
