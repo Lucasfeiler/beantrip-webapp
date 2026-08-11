@@ -16,6 +16,6 @@ messaging.onBackgroundMessage((payload) => {
   const { title, body } = payload.notification || {};
   self.registration.showNotification(title || 'Beantrip', {
     body: body || '',
-    icon: '/app-icon.svg',
+    icon: '/beantrip_app_icon_2.png',
   });
 });

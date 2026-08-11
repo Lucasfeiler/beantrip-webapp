@@ -45,7 +45,7 @@ export async function requestNotificationToken() {
       console.log('[notif] onMessage fired:', payload);
       const { title, body } = payload.notification || {};
       try {
-        new Notification(title || 'Beantrip', { body: body || '', icon: '/app-icon.svg' });
+        new Notification(title || 'Beantrip', { body: body || '', icon: '/beantrip_app_icon_2.png' });
         console.log('[notif] Notification() constructor succeeded');
       } catch (e) {
         console.log('[notif] Notification() constructor threw:', e.message);
