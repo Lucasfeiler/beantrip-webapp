@@ -29,7 +29,13 @@ export async function requestNotificationToken() {
 
   const permission = await Notification.requestPermission();
   console.log('[notif] permission:', permission);
-  if (permission !== 'granted') throw new Error('Notification permission was not granted');
+  if (permission !== 'granted') {
+    throw new Error(
+      `Browser reports notification permission as "${permission}". If your browser's site settings ` +
+      `already show notifications allowed, check your phone's OS-level app notification permission for ` +
+      `this browser too (Android 13+ requires both) -- Settings > Apps > [Browser] > Notifications.`
+    );
+  }
 
   const registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
   console.log('[notif] service worker registered:', registration.scope);
