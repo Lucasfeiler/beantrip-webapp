@@ -1,5 +1,6 @@
 import { NavLink, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import NotificationPrompt from './NotificationPrompt';
 
 const navLinks = [
   { to: '/', label: 'Home', end: true },
@@ -92,6 +93,8 @@ export default function Layout({ children }) {
       </header>
 
       <main className="flex-1">{children}</main>
+
+      <NotificationPrompt />
 
       <footer className="border-t border-[var(--color-border)] mt-20">
         <div className="max-w-6xl mx-auto px-5 sm:px-8 py-10 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-[var(--color-muted-fg)]">
