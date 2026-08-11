@@ -52,7 +52,10 @@ export default function NearMe() {
       </p>
 
       {status === 'loading' && (
-        <p className="mt-10 text-[var(--color-muted-fg)]">Finding coffee spots near you…</p>
+        <div className="mt-10 flex flex-col items-center gap-3 text-[var(--color-muted-fg)]">
+          <div className="w-8 h-8 rounded-full border-2 border-[var(--color-border)] border-t-[var(--color-accent)] animate-spin" />
+          <p>Finding coffee spots near you…</p>
+        </div>
       )}
 
       {status === 'denied' && (
