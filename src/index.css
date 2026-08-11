@@ -6,8 +6,8 @@
 
   /* Warm coffee palette (caramel / espresso / almond / vanilla / coffee) */
   --color-bg: #4C2B08;
-  --color-fg: #D7BDA6;
-  --color-muted-fg: rgb(215 189 166 / 0.65);
+  --color-fg: #F2EDE6;
+  --color-muted-fg: rgb(242 237 230 / 0.65);
   --color-card: #6D3914;
   --color-border: rgb(215 189 166 / 0.14);
   --color-input: rgb(215 189 166 / 0.18);
