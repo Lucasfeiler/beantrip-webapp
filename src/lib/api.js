@@ -87,7 +87,7 @@ export const api = {
   listReviews: (slug) => request(`/api/shops/${slug}/reviews`),
   addReview: (slug, rating, text) => request(`/api/shops/${slug}/reviews`, { method: 'POST', auth: true, body: { rating, text } }),
 
-  submitShop: (payload) => request('/api/submissions', { method: 'POST', body: payload }),
+  submitShop: (payload) => request('/api/submissions', { method: 'POST', auth: true, body: payload }),
   listSubmissions: () => request('/api/submissions', { auth: true }),
   approveSubmission: (id) => request(`/api/submissions/${id}/approve`, { method: 'PATCH', auth: true }),
   rejectSubmission: (id) => request(`/api/submissions/${id}/reject`, { method: 'PATCH', auth: true }),

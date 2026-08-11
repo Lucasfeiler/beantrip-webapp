@@ -5,6 +5,7 @@ import { prisma } from '../db.js';
 import { requireAuth, requireAdmin } from '../middleware/auth.js';
 import { writeLimiter } from '../middleware/rateLimit.js';
 import { getStorageBucket } from '../firebase.js';
+import { notifyUser } from '../notify.js';
 
 export const photosRouter = Router();
 
@@ -84,19 +85,25 @@ photosRouter.get('/photos', requireAuth, requireAdmin, async (req, res) => {
 
 photosRouter.patch('/photos/:id/approve', requireAuth, requireAdmin, async (req, res) => {
   const id = Number(req.params.id);
-  const photo = await prisma.photo.findUnique({ where: { id } });
+  const photo = await prisma.photo.findUnique({ where: { id }, include: { shop: { select: { name: true } } } });
   if (!photo) return res.status(404).json({ error: 'Photo not found' });
   if (photo.moderationStatus !== 'pending') {
     return res.status(400).json({ error: `Photo is already ${photo.moderationStatus}` });
   }
 
   await prisma.photo.update({ where: { id }, data: { moderationStatus: 'approved', reviewedAt: new Date() } });
+
+  notifyUser(photo.userId, {
+    title: 'Your photo was approved',
+    body: `Your photo of "${photo.shop.name}" is now live on Beantrip.`,
+  });
+
   res.json({ ok: true });
 });
 
 photosRouter.patch('/photos/:id/reject', requireAuth, requireAdmin, async (req, res) => {
   const id = Number(req.params.id);
-  const photo = await prisma.photo.findUnique({ where: { id } });
+  const photo = await prisma.photo.findUnique({ where: { id }, include: { shop: { select: { name: true } } } });
   if (!photo) return res.status(404).json({ error: 'Photo not found' });
   if (photo.moderationStatus !== 'pending') {
     return res.status(400).json({ error: `Photo is already ${photo.moderationStatus}` });
@@ -104,5 +111,11 @@ photosRouter.patch('/photos/:id/reject', requireAuth, requireAdmin, async (req, 
 
   await deletePhotoBlob(photo.storageUrl);
   await prisma.photo.update({ where: { id }, data: { moderationStatus: 'rejected', reviewedAt: new Date() } });
+
+  notifyUser(photo.userId, {
+    title: 'About your photo',
+    body: `Your photo of "${photo.shop.name}" wasn't approved.`,
+  });
+
   res.json({ ok: true });
 });

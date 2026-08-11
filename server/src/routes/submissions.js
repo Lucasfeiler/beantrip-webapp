@@ -1,7 +1,8 @@
 import { Router } from 'express';
 import { prisma } from '../db.js';
-import { requireAuth, requireAdmin } from '../middleware/auth.js';
+import { requireAuth, requireAdmin, optionalAuth } from '../middleware/auth.js';
 import { writeLimiter } from '../middleware/rateLimit.js';
+import { notifyUser, notifyUsersInCity } from '../notify.js';
 
 export const submissionsRouter = Router();
 
@@ -16,7 +17,7 @@ function slugify(name) {
     .replace(/^-+|-+$/g, '');
 }
 
-submissionsRouter.post('/', writeLimiter, async (req, res) => {
+submissionsRouter.post('/', optionalAuth, writeLimiter, async (req, res) => {
   const { name, city, neighborhood, address, description } = req.body;
   if (!name || !city || !address) {
     return res.status(400).json({ error: 'name, city, and address are required' });
@@ -24,6 +25,7 @@ submissionsRouter.post('/', writeLimiter, async (req, res) => {
 
   const submission = await prisma.submission.create({
     data: {
+      userId: req.user?.sub ?? null,
       name,
       city,
       neighborhood: neighborhood || null,
@@ -70,6 +72,17 @@ submissionsRouter.patch('/:id/approve', requireAuth, requireAdmin, async (req, r
     prisma.submission.update({ where: { id }, data: { status: 'approved', reviewedAt: new Date() } }),
   ]);
 
+  if (submission.userId) {
+    notifyUser(submission.userId, {
+      title: 'Your shop suggestion was approved',
+      body: `"${submission.name}" is now live on Beantrip. Thanks for the tip!`,
+    });
+  }
+  notifyUsersInCity(submission.city, {
+    title: 'New coffee spot nearby',
+    body: `"${submission.name}" just joined Beantrip in ${submission.city}.`,
+  });
+
   res.json({ shop });
 });
 
@@ -82,5 +95,13 @@ submissionsRouter.patch('/:id/reject', requireAuth, requireAdmin, async (req, re
   }
 
   await prisma.submission.update({ where: { id }, data: { status: 'rejected', reviewedAt: new Date() } });
+
+  if (submission.userId) {
+    notifyUser(submission.userId, {
+      title: 'About your shop suggestion',
+      body: `"${submission.name}" wasn't added to Beantrip this time.`,
+    });
+  }
+
   res.json({ ok: true });
 });

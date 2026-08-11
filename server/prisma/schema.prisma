@@ -28,6 +28,7 @@ model User {
   ownedShops   Shop[]
   claims       ShopClaim[]
   photos       Photo[]
+  submissions  Submission[]
 }
 
 model Shop {
@@ -150,6 +151,7 @@ model EmailVerificationToken {
 
 model Submission {
   id           Int       @id @default(autoincrement())
+  userId       Int?
   name         String
   city         String
   neighborhood String?
@@ -158,4 +160,5 @@ model Submission {
   status       String    @default("pending")
   createdAt    DateTime  @default(now())
   reviewedAt   DateTime?
+  user         User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
 }

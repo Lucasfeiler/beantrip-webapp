@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { prisma } from '../db.js';
 import { requireAuth, requireAdmin } from '../middleware/auth.js';
 import { writeLimiter } from '../middleware/rateLimit.js';
+import { notifyUser } from '../notify.js';
 
 export const claimsRouter = Router();
 
@@ -62,7 +63,7 @@ claimsRouter.get('/', requireAdmin, async (req, res) => {
 
 claimsRouter.patch('/:id/approve', requireAdmin, async (req, res) => {
   const id = Number(req.params.id);
-  const claim = await prisma.shopClaim.findUnique({ where: { id } });
+  const claim = await prisma.shopClaim.findUnique({ where: { id }, include: { shop: { select: { name: true } } } });
   if (!claim) return res.status(404).json({ error: 'Claim not found' });
   if (claim.status !== 'pending') return res.status(400).json({ error: `Claim is already ${claim.status}` });
 
@@ -76,15 +77,26 @@ claimsRouter.patch('/:id/approve', requireAdmin, async (req, res) => {
     }),
   ]);
 
+  notifyUser(claim.userId, {
+    title: 'Your shop claim was approved',
+    body: `You can now manage "${claim.shop.name}" on Beantrip.`,
+  });
+
   res.json({ ok: true });
 });
 
 claimsRouter.patch('/:id/reject', requireAdmin, async (req, res) => {
   const id = Number(req.params.id);
-  const claim = await prisma.shopClaim.findUnique({ where: { id } });
+  const claim = await prisma.shopClaim.findUnique({ where: { id }, include: { shop: { select: { name: true } } } });
   if (!claim) return res.status(404).json({ error: 'Claim not found' });
   if (claim.status !== 'pending') return res.status(400).json({ error: `Claim is already ${claim.status}` });
 
   await prisma.shopClaim.update({ where: { id }, data: { status: 'rejected', reviewedAt: new Date() } });
+
+  notifyUser(claim.userId, {
+    title: 'About your shop claim',
+    body: `Your claim on "${claim.shop.name}" wasn't approved.`,
+  });
+
   res.json({ ok: true });
 });
