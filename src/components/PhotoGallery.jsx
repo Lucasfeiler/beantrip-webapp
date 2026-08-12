@@ -4,7 +4,8 @@ import { ShopThumb } from './ShopCard';
 export default function PhotoGallery({ shop, className = '' }) {
   const images = shop.images?.length > 0 ? shop.images : shop.image ? [shop.image] : [];
   const [index, setIndex] = useState(0);
-  const touchStartX = useRef(null);
+  const [dragging, setDragging] = useState(false);
+  const dragStartX = useRef(null);
 
   if (images.length === 0) {
     return <ShopThumb shop={shop} className={className} />;
@@ -12,29 +13,34 @@ export default function PhotoGallery({ shop, className = '' }) {
 
   const goTo = (i) => setIndex((i + images.length) % images.length);
 
-  const handleTouchStart = (e) => {
-    touchStartX.current = e.touches[0].clientX;
+  // Pointer events cover touch, mouse, and pen in one API, so drag-to-swipe
+  // works with a mouse on desktop the same way a finger swipe does on mobile.
+  const handlePointerDown = (e) => {
+    dragStartX.current = e.clientX;
+    setDragging(true);
   };
 
-  const handleTouchEnd = (e) => {
-    if (touchStartX.current == null) return;
-    const delta = e.changedTouches[0].clientX - touchStartX.current;
+  const handlePointerUp = (e) => {
+    if (dragStartX.current == null) return;
+    const delta = e.clientX - dragStartX.current;
     if (Math.abs(delta) > 40) {
       goTo(index + (delta < 0 ? 1 : -1));
     }
-    touchStartX.current = null;
+    dragStartX.current = null;
+    setDragging(false);
   };
 
   return (
     <div
-      className={`relative overflow-hidden group ${className}`}
-      onTouchStart={handleTouchStart}
-      onTouchEnd={handleTouchEnd}
+      className={`relative overflow-hidden group touch-pan-y ${dragging ? 'cursor-grabbing' : 'cursor-grab'} ${className}`}
+      onPointerDown={handlePointerDown}
+      onPointerUp={handlePointerUp}
+      onPointerCancel={() => { dragStartX.current = null; setDragging(false); }}
     >
       <img
         src={images[index]}
         alt={`${shop.name} photo ${index + 1} of ${images.length}`}
-        className="w-full h-full object-cover select-none"
+        className="w-full h-full object-cover select-none pointer-events-none"
         draggable={false}
       />
 
