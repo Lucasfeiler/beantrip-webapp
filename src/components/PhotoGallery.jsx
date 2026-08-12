@@ -15,7 +15,11 @@ export default function PhotoGallery({ shop, className = '' }) {
 
   // Pointer events cover touch, mouse, and pen in one API, so drag-to-swipe
   // works with a mouse on desktop the same way a finger swipe does on mobile.
+  // Pointer capture is essential here: a real swipe naturally drifts outside
+  // the element's bounds mid-gesture, and without capture the "up" event
+  // fires on whatever's under the pointer at that moment, not this element.
   const handlePointerDown = (e) => {
+    e.currentTarget.setPointerCapture(e.pointerId);
     dragStartX.current = e.clientX;
     setDragging(true);
   };
