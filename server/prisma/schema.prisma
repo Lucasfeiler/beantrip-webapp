@@ -18,6 +18,10 @@ model User {
   isAdmin      Boolean    @default(false)
   accountType  String     @default("customer")
   emailVerified Boolean   @default(false)
+  gender             String?
+  favoriteRoast      String?
+  favoriteBrewMethod String?
+  onboardingSeen     Boolean  @default(false)
   createdAt    DateTime   @default(now())
   favorites    Favorite[]
   reviews      Review[]

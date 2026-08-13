@@ -54,6 +54,10 @@ function publicUser(user, visitCount = 0) {
     isAdmin: user.isAdmin,
     accountType: user.accountType,
     emailVerified: user.emailVerified,
+    gender: user.gender,
+    favoriteRoast: user.favoriteRoast,
+    favoriteBrewMethod: user.favoriteBrewMethod,
+    onboardingSeen: user.onboardingSeen,
     createdAt: user.createdAt,
     visitCount,
   };
@@ -146,10 +150,23 @@ authRouter.get('/me', requireAuth, async (req, res) => {
   res.json({ user: publicUser(user, visitCount) });
 });
 
+const GENDERS = ['male', 'female', 'non-binary', 'prefer-not-to-say'];
+const ROASTS = ['light', 'medium', 'dark'];
+const BREW_METHODS = ['espresso', 'pour-over', 'cold-brew', 'french-press', 'aeropress', 'v60'];
+
 authRouter.patch('/me', requireAuth, async (req, res) => {
-  const { name, location, bio } = req.body;
+  const { name, location, bio, gender, favoriteRoast, favoriteBrewMethod, onboardingSeen } = req.body;
   if (name !== undefined && !name.trim()) {
     return res.status(400).json({ error: 'Name cannot be empty' });
+  }
+  if (gender !== undefined && gender !== null && !GENDERS.includes(gender)) {
+    return res.status(400).json({ error: 'Invalid gender value' });
+  }
+  if (favoriteRoast !== undefined && favoriteRoast !== null && !ROASTS.includes(favoriteRoast)) {
+    return res.status(400).json({ error: 'Invalid roast value' });
+  }
+  if (favoriteBrewMethod !== undefined && favoriteBrewMethod !== null && !BREW_METHODS.includes(favoriteBrewMethod)) {
+    return res.status(400).json({ error: 'Invalid brew method value' });
   }
 
   const user = await prisma.user.update({
@@ -158,6 +175,10 @@ authRouter.patch('/me', requireAuth, async (req, res) => {
       ...(name !== undefined ? { name: name.trim() } : {}),
       ...(location !== undefined ? { location: location.trim() || null } : {}),
       ...(bio !== undefined ? { bio: bio.trim() || null } : {}),
+      ...(gender !== undefined ? { gender } : {}),
+      ...(favoriteRoast !== undefined ? { favoriteRoast } : {}),
+      ...(favoriteBrewMethod !== undefined ? { favoriteBrewMethod } : {}),
+      ...(onboardingSeen !== undefined ? { onboardingSeen: !!onboardingSeen } : {}),
     },
   });
 

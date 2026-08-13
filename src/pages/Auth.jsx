@@ -21,9 +21,10 @@ export default function Auth() {
     setError('');
     setSubmitting(true);
     try {
-      if (mode === 'login') await login(form.email, form.password);
-      else await register(form.email, form.password, form.name, form.accountType);
-      navigate('/favorites');
+      const user = mode === 'login'
+        ? await login(form.email, form.password)
+        : await register(form.email, form.password, form.name, form.accountType);
+      navigate(user.onboardingSeen ? '/favorites' : '/onboarding');
     } catch (err) {
       setError(err.message);
     } finally {

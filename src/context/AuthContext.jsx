@@ -22,12 +22,14 @@ export function AuthProvider({ children }) {
     const { token, user } = await api.login(email, password);
     setToken(token);
     setUser(user);
+    return user;
   };
 
   const register = async (email, password, name, accountType) => {
     const { token, user } = await api.register(email, password, name, accountType);
     setToken(token);
     setUser(user);
+    return user;
   };
 
   const logout = () => {
