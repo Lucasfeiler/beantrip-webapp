@@ -1,6 +1,9 @@
-import { NavLink, Link, useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
+import { NavLink, Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import NotificationPrompt from './NotificationPrompt';
+
+const ONBOARDING_EXEMPT_PATHS = ['/onboarding', '/reset-password', '/verify-email'];
 
 const navLinks = [
   { to: '/', label: 'Home', end: true },
@@ -19,9 +22,16 @@ function getNavLinks(user) {
 }
 
 export default function Layout({ children }) {
-  const { user, logout } = useAuth();
+  const { user, loading, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const links = getNavLinks(user);
+
+  useEffect(() => {
+    if (loading || !user || user.onboardingSeen) return;
+    if (ONBOARDING_EXEMPT_PATHS.includes(location.pathname)) return;
+    navigate('/onboarding');
+  }, [loading, user, location.pathname, navigate]);
 
   return (
     <div className="min-h-screen flex flex-col">

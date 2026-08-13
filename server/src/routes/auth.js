@@ -58,6 +58,7 @@ function publicUser(user, visitCount = 0) {
     favoriteRoast: user.favoriteRoast,
     favoriteBrewMethod: user.favoriteBrewMethod,
     onboardingSeen: user.onboardingSeen,
+    tourSeen: user.tourSeen,
     createdAt: user.createdAt,
     visitCount,
   };
@@ -155,7 +156,7 @@ const ROASTS = ['light', 'medium', 'dark'];
 const BREW_METHODS = ['espresso', 'pour-over', 'cold-brew', 'french-press', 'aeropress', 'v60'];
 
 authRouter.patch('/me', requireAuth, async (req, res) => {
-  const { name, location, bio, gender, favoriteRoast, favoriteBrewMethod, onboardingSeen } = req.body;
+  const { name, location, bio, gender, favoriteRoast, favoriteBrewMethod, onboardingSeen, tourSeen } = req.body;
   if (name !== undefined && !name.trim()) {
     return res.status(400).json({ error: 'Name cannot be empty' });
   }
@@ -179,6 +180,7 @@ authRouter.patch('/me', requireAuth, async (req, res) => {
       ...(favoriteRoast !== undefined ? { favoriteRoast } : {}),
       ...(favoriteBrewMethod !== undefined ? { favoriteBrewMethod } : {}),
       ...(onboardingSeen !== undefined ? { onboardingSeen: !!onboardingSeen } : {}),
+      ...(tourSeen !== undefined ? { tourSeen: !!tourSeen } : {}),
     },
   });
 

@@ -22,6 +22,7 @@ model User {
   favoriteRoast      String?
   favoriteBrewMethod String?
   onboardingSeen     Boolean  @default(false)
+  tourSeen           Boolean  @default(false)
   createdAt    DateTime   @default(now())
   favorites    Favorite[]
   reviews      Review[]
