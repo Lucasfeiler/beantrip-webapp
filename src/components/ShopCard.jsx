@@ -1,6 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useFavorites } from '../context/FavoritesContext';
 import { useAuth } from '../context/AuthContext';
+import PhotoGallery from './PhotoGallery';
 
 function beanGlyph(seed) {
   // deterministic subtle rotation/hue per shop for the placeholder art
@@ -70,7 +71,7 @@ export default function ShopCard({ shop }) {
   return (
     <div className="group relative bg-[var(--color-card)] border border-[var(--color-border)] rounded-2xl overflow-hidden hover:shadow-lg hover:shadow-black/20 hover:-translate-y-0.5 transition-all">
       <Link to={`/shop/${shop.slug}`}>
-        <ShopThumb shop={shop} className="h-36 w-full" />
+        <PhotoGallery shop={shop} className="h-36 w-full" />
       </Link>
       <button
         onClick={handleFavoriteClick}
