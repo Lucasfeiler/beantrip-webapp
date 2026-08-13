@@ -5,8 +5,6 @@ import ShopCard from '../components/ShopCard';
 export default function Home() {
   const { shops, cities, loading } = useShops();
   const featured = shops.filter((s) => !s.placeholder).slice(0, 6);
-  const neighborhoods = new Set(shops.map((s) => s.neighborhood).filter(Boolean));
-  const brewMethods = new Set(shops.flatMap((s) => s.tags).filter((t) => t && !['light', 'medium', 'dark'].includes(t)));
   const cityCount = (city) => shops.filter((s) => s.city === city).length;
 
   if (loading) {
@@ -84,23 +82,6 @@ export default function Home() {
           {featured.map((shop) => (
             <ShopCard key={shop.id} shop={shop} />
           ))}
-        </div>
-      </section>
-
-      <section className="border-t border-[var(--color-border)]">
-        <div className="max-w-6xl mx-auto px-5 sm:px-8 py-14 grid grid-cols-3 gap-6 text-center">
-          <div>
-            <p className="font-display text-3xl sm:text-4xl font-semibold">{shops.length}</p>
-            <p className="text-sm text-[var(--color-muted-fg)] mt-1">Shops listed</p>
-          </div>
-          <div>
-            <p className="font-display text-3xl sm:text-4xl font-semibold">{neighborhoods.size}+</p>
-            <p className="text-sm text-[var(--color-muted-fg)] mt-1">Neighborhoods</p>
-          </div>
-          <div>
-            <p className="font-display text-3xl sm:text-4xl font-semibold">{brewMethods.size}+</p>
-            <p className="text-sm text-[var(--color-muted-fg)] mt-1">Brewing methods</p>
-          </div>
         </div>
       </section>
     </>
