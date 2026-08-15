@@ -183,10 +183,8 @@ export default function Admin() {
     setFetchResult('');
     setError('');
     try {
-      const { sourcesChecked, created, skipped, debugAllSources } = await api.fetchFeedsNow();
-      setFetchResult(
-        `Checked ${sourcesChecked} feed${sourcesChecked === 1 ? '' : 's'}, pulled ${created} new article${created === 1 ? '' : 's'} (${skipped} already seen). DEBUG all sources: ${JSON.stringify(debugAllSources)}`
-      );
+      const { sourcesChecked, created, skipped } = await api.fetchFeedsNow();
+      setFetchResult(`Checked ${sourcesChecked} feed${sourcesChecked === 1 ? '' : 's'}, pulled ${created} new article${created === 1 ? '' : 's'} (${skipped} already seen).`);
       api.listAdminArticles().then(({ articles }) => setArticles(articles)).catch(() => {});
       api.listFeedSources().then(({ sources }) => setFeedSources(sources)).catch(() => {});
     } catch (err) {

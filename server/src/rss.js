@@ -5,7 +5,6 @@ import { slugify } from './routes/articles.js';
 const parser = new Parser();
 
 export async function fetchNewArticles() {
-  const allSources = await prisma.feedSource.findMany();
   const sources = await prisma.feedSource.findMany({ where: { active: true } });
 
   let created = 0;
@@ -59,5 +58,5 @@ export async function fetchNewArticles() {
     }
   }
 
-  return { sourcesChecked: sources.length, created, skipped, debugAllSources: allSources };
+  return { sourcesChecked: sources.length, created, skipped };
 }
