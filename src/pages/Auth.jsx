@@ -10,6 +10,7 @@ export default function Auth() {
   const navigate = useNavigate();
   const [mode, setMode] = useState('login'); // login | register | forgot
   const [form, setForm] = useState({ name: '', email: '', password: '', accountType: 'customer' });
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [resetSent, setResetSent] = useState(false);
@@ -125,7 +126,23 @@ export default function Auth() {
           </>
         )}
         <input required type="email" placeholder="Email" value={form.email} onChange={update('email')} className={inputClass} />
-        <input required type="password" placeholder="Password" value={form.password} onChange={update('password')} className={inputClass} />
+        <div className="relative">
+          <input
+            required
+            type={showPassword ? 'text' : 'password'}
+            placeholder="Password"
+            value={form.password}
+            onChange={update('password')}
+            className={`${inputClass} pr-16`}
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword((s) => !s)}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-semibold text-[var(--color-accent)] hover:underline"
+          >
+            {showPassword ? 'Hide' : 'Show'}
+          </button>
+        </div>
 
         {mode === 'login' && (
           <button
