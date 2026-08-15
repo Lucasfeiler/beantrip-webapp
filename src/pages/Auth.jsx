@@ -25,7 +25,7 @@ export default function Auth() {
       const user = mode === 'login'
         ? await login(form.email, form.password)
         : await register(form.email, form.password, form.name, form.accountType);
-      navigate(user.onboardingSeen ? '/favorites' : '/onboarding');
+      navigate(user.onboardingSeen ? '/' : '/onboarding');
     } catch (err) {
       setError(err.message);
     } finally {
