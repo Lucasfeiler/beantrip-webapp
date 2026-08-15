@@ -52,15 +52,18 @@ export default function Article() {
         <div className="mt-6 bg-[var(--color-card)] border border-[var(--color-border)] rounded-xl p-4">
           <p className="text-sm font-semibold mb-1">☕ Beantrip Premium</p>
           <p className="text-sm text-[var(--color-muted-fg)]">
-            Beantrip Premium members get full access to this article.
+            Beantrip Premium members get the link to read this article in full.
           </p>
         </div>
       ) : (
-        <div className="mt-6">
-          {article.body.split('\n\n').map((para, i) => (
-            <p key={i} className="mt-4 text-base leading-relaxed">{para}</p>
-          ))}
-        </div>
+        <a
+          href={article.externalUrl}
+          target="_blank"
+          rel="noreferrer"
+          className="mt-6 inline-block px-5 py-2.5 rounded-xl bg-[var(--color-accent)] text-[var(--color-accent-fg)] font-semibold text-sm hover:opacity-90 transition-opacity"
+        >
+          Read the full article ↗
+        </a>
       )}
     </div>
   );

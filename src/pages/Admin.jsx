@@ -398,7 +398,7 @@ export default function Admin() {
       )}
 
       <h1 className="font-display text-3xl font-semibold mt-16">Articles</h1>
-      <p className="text-[var(--color-muted-fg)] mt-1">Write and publish News articles. Full articles are visible to Beantrip Premium members only.</p>
+      <p className="text-[var(--color-muted-fg)] mt-1">Curate links to coffee articles from around the web. The full link is visible to Beantrip Premium members only.</p>
 
       <div className="mt-8">
         <ArticleForm
@@ -502,7 +502,7 @@ function ArticleForm({ article, onSaved, onCancel }) {
   const [title, setTitle] = useState(article?.title ?? '');
   const [coverImage, setCoverImage] = useState(article?.coverImage ?? '');
   const [excerpt, setExcerpt] = useState(article?.excerpt ?? '');
-  const [body, setBody] = useState(article?.body ?? '');
+  const [externalUrl, setExternalUrl] = useState(article?.externalUrl ?? '');
   const [published, setPublished] = useState(article?.published ?? false);
   const [error, setError] = useState('');
   const [saving, setSaving] = useState(false);
@@ -512,7 +512,7 @@ function ArticleForm({ article, onSaved, onCancel }) {
     setError('');
     setSaving(true);
     try {
-      const payload = { title, coverImage, excerpt, body, published };
+      const payload = { title, coverImage, excerpt, externalUrl, published };
       const { article: saved } = article
         ? await api.updateArticle(article.id, payload)
         : await api.createArticle(payload);
@@ -529,8 +529,8 @@ function ArticleForm({ article, onSaved, onCancel }) {
       <p className="text-sm font-semibold">{article ? 'Edit article' : 'New article'}</p>
       <input required value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Title" className={inputClass} />
       <input value={coverImage} onChange={(e) => setCoverImage(e.target.value)} placeholder="Cover image URL" className={inputClass} />
-      <textarea rows={2} value={excerpt} onChange={(e) => setExcerpt(e.target.value)} placeholder="Short excerpt (shown in the free preview)" className={inputClass} />
-      <textarea required rows={10} value={body} onChange={(e) => setBody(e.target.value)} placeholder="Full article body (separate paragraphs with a blank line)" className={inputClass} />
+      <textarea rows={2} value={excerpt} onChange={(e) => setExcerpt(e.target.value)} placeholder="Your own short summary (write this yourself — shown free to everyone)" className={inputClass} />
+      <input required type="url" value={externalUrl} onChange={(e) => setExternalUrl(e.target.value)} placeholder="Link to the original article (https://…)" className={inputClass} />
       <div className="grid grid-cols-2 gap-2">
         <button
           type="button"

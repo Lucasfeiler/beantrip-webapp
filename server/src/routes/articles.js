@@ -37,14 +37,14 @@ articlesRouter.get('/:slug', optionalAuth, async (req, res) => {
 
   if (unlocked) return res.json({ article: { ...article, locked: false } });
 
-  const { body, ...teaser } = article;
+  const { externalUrl, ...teaser } = article;
   res.json({ article: { ...teaser, locked: true } });
 });
 
 articlesRouter.post('/', requireAuth, requireAdmin, async (req, res) => {
-  const { title, coverImage, excerpt, body, published } = req.body;
-  if (!title?.trim() || !body?.trim()) {
-    return res.status(400).json({ error: 'title and body are required' });
+  const { title, coverImage, excerpt, externalUrl, published } = req.body;
+  if (!title?.trim() || !externalUrl?.trim()) {
+    return res.status(400).json({ error: 'title and externalUrl are required' });
   }
 
   try {
@@ -54,7 +54,7 @@ articlesRouter.post('/', requireAuth, requireAdmin, async (req, res) => {
         title: title.trim(),
         coverImage: coverImage?.trim() || null,
         excerpt: excerpt?.trim() || null,
-        body,
+        externalUrl: externalUrl.trim(),
         published: !!published,
         publishedAt: published ? new Date() : null,
       },
@@ -69,7 +69,7 @@ articlesRouter.post('/', requireAuth, requireAdmin, async (req, res) => {
 });
 
 articlesRouter.patch('/:id', requireAuth, requireAdmin, async (req, res) => {
-  const { title, coverImage, excerpt, body, published } = req.body;
+  const { title, coverImage, excerpt, externalUrl, published } = req.body;
   const existing = await prisma.article.findUnique({ where: { id: Number(req.params.id) } });
   if (!existing) return res.status(404).json({ error: 'Article not found' });
 
@@ -81,7 +81,7 @@ articlesRouter.patch('/:id', requireAuth, requireAdmin, async (req, res) => {
       ...(title !== undefined ? { title: title.trim() } : {}),
       ...(coverImage !== undefined ? { coverImage: coverImage?.trim() || null } : {}),
       ...(excerpt !== undefined ? { excerpt: excerpt?.trim() || null } : {}),
-      ...(body !== undefined ? { body } : {}),
+      ...(externalUrl !== undefined ? { externalUrl: externalUrl.trim() } : {}),
       ...(published !== undefined ? { published } : {}),
       ...(nowPublishing ? { publishedAt: new Date() } : {}),
     },
