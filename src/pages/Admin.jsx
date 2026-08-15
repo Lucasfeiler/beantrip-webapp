@@ -21,6 +21,8 @@ export default function Admin() {
   const [premiumUsers, setPremiumUsers] = useState(null);
   const [userQuery, setUserQuery] = useState('');
   const [flags, setFlags] = useState(null);
+  const [events, setEvents] = useState(null);
+  const [editingEvent, setEditingEvent] = useState(null);
   const [error, setError] = useState('');
   const [busyId, setBusyId] = useState(null);
 
@@ -42,6 +44,9 @@ export default function Admin() {
       .catch((err) => setError(err.message));
     api.listFlags()
       .then(({ flags }) => setFlags(flags))
+      .catch((err) => setError(err.message));
+    api.listAdminEvents()
+      .then(({ events }) => setEvents(events))
       .catch((err) => setError(err.message));
   };
 
@@ -138,6 +143,32 @@ export default function Admin() {
     try {
       await api.deleteArticle(id);
       setArticles((arts) => arts.filter((a) => a.id !== id));
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setBusyId(null);
+    }
+  };
+
+  const togglePublishEvent = async (evt) => {
+    setBusyId(evt.id);
+    setError('');
+    try {
+      const { event: updated } = await api.updateEvent(evt.id, { published: !evt.published });
+      setEvents((evts) => evts.map((e) => (e.id === evt.id ? updated : e)));
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setBusyId(null);
+    }
+  };
+
+  const deleteEvent = async (id) => {
+    setBusyId(id);
+    setError('');
+    try {
+      await api.deleteEvent(id);
+      setEvents((evts) => evts.filter((e) => e.id !== id));
     } catch (err) {
       setError(err.message);
     } finally {
@@ -474,6 +505,62 @@ export default function Admin() {
         </ul>
       )}
 
+      <h1 className="font-display text-3xl font-semibold mt-16">Events</h1>
+      <p className="text-[var(--color-muted-fg)] mt-1">Coffee festivals and events. The ticket link is visible to Beantrip Premium members only.</p>
+
+      <div className="mt-8">
+        <EventForm
+          key={editingEvent?.id ?? 'new'}
+          event={editingEvent}
+          onSaved={(evt) => {
+            setEvents((evts) => {
+              const exists = evts?.some((e) => e.id === evt.id);
+              return exists ? evts.map((e) => (e.id === evt.id ? evt : e)) : [evt, ...(evts ?? [])];
+            });
+            setEditingEvent(null);
+          }}
+          onCancel={() => setEditingEvent(null)}
+        />
+      </div>
+
+      {events === null ? (
+        <p className="text-sm text-[var(--color-muted-fg)] mt-8">Loading…</p>
+      ) : events.length === 0 ? (
+        <p className="text-sm text-[var(--color-muted-fg)] mt-8">No events yet.</p>
+      ) : (
+        <ul className="flex flex-col gap-2 mt-8">
+          {events.map((e) => (
+            <li key={e.id} className="flex items-center justify-between text-sm py-2 border-b border-[var(--color-border)] gap-3">
+              <span>
+                {e.title} <span className={e.published ? 'text-[var(--color-accent)] font-semibold' : 'text-[var(--color-muted-fg)]'}>· {e.published ? 'Published' : 'Draft'}</span>
+              </span>
+              <div className="flex gap-2 shrink-0">
+                <button
+                  onClick={() => setEditingEvent(e)}
+                  className="px-3 py-1.5 rounded-lg text-sm font-semibold border border-[var(--color-border)]"
+                >
+                  Edit
+                </button>
+                <button
+                  disabled={busyId === e.id}
+                  onClick={() => togglePublishEvent(e)}
+                  className="px-3 py-1.5 rounded-lg text-sm font-semibold border border-[var(--color-border)] disabled:opacity-60"
+                >
+                  {e.published ? 'Unpublish' : 'Publish'}
+                </button>
+                <button
+                  disabled={busyId === e.id}
+                  onClick={() => deleteEvent(e.id)}
+                  className="px-3 py-1.5 rounded-lg text-sm font-semibold border border-[var(--color-border)] disabled:opacity-60"
+                >
+                  Delete
+                </button>
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
+
       <h1 className="font-display text-3xl font-semibold mt-16">Premium Users</h1>
       <p className="text-[var(--color-muted-fg)] mt-1">Search for a user and toggle Beantrip Premium to unlock full articles for them.</p>
 
@@ -650,6 +737,78 @@ function ArticleForm({ article, onSaved, onCancel }) {
           {saving ? 'Saving…' : article ? 'Save changes' : 'Create article'}
         </button>
         {article && (
+          <button type="button" onClick={onCancel} className="px-6 py-3 rounded-xl border border-[var(--color-border)] font-semibold text-sm">
+            Cancel
+          </button>
+        )}
+      </div>
+    </form>
+  );
+}
+
+function EventForm({ event, onSaved, onCancel }) {
+  const [title, setTitle] = useState(event?.title ?? '');
+  const [coverImage, setCoverImage] = useState(event?.coverImage ?? '');
+  const [excerpt, setExcerpt] = useState(event?.excerpt ?? '');
+  const [location, setLocation] = useState(event?.location ?? '');
+  const [eventDate, setEventDate] = useState(event?.eventDate ? event.eventDate.slice(0, 10) : '');
+  const [ticketUrl, setTicketUrl] = useState(event?.ticketUrl ?? '');
+  const [published, setPublished] = useState(event?.published ?? false);
+  const [error, setError] = useState('');
+  const [saving, setSaving] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    setSaving(true);
+    try {
+      const payload = { title, coverImage, excerpt, location, eventDate: eventDate || null, ticketUrl, published };
+      const { event: saved } = event
+        ? await api.updateEvent(event.id, payload)
+        : await api.createEvent(payload);
+      onSaved(saved);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="flex flex-col gap-4 border border-[var(--color-border)] rounded-xl p-4">
+      <p className="text-sm font-semibold">{event ? 'Edit event' : 'New event'}</p>
+      <input required value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Title" className={inputClass} />
+      <input value={coverImage} onChange={(e) => setCoverImage(e.target.value)} placeholder="Cover image URL" className={inputClass} />
+      <textarea rows={2} value={excerpt} onChange={(e) => setExcerpt(e.target.value)} placeholder="Short description" className={inputClass} />
+      <input value={location} onChange={(e) => setLocation(e.target.value)} placeholder="Location" className={inputClass} />
+      <input type="date" value={eventDate} onChange={(e) => setEventDate(e.target.value)} className={inputClass} />
+      <input type="url" value={ticketUrl} onChange={(e) => setTicketUrl(e.target.value)} placeholder="Ticket link (https://…)" className={inputClass} />
+      <div className="grid grid-cols-2 gap-2">
+        <button
+          type="button"
+          onClick={() => setPublished(false)}
+          className={`px-4 py-2.5 rounded-xl text-sm font-semibold border transition-colors ${
+            !published ? 'bg-[var(--color-primary)] text-[var(--color-primary-fg)] border-[var(--color-primary)]' : 'border-[var(--color-border)] hover:bg-[var(--color-card)]'
+          }`}
+        >
+          Draft
+        </button>
+        <button
+          type="button"
+          onClick={() => setPublished(true)}
+          className={`px-4 py-2.5 rounded-xl text-sm font-semibold border transition-colors ${
+            published ? 'bg-[var(--color-primary)] text-[var(--color-primary-fg)] border-[var(--color-primary)]' : 'border-[var(--color-border)] hover:bg-[var(--color-card)]'
+          }`}
+        >
+          Published
+        </button>
+      </div>
+      {error && <p className="text-sm text-red-600">{error}</p>}
+      <div className="flex gap-2">
+        <button disabled={saving} className="px-6 py-3 rounded-xl bg-[var(--color-primary)] text-[var(--color-primary-fg)] font-semibold text-sm disabled:opacity-60">
+          {saving ? 'Saving…' : event ? 'Save changes' : 'Create event'}
+        </button>
+        {event && (
           <button type="button" onClick={onCancel} className="px-6 py-3 rounded-xl border border-[var(--color-border)] font-semibold text-sm">
             Cancel
           </button>

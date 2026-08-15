@@ -20,6 +20,8 @@ import VerifyEmail from './pages/VerifyEmail';
 import Onboarding from './pages/Onboarding';
 import News from './pages/News';
 import Article from './pages/Article';
+import Events from './pages/Events';
+import EventDetail from './pages/EventDetail';
 import { Privacy, Terms, Impressum } from './pages/StaticPages';
 
 export default function App() {
@@ -45,6 +47,8 @@ export default function App() {
                   <Route path="/onboarding" element={<Onboarding />} />
                   <Route path="/news" element={<News />} />
                   <Route path="/news/:slug" element={<Article />} />
+                  <Route path="/events" element={<Events />} />
+                  <Route path="/events/:slug" element={<EventDetail />} />
                   <Route path="/reset-password" element={<ResetPassword />} />
                   <Route path="/verify-email" element={<VerifyEmail />} />
                   <Route path="/privacy" element={<Privacy />} />

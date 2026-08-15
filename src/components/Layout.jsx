@@ -12,6 +12,7 @@ const navLinks = [
   { to: '/map', label: 'Map' },
   { to: '/favorites', label: 'Favorites' },
   { to: '/news', label: 'News' },
+  { to: '/events', label: 'Events' },
   { to: '/add-shop', label: 'Add' },
 ];
 

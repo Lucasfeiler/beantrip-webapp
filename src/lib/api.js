@@ -107,6 +107,13 @@ export const api = {
   dismissFlag: (id) => request(`/api/flags/${id}/dismiss`, { method: 'PATCH', auth: true }),
   removeFlaggedReview: (id) => request(`/api/flags/${id}/remove`, { method: 'PATCH', auth: true }),
 
+  listEvents: () => request('/api/events'),
+  listAdminEvents: () => request('/api/events/admin', { auth: true }),
+  getEvent: (slug) => request(`/api/events/${slug}`, { auth: true }),
+  createEvent: (data) => request('/api/events', { method: 'POST', auth: true, body: data }),
+  updateEvent: (id, data) => request(`/api/events/${id}`, { method: 'PATCH', auth: true, body: data }),
+  deleteEvent: (id) => request(`/api/events/${id}`, { method: 'DELETE', auth: true }),
+
   submitShop: (payload) => request('/api/submissions', { method: 'POST', auth: true, body: payload }),
   listSubmissions: () => request('/api/submissions', { auth: true }),
   approveSubmission: (id) => request(`/api/submissions/${id}/approve`, { method: 'PATCH', auth: true }),

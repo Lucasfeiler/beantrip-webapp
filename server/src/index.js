@@ -14,6 +14,7 @@ import { photosRouter } from './routes/photos.js';
 import { articlesRouter } from './routes/articles.js';
 import { usersRouter } from './routes/users.js';
 import { flagsRouter } from './routes/flags.js';
+import { eventsRouter } from './routes/events.js';
 
 const app = express();
 app.set('trust proxy', 1);
@@ -43,6 +44,7 @@ app.use('/api', photosRouter);
 app.use('/api/articles', articlesRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/flags', flagsRouter);
+app.use('/api/events', eventsRouter);
 
 app.use((err, _req, res, _next) => {
   console.error(err);
