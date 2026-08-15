@@ -56,13 +56,27 @@ model Shop {
   lat          Float?
   lng          Float?
   ownerId      Int?
+  isPremium    Boolean    @default(false)
+  beansInStock Boolean?
   createdAt    DateTime   @default(now())
   favorites    Favorite[]
   reviews      Review[]
   visits       Visit[]
   claims       ShopClaim[]
   userPhotos   Photo[]
+  events       ShopEvent[]
   owner        User?      @relation(fields: [ownerId], references: [id], onDelete: SetNull)
+}
+
+model ShopEvent {
+  id        Int      @id @default(autoincrement())
+  shopId    Int
+  type      String
+  target    String?
+  createdAt DateTime @default(now())
+  shop      Shop     @relation(fields: [shopId], references: [id], onDelete: Cascade)
+
+  @@index([shopId, createdAt])
 }
 
 model Photo {

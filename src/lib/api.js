@@ -65,6 +65,10 @@ export const api = {
   myShops: () => request('/api/shops/mine', { auth: true }),
   updateShop: (slug, data) => request(`/api/shops/${slug}`, { method: 'PATCH', auth: true, body: data }),
   uploadShopPhoto: (slug, file) => uploadFile(`/api/shops/${slug}/photo`, file),
+  trackShopEvent: (slug, type, target) => request(`/api/shops/${slug}/track`, { method: 'POST', body: { type, target } }),
+  shopAnalytics: (slug) => request(`/api/shops/${slug}/analytics`, { auth: true }),
+  listPremiumShops: () => request('/api/shops/admin/premium', { auth: true }),
+  toggleShopPremium: (slug, isPremium) => request(`/api/shops/${slug}/premium`, { method: 'PATCH', auth: true, body: { isPremium } }),
 
   listShopUserPhotos: (slug) => request(`/api/shops/${slug}/photos`),
   uploadShopUserPhoto: (slug, file) => uploadFile(`/api/shops/${slug}/photos`, file),

@@ -48,7 +48,12 @@ export default function ShopDetail() {
     loadShop();
     loadReviews();
     loadUserPhotos();
+    api.trackShopEvent(slug, 'view').catch(() => {});
   }, [slug]);
+
+  const trackClick = (target) => () => {
+    api.trackShopEvent(slug, 'click', target).catch(() => {});
+  };
 
   const handlePhotoUpload = async (e) => {
     const file = e.target.files?.[0];
@@ -147,6 +152,11 @@ export default function ShopDetail() {
       <p className="text-sm text-[var(--color-muted-fg)] mt-1">
         {shop.rating > 0 ? `★ ${shop.rating.toFixed(1)}` : '—'} ({shop.reviewCount} reviews)
         {shop.neighborhood && <span className="text-[var(--color-accent)] font-medium"> · {shop.neighborhood}</span>}
+        {shop.beansInStock != null && (
+          <span className={shop.beansInStock ? 'text-[var(--color-accent)] font-medium' : 'text-red-500 font-medium'}>
+            {' '}· Beans {shop.beansInStock ? 'in stock' : 'out of stock'}
+          </span>
+        )}
       </p>
 
       {shop.placeholder ? (
@@ -170,15 +180,28 @@ export default function ShopDetail() {
 
       <div className="flex gap-4 mt-6">
         {shop.website && (
-          <a href={shop.website} target="_blank" rel="noreferrer" className="text-sm font-semibold text-[var(--color-accent)] hover:underline">
+          <a href={shop.website} target="_blank" rel="noreferrer" onClick={trackClick('website')} className="text-sm font-semibold text-[var(--color-accent)] hover:underline">
             Website
           </a>
         )}
         {shop.instagram && (
-          <a href={shop.instagram} target="_blank" rel="noreferrer" className="text-sm font-semibold text-[var(--color-accent)] hover:underline">
+          <a href={shop.instagram} target="_blank" rel="noreferrer" onClick={trackClick('instagram')} className="text-sm font-semibold text-[var(--color-accent)] hover:underline">
             Instagram
           </a>
         )}
+        <a
+          href={
+            shop.lat && shop.lng
+              ? `https://www.google.com/maps/dir/?api=1&destination=${shop.lat},${shop.lng}`
+              : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${shop.address}, ${shop.city}`)}`
+          }
+          target="_blank"
+          rel="noreferrer"
+          onClick={trackClick('directions')}
+          className="text-sm font-semibold text-[var(--color-accent)] hover:underline"
+        >
+          Directions
+        </a>
       </div>
 
       <div className="border-t border-[var(--color-border)] mt-10 pt-8">

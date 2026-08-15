@@ -1,17 +1,12 @@
 import { Router } from 'express';
 import { prisma } from '../db.js';
-import { requireAuth, requireAdmin } from '../middleware/auth.js';
+import { requireAuth, requireAdmin, requireBusiness } from '../middleware/auth.js';
 import { writeLimiter } from '../middleware/rateLimit.js';
 import { notifyUser } from '../notify.js';
 
 export const claimsRouter = Router();
 
 claimsRouter.use(requireAuth);
-
-function requireBusiness(req, res, next) {
-  if (req.userAccountType !== 'business') return res.status(403).json({ error: 'Business account required' });
-  next();
-}
 
 claimsRouter.use(async (req, res, next) => {
   const user = await prisma.user.findUnique({ where: { id: req.user.sub }, select: { accountType: true } });

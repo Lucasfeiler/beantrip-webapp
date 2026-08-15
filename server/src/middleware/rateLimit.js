@@ -15,3 +15,5 @@ export const authLimiter = limiter(15 * 60 * 1000, 20, 'Too many attempts. Pleas
 export const forgotPasswordLimiter = limiter(60 * 60 * 1000, 5, 'Too many password reset requests. Please try again later.');
 
 export const writeLimiter = limiter(60 * 60 * 1000, 30, 'Too many submissions. Please try again later.');
+
+export const trackingLimiter = limiter(60 * 1000, 60, 'Too many requests.');

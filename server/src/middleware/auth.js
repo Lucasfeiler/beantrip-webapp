@@ -32,3 +32,21 @@ export function optionalAuth(req, _res, next) {
   }
   next();
 }
+
+export async function requireShopOwner(req, res, next) {
+  const shop = await prisma.shop.findUnique({ where: { slug: req.params.slug } });
+  if (!shop) return res.status(404).json({ error: 'Shop not found' });
+  if (shop.ownerId !== req.user.sub) return res.status(403).json({ error: 'You do not manage this shop' });
+  req.shop = shop;
+  next();
+}
+
+export function requireBusiness(req, res, next) {
+  if (req.userAccountType !== 'business') return res.status(403).json({ error: 'Business account required' });
+  next();
+}
+
+export function requirePremium(req, res, next) {
+  if (!req.shop?.isPremium) return res.status(403).json({ error: 'This feature requires Café Premium' });
+  next();
+}

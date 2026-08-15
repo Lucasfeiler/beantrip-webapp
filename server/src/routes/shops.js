@@ -2,8 +2,8 @@ import { Router } from 'express';
 import multer from 'multer';
 import { randomUUID } from 'node:crypto';
 import { prisma } from '../db.js';
-import { requireAuth } from '../middleware/auth.js';
-import { writeLimiter } from '../middleware/rateLimit.js';
+import { requireAuth, requireAdmin, requireShopOwner, requirePremium } from '../middleware/auth.js';
+import { writeLimiter, trackingLimiter } from '../middleware/rateLimit.js';
 import { getStorageBucket } from '../firebase.js';
 
 export const shopsRouter = Router();
@@ -20,14 +20,6 @@ const upload = multer({
 });
 
 const dayKeys = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
-
-async function requireShopOwner(req, res, next) {
-  const shop = await prisma.shop.findUnique({ where: { slug: req.params.slug } });
-  if (!shop) return res.status(404).json({ error: 'Shop not found' });
-  if (shop.ownerId !== req.user.sub) return res.status(403).json({ error: 'You do not manage this shop' });
-  req.shop = shop;
-  next();
-}
 
 shopsRouter.get('/', async (req, res) => {
   const { city, tag, query, openNow } = req.query;
@@ -58,6 +50,15 @@ shopsRouter.get('/mine', requireAuth, async (req, res) => {
   res.json({ shops });
 });
 
+shopsRouter.get('/admin/premium', requireAuth, requireAdmin, async (_req, res) => {
+  const shops = await prisma.shop.findMany({
+    where: { ownerId: { not: null } },
+    include: { owner: { select: { name: true, email: true } } },
+    orderBy: { name: 'asc' },
+  });
+  res.json({ shops });
+});
+
 shopsRouter.get('/:slug', async (req, res) => {
   const shop = await prisma.shop.findUnique({ where: { slug: req.params.slug } });
   if (!shop) return res.status(404).json({ error: 'Shop not found' });
@@ -65,7 +66,11 @@ shopsRouter.get('/:slug', async (req, res) => {
 });
 
 shopsRouter.patch('/:slug', requireAuth, requireShopOwner, writeLimiter, async (req, res) => {
-  const { description, tags, hours, website, instagram } = req.body;
+  const { description, tags, hours, website, instagram, beansInStock } = req.body;
+
+  if (beansInStock !== undefined && !req.shop.isPremium) {
+    return res.status(403).json({ error: 'This feature requires Café Premium' });
+  }
 
   const shop = await prisma.shop.update({
     where: { id: req.shop.id },
@@ -75,7 +80,71 @@ shopsRouter.patch('/:slug', requireAuth, requireShopOwner, writeLimiter, async (
       ...(hours !== undefined ? { hours } : {}),
       ...(website !== undefined ? { website: website?.trim() || null } : {}),
       ...(instagram !== undefined ? { instagram: instagram?.trim() || null } : {}),
+      ...(beansInStock !== undefined ? { beansInStock } : {}),
     },
+  });
+
+  res.json({ shop });
+});
+
+shopsRouter.post('/:slug/track', trackingLimiter, async (req, res) => {
+  const { type, target } = req.body;
+  if (!['view', 'click'].includes(type)) return res.status(400).json({ error: 'Invalid event type' });
+  if (type === 'click' && !['website', 'instagram', 'directions'].includes(target)) {
+    return res.status(400).json({ error: 'Invalid click target' });
+  }
+
+  const shop = await prisma.shop.findUnique({ where: { slug: req.params.slug }, select: { id: true } });
+  if (!shop) return res.status(404).json({ error: 'Shop not found' });
+
+  await prisma.shopEvent.create({
+    data: { shopId: shop.id, type, target: type === 'click' ? target : null },
+  });
+
+  res.status(201).json({ ok: true });
+});
+
+shopsRouter.get('/:slug/analytics', requireAuth, requireShopOwner, requirePremium, async (req, res) => {
+  const since = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+  const events = await prisma.shopEvent.findMany({
+    where: { shopId: req.shop.id, createdAt: { gte: since } },
+    select: { type: true, target: true, createdAt: true },
+  });
+
+  const daily = Array.from({ length: 30 }, (_, i) => {
+    const d = new Date();
+    d.setUTCDate(d.getUTCDate() - (29 - i));
+    return { date: d.toISOString().slice(0, 10), views: 0, clicks: 0 };
+  });
+  const dailyIndex = Object.fromEntries(daily.map((d, i) => [d.date, i]));
+
+  const hourlyToday = Array.from({ length: 24 }, (_, hour) => ({ hour, views: 0, clicks: 0 }));
+  const todayKey = new Date().toISOString().slice(0, 10);
+
+  for (const e of events) {
+    const key = e.createdAt.toISOString().slice(0, 10);
+    const bucket = e.type === 'view' ? 'views' : 'clicks';
+    if (dailyIndex[key] !== undefined) daily[dailyIndex[key]][bucket]++;
+    if (key === todayKey) hourlyToday[e.createdAt.getUTCHours()][bucket]++;
+  }
+
+  res.json({
+    daily,
+    hourlyToday,
+    totals: {
+      views: events.filter((e) => e.type === 'view').length,
+      clicks: events.filter((e) => e.type === 'click').length,
+    },
+  });
+});
+
+shopsRouter.patch('/:slug/premium', requireAuth, requireAdmin, async (req, res) => {
+  const { isPremium } = req.body;
+  if (typeof isPremium !== 'boolean') return res.status(400).json({ error: 'isPremium must be a boolean' });
+
+  const shop = await prisma.shop.update({
+    where: { slug: req.params.slug },
+    data: { isPremium },
   });
 
   res.json({ shop });

@@ -15,6 +15,7 @@ export default function Admin() {
   const [submissions, setSubmissions] = useState(null);
   const [claims, setClaims] = useState(null);
   const [photos, setPhotos] = useState(null);
+  const [premiumShops, setPremiumShops] = useState(null);
   const [error, setError] = useState('');
   const [busyId, setBusyId] = useState(null);
 
@@ -27,6 +28,9 @@ export default function Admin() {
       .catch((err) => setError(err.message));
     api.listAllPhotos()
       .then(({ photos }) => setPhotos(photos))
+      .catch((err) => setError(err.message));
+    api.listPremiumShops()
+      .then(({ shops }) => setPremiumShops(shops))
       .catch((err) => setError(err.message));
   };
 
@@ -84,6 +88,19 @@ export default function Admin() {
       else await api.rejectPhoto(id);
       const reviewedAt = new Date().toISOString();
       setPhotos((ps) => ps.map((p) => (p.id === id ? { ...p, moderationStatus: action === 'approve' ? 'approved' : 'rejected', reviewedAt } : p)));
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setBusyId(null);
+    }
+  };
+
+  const actOnPremium = async (slug, nextValue) => {
+    setBusyId(slug);
+    setError('');
+    try {
+      await api.toggleShopPremium(slug, nextValue);
+      setPremiumShops((shops) => shops.map((s) => (s.slug === slug ? { ...s, isPremium: nextValue } : s)));
     } catch (err) {
       setError(err.message);
     } finally {
@@ -291,6 +308,36 @@ export default function Admin() {
             </>
           )}
         </>
+      )}
+
+      <h1 className="font-display text-3xl font-semibold mt-16">Café Premium</h1>
+      <p className="text-[var(--color-muted-fg)] mt-1">Toggle Café Premium on for a claimed shop to unlock analytics and stock status.</p>
+
+      {premiumShops === null ? (
+        <p className="text-sm text-[var(--color-muted-fg)] mt-8">Loading…</p>
+      ) : premiumShops.length === 0 ? (
+        <p className="text-sm text-[var(--color-muted-fg)] mt-8">No claimed shops yet.</p>
+      ) : (
+        <ul className="flex flex-col gap-2 mt-8">
+          {premiumShops.map((s) => (
+            <li key={s.slug} className="flex items-center justify-between text-sm py-2 border-b border-[var(--color-border)]">
+              <span>
+                {s.name} <span className="text-[var(--color-muted-fg)]">· {s.city} · {s.owner?.name} ({s.owner?.email})</span>
+              </span>
+              <button
+                disabled={busyId === s.slug}
+                onClick={() => actOnPremium(s.slug, !s.isPremium)}
+                className={`px-3 py-1.5 rounded-lg text-sm font-semibold border disabled:opacity-60 ${
+                  s.isPremium
+                    ? 'bg-[var(--color-primary)] text-[var(--color-primary-fg)] border-[var(--color-primary)]'
+                    : 'border-[var(--color-border)]'
+                }`}
+              >
+                {s.isPremium ? 'Premium' : 'Free'}
+              </button>
+            </li>
+          ))}
+        </ul>
       )}
     </div>
   );

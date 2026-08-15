@@ -167,6 +167,7 @@ function EditShopForm({ shop, onSaved }) {
   const [website, setWebsite] = useState(shop.website ?? '');
   const [instagram, setInstagram] = useState(shop.instagram ?? '');
   const [hours, setHours] = useState(shop.hours ?? {});
+  const [beansInStock, setBeansInStock] = useState(shop.beansInStock ?? true);
   const [error, setError] = useState('');
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -181,7 +182,9 @@ function EditShopForm({ shop, onSaved }) {
     setSaving(true);
     try {
       const tagList = tags.split(',').map((t) => t.trim()).filter(Boolean);
-      const shopRes = await api.updateShop(shop.slug, { description, tags: tagList, website, instagram, hours });
+      const payload = { description, tags: tagList, website, instagram, hours };
+      if (shop.isPremium) payload.beansInStock = beansInStock;
+      const shopRes = await api.updateShop(shop.slug, payload);
       onSaved(shopRes.shop);
       setSaved(true);
     } catch (err) {
@@ -211,6 +214,25 @@ function EditShopForm({ shop, onSaved }) {
     <div className="max-w-lg mx-auto px-5 sm:px-8 py-12">
       <h1 className="font-display text-3xl sm:text-4xl font-semibold">{shop.name}</h1>
       <p className="text-[var(--color-muted-fg)] mt-1">{shop.address}, {shop.city}</p>
+      <p className="text-xs font-semibold mt-2">
+        {shop.isPremium ? (
+          <span className="text-[var(--color-accent)]">☕ Café Premium</span>
+        ) : (
+          <span className="text-[var(--color-muted-fg)]">Free plan</span>
+        )}
+      </p>
+
+      {shop.isPremium ? (
+        <PremiumPanel shop={shop} />
+      ) : (
+        <div className="mt-6 bg-[var(--color-card)] border border-[var(--color-border)] rounded-xl p-4">
+          <p className="text-sm font-semibold mb-1">Café Premium</p>
+          <p className="text-sm text-[var(--color-muted-fg)]">
+            Unlock view/click analytics and a beans in-stock/out-of-stock status for your listing. Get in
+            touch with us to enable it for your café.
+          </p>
+        </div>
+      )}
 
       <div className="mt-6">
         <p className="text-sm font-semibold mb-2">Photos</p>
@@ -247,6 +269,32 @@ function EditShopForm({ shop, onSaved }) {
           <input value={instagram} onChange={(e) => setInstagram(e.target.value)} placeholder="https://instagram.com/…" className={inputClass} />
         </label>
 
+        {shop.isPremium && (
+          <label className="flex flex-col gap-1.5">
+            <span className="text-sm font-medium">Beans in stock</span>
+            <div className="grid grid-cols-2 gap-2">
+              <button
+                type="button"
+                onClick={() => setBeansInStock(true)}
+                className={`px-4 py-2.5 rounded-xl text-sm font-semibold border transition-colors ${
+                  beansInStock ? 'bg-[var(--color-primary)] text-[var(--color-primary-fg)] border-[var(--color-primary)]' : 'border-[var(--color-border)] hover:bg-[var(--color-card)]'
+                }`}
+              >
+                In stock
+              </button>
+              <button
+                type="button"
+                onClick={() => setBeansInStock(false)}
+                className={`px-4 py-2.5 rounded-xl text-sm font-semibold border transition-colors ${
+                  !beansInStock ? 'bg-[var(--color-primary)] text-[var(--color-primary-fg)] border-[var(--color-primary)]' : 'border-[var(--color-border)] hover:bg-[var(--color-card)]'
+                }`}
+              >
+                Out of stock
+              </button>
+            </div>
+          </label>
+        )}
+
         <div>
           <p className="text-sm font-medium mb-2">Opening hours</p>
           <div className="flex flex-col gap-2">
@@ -270,6 +318,50 @@ function EditShopForm({ shop, onSaved }) {
           {saving ? 'Saving…' : 'Save changes'}
         </button>
       </form>
+    </div>
+  );
+}
+
+function PremiumPanel({ shop }) {
+  const [stats, setStats] = useState(null);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    api.shopAnalytics(shop.slug)
+      .then(setStats)
+      .catch((err) => setError(err.message));
+  }, [shop.slug]);
+
+  const recentDays = stats?.daily.slice(-7) ?? [];
+
+  return (
+    <div className="mt-6 bg-[var(--color-card)] border border-[var(--color-border)] rounded-xl p-4">
+      <p className="text-sm font-semibold mb-3">Analytics (last 30 days)</p>
+      {error && <p className="text-sm text-red-600">{error}</p>}
+      {!stats && !error && <p className="text-sm text-[var(--color-muted-fg)]">Loading…</p>}
+      {stats && (
+        <>
+          <div className="grid grid-cols-2 gap-3 mb-4">
+            <div>
+              <p className="font-display text-2xl font-semibold">{stats.totals.views}</p>
+              <p className="text-xs text-[var(--color-muted-fg)]">Listing views</p>
+            </div>
+            <div>
+              <p className="font-display text-2xl font-semibold">{stats.totals.clicks}</p>
+              <p className="text-xs text-[var(--color-muted-fg)]">Website/Instagram/directions clicks</p>
+            </div>
+          </div>
+          <p className="text-xs font-medium text-[var(--color-muted-fg)] mb-1.5">Last 7 days</p>
+          <dl className="text-sm divide-y divide-[var(--color-border)]">
+            {recentDays.map((d) => (
+              <div key={d.date} className="flex justify-between py-1">
+                <dt className="text-[var(--color-muted-fg)]">{d.date}</dt>
+                <dd>{d.views} views · {d.clicks} clicks</dd>
+              </div>
+            ))}
+          </dl>
+        </>
+      )}
     </div>
   );
 }
