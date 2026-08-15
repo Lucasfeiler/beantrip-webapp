@@ -14,17 +14,26 @@ export default function MapPage() {
 
     let cancelled = false;
 
-    loadGoogleMaps()
+    const getUserLocation = () => new Promise((resolve) => {
+      if (!navigator.geolocation) return resolve(null);
+      navigator.geolocation.getCurrentPosition(
+        (pos) => resolve({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
+        () => resolve(null),
+        { enableHighAccuracy: true, timeout: 8000 }
+      );
+    });
+
+    Promise.all([loadGoogleMaps(), getUserLocation()])
       // Give the browser one tick to finish applying layout/CSS before Maps
       // measures the container — without this it can size itself against a
       // 0×0 box and never recover, even after the container gets its real size.
-      .then((maps) => new Promise((resolve) => setTimeout(() => resolve(maps), 0)))
-      .then((maps) => {
+      .then(([maps, userLocation]) => new Promise((resolve) => setTimeout(() => resolve([maps, userLocation]), 0)))
+      .then(([maps, userLocation]) => {
         if (cancelled || !mapRef.current) return;
 
         const map = new maps.Map(mapRef.current, {
-          center: { lat: 48, lng: 12 },
-          zoom: 5,
+          center: userLocation ?? { lat: 48, lng: 12 },
+          zoom: userLocation ? 13 : 5,
         });
 
         const bounds = new maps.LatLngBounds();
@@ -53,7 +62,25 @@ export default function MapPage() {
         }
 
         maps.event.trigger(map, 'resize');
-        map.fitBounds(bounds);
+
+        if (userLocation) {
+          new maps.Marker({
+            map,
+            position: userLocation,
+            title: 'You are here',
+            icon: {
+              path: maps.SymbolPath.CIRCLE,
+              scale: 8,
+              fillColor: '#4285F4',
+              fillOpacity: 1,
+              strokeColor: '#ffffff',
+              strokeWeight: 2,
+            },
+          });
+        } else {
+          map.fitBounds(bounds);
+        }
+
         setStatus('ready');
       })
       .catch((err) => {
