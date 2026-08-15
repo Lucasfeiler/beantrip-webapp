@@ -1,35 +1,96 @@
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { NavLink, Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import NotificationPrompt from './NotificationPrompt';
 
 const ONBOARDING_EXEMPT_PATHS = ['/onboarding', '/reset-password', '/verify-email'];
 
-const navLinks = [
+const primaryLinks = [
   { to: '/', label: 'Home', end: true },
   { to: '/explore', label: 'Explore' },
   { to: '/near-me', label: 'Near Me' },
   { to: '/map', label: 'Map' },
   { to: '/favorites', label: 'Favorites' },
+  { to: '/add-shop', label: 'Add' },
+];
+
+const moreLinks = [
   { to: '/passport', label: 'Passport' },
   { to: '/news', label: 'News' },
   { to: '/events', label: 'Events' },
   { to: '/gear', label: 'Gear' },
-  { to: '/add-shop', label: 'Add' },
 ];
 
-function getNavLinks(user) {
-  const links = [...navLinks];
+function getPrimaryLinks(user) {
+  const links = [...primaryLinks];
   if (user?.accountType === 'business') links.push({ to: '/my-shop', label: 'My Shop' });
   if (user?.isAdmin) links.push({ to: '/admin', label: 'Admin' });
   return links;
+}
+
+function MoreMenu({ pillClassName }) {
+  const [open, setOpen] = useState(false);
+  const [menuStyle, setMenuStyle] = useState(null);
+  const btnRef = useRef(null);
+  const menuRef = useRef(null);
+  const location = useLocation();
+  const active = moreLinks.some((l) => l.to === location.pathname);
+
+  useEffect(() => {
+    function handleClick(e) {
+      if (btnRef.current?.contains(e.target)) return;
+      if (menuRef.current && !menuRef.current.contains(e.target)) setOpen(false);
+    }
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, []);
+
+  useEffect(() => setOpen(false), [location.pathname]);
+
+  const toggleOpen = () => {
+    if (!open && btnRef.current) {
+      const rect = btnRef.current.getBoundingClientRect();
+      setMenuStyle({ position: 'fixed', top: rect.bottom + 4, right: window.innerWidth - rect.right });
+    }
+    setOpen((o) => !o);
+  };
+
+  return (
+    <div className="relative shrink-0">
+      <button
+        ref={btnRef}
+        type="button"
+        onClick={toggleOpen}
+        className={`${pillClassName} ${
+          active ? 'bg-[var(--color-primary)] text-[var(--color-primary-fg)]' : 'text-[var(--color-muted-fg)] hover:bg-[var(--color-card)]'
+        }`}
+      >
+        More ▾
+      </button>
+      {open && (
+        <div ref={menuRef} style={menuStyle} className="w-40 bg-[var(--color-card)] border border-[var(--color-border)] rounded-xl shadow-lg py-1 z-50">
+          {moreLinks.map((l) => (
+            <NavLink
+              key={l.to}
+              to={l.to}
+              className={({ isActive }) =>
+                `block px-4 py-2 text-sm transition-colors ${isActive ? 'text-[var(--color-accent)] font-semibold' : 'text-[var(--color-fg)] hover:bg-[var(--color-bg)]'}`
+              }
+            >
+              {l.label}
+            </NavLink>
+          ))}
+        </div>
+      )}
+    </div>
+  );
 }
 
 export default function Layout({ children }) {
   const { user, loading, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  const links = getNavLinks(user);
+  const links = getPrimaryLinks(user);
 
   useEffect(() => {
     if (loading || !user || user.onboardingSeen) return;
@@ -61,6 +122,7 @@ export default function Layout({ children }) {
                 {l.label}
               </NavLink>
             ))}
+            <MoreMenu pillClassName="px-3 py-2 rounded-full text-sm font-medium transition-colors" />
           </nav>
           {user ? (
             <div className="flex items-center gap-2 shrink-0">
@@ -103,6 +165,7 @@ export default function Layout({ children }) {
               {l.label}
             </NavLink>
           ))}
+          <MoreMenu pillClassName="px-3 py-1.5 rounded-full whitespace-nowrap text-sm font-medium transition-colors" />
         </nav>
       </header>
 
