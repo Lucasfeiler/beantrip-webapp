@@ -191,7 +191,7 @@ model Article {
   title       String
   coverImage  String?
   excerpt     String?
-  externalUrl String
+  externalUrl String?
   published   Boolean   @default(false)
   createdAt   DateTime  @default(now())
   publishedAt DateTime?
