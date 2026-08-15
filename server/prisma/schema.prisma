@@ -242,3 +242,13 @@ model GearItem {
   createdAt     DateTime  @default(now())
   publishedAt   DateTime?
 }
+
+model FeedSource {
+  id            Int       @id @default(autoincrement())
+  url           String    @unique
+  name          String?
+  active        Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+  lastFetchedAt DateTime?
+  lastError     String?
+}

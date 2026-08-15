@@ -121,6 +121,12 @@ export const api = {
   updateGearItem: (id, data) => request(`/api/gear/${id}`, { method: 'PATCH', auth: true, body: data }),
   deleteGearItem: (id) => request(`/api/gear/${id}`, { method: 'DELETE', auth: true }),
 
+  listFeedSources: () => request('/api/feed-sources', { auth: true }),
+  createFeedSource: (data) => request('/api/feed-sources', { method: 'POST', auth: true, body: data }),
+  updateFeedSource: (id, data) => request(`/api/feed-sources/${id}`, { method: 'PATCH', auth: true, body: data }),
+  deleteFeedSource: (id) => request(`/api/feed-sources/${id}`, { method: 'DELETE', auth: true }),
+  fetchFeedsNow: () => request('/api/feed-sources/fetch-now', { method: 'POST', auth: true }),
+
   submitShop: (payload) => request('/api/submissions', { method: 'POST', auth: true, body: payload }),
   listSubmissions: () => request('/api/submissions', { auth: true }),
   approveSubmission: (id) => request(`/api/submissions/${id}/approve`, { method: 'PATCH', auth: true }),

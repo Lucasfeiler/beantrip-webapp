@@ -16,6 +16,8 @@ import { usersRouter } from './routes/users.js';
 import { flagsRouter } from './routes/flags.js';
 import { eventsRouter } from './routes/events.js';
 import { gearRouter } from './routes/gear.js';
+import { feedSourcesRouter } from './routes/feedSources.js';
+import { startScheduler } from './scheduler.js';
 
 const app = express();
 app.set('trust proxy', 1);
@@ -47,6 +49,7 @@ app.use('/api/users', usersRouter);
 app.use('/api/flags', flagsRouter);
 app.use('/api/events', eventsRouter);
 app.use('/api/gear', gearRouter);
+app.use('/api/feed-sources', feedSourcesRouter);
 
 app.use((err, _req, res, _next) => {
   console.error(err);
@@ -54,4 +57,7 @@ app.use((err, _req, res, _next) => {
 });
 
 const port = process.env.PORT || 4000;
-app.listen(port, () => console.log(`beantrip API listening on http://localhost:${port}`));
+app.listen(port, () => {
+  console.log(`beantrip API listening on http://localhost:${port}`);
+  startScheduler();
+});

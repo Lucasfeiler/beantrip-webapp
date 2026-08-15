@@ -16,6 +16,11 @@ export default function Admin() {
   const [claims, setClaims] = useState(null);
   const [photos, setPhotos] = useState(null);
   const [premiumShops, setPremiumShops] = useState(null);
+  const [feedSources, setFeedSources] = useState(null);
+  const [newFeedUrl, setNewFeedUrl] = useState('');
+  const [newFeedName, setNewFeedName] = useState('');
+  const [fetchingFeeds, setFetchingFeeds] = useState(false);
+  const [fetchResult, setFetchResult] = useState('');
   const [articles, setArticles] = useState(null);
   const [editingArticle, setEditingArticle] = useState(null);
   const [premiumUsers, setPremiumUsers] = useState(null);
@@ -42,6 +47,9 @@ export default function Admin() {
       .catch((err) => setError(err.message));
     api.listPremiumShops()
       .then(({ shops }) => setPremiumShops(shops))
+      .catch((err) => setError(err.message));
+    api.listFeedSources()
+      .then(({ sources }) => setFeedSources(sources))
       .catch((err) => setError(err.message));
     api.listAdminArticles()
       .then(({ articles }) => setArticles(articles))
@@ -128,6 +136,61 @@ export default function Admin() {
       setError(err.message);
     } finally {
       setBusyId(null);
+    }
+  };
+
+  const handleAddFeedSource = async (e) => {
+    e.preventDefault();
+    setError('');
+    try {
+      const { source } = await api.createFeedSource({ url: newFeedUrl, name: newFeedName });
+      setFeedSources((sources) => [source, ...(sources ?? [])]);
+      setNewFeedUrl('');
+      setNewFeedName('');
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  const toggleFeedSourceActive = async (source) => {
+    setBusyId(source.id);
+    setError('');
+    try {
+      const { source: updated } = await api.updateFeedSource(source.id, { active: !source.active });
+      setFeedSources((sources) => sources.map((s) => (s.id === source.id ? updated : s)));
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setBusyId(null);
+    }
+  };
+
+  const deleteFeedSource = async (id) => {
+    setBusyId(id);
+    setError('');
+    try {
+      await api.deleteFeedSource(id);
+      setFeedSources((sources) => sources.filter((s) => s.id !== id));
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setBusyId(null);
+    }
+  };
+
+  const handleFetchFeeds = async () => {
+    setFetchingFeeds(true);
+    setFetchResult('');
+    setError('');
+    try {
+      const { sourcesChecked, created, skipped } = await api.fetchFeedsNow();
+      setFetchResult(`Checked ${sourcesChecked} feed${sourcesChecked === 1 ? '' : 's'}, pulled ${created} new article${created === 1 ? '' : 's'} (${skipped} already seen).`);
+      api.listAdminArticles().then(({ articles }) => setArticles(articles)).catch(() => {});
+      api.listFeedSources().then(({ sources }) => setFeedSources(sources)).catch(() => {});
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setFetchingFeeds(false);
     }
   };
 
@@ -503,6 +566,79 @@ export default function Admin() {
               >
                 {s.isPremium ? 'Premium' : 'Free'}
               </button>
+            </li>
+          ))}
+        </ul>
+      )}
+
+      <h1 className="font-display text-3xl font-semibold mt-16">News Sources</h1>
+      <p className="text-[var(--color-muted-fg)] mt-1">RSS feeds are checked automatically once a day, and pulled articles land below as drafts for you to review and publish.</p>
+
+      <form onSubmit={handleAddFeedSource} className="flex flex-wrap gap-2 mt-6">
+        <input
+          required
+          type="url"
+          value={newFeedUrl}
+          onChange={(e) => setNewFeedUrl(e.target.value)}
+          placeholder="Feed URL (https://…/feed)"
+          className="flex-1 min-w-[200px] px-4 py-2.5 rounded-xl border border-[var(--color-border)] bg-[var(--color-card)] text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+        />
+        <input
+          value={newFeedName}
+          onChange={(e) => setNewFeedName(e.target.value)}
+          placeholder="Name (optional)"
+          className="w-40 px-4 py-2.5 rounded-xl border border-[var(--color-border)] bg-[var(--color-card)] text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+        />
+        <button className="px-5 py-2.5 rounded-xl bg-[var(--color-primary)] text-[var(--color-primary-fg)] font-semibold text-sm">
+          Add
+        </button>
+      </form>
+
+      <div className="mt-4 flex items-center gap-3">
+        <button
+          type="button"
+          disabled={fetchingFeeds}
+          onClick={handleFetchFeeds}
+          className="px-4 py-2 rounded-xl border border-[var(--color-border)] font-semibold text-sm disabled:opacity-60"
+        >
+          {fetchingFeeds ? 'Fetching…' : 'Fetch new articles now'}
+        </button>
+        {fetchResult && <p className="text-sm text-[var(--color-muted-fg)]">{fetchResult}</p>}
+      </div>
+
+      {feedSources === null ? (
+        <p className="text-sm text-[var(--color-muted-fg)] mt-6">Loading…</p>
+      ) : feedSources.length === 0 ? (
+        <p className="text-sm text-[var(--color-muted-fg)] mt-6">No feed sources yet — add one above.</p>
+      ) : (
+        <ul className="flex flex-col gap-2 mt-6">
+          {feedSources.map((s) => (
+            <li key={s.id} className="flex items-center justify-between text-sm py-2 border-b border-[var(--color-border)] gap-3">
+              <span>
+                {s.name || s.url} <span className="text-[var(--color-muted-fg)]">· {s.name ? s.url : ''}</span>
+                {s.lastFetchedAt && <span className="block text-xs text-[var(--color-muted-fg)]">Last checked {formatReviewedAt(s.lastFetchedAt)}</span>}
+                {s.lastError && <span className="block text-xs text-red-500">{s.lastError}</span>}
+              </span>
+              <div className="flex gap-2 shrink-0">
+                <button
+                  disabled={busyId === s.id}
+                  onClick={() => toggleFeedSourceActive(s)}
+                  className={`px-3 py-1.5 rounded-lg text-sm font-semibold border disabled:opacity-60 ${
+                    s.active
+                      ? 'bg-[var(--color-primary)] text-[var(--color-primary-fg)] border-[var(--color-primary)]'
+                      : 'border-[var(--color-border)]'
+                  }`}
+                >
+                  {s.active ? 'Active' : 'Inactive'}
+                </button>
+                <button
+                  disabled={busyId === s.id}
+                  onClick={() => deleteFeedSource(s.id)}
+                  className="px-3 py-1.5 rounded-lg text-sm font-semibold border border-[var(--color-border)] disabled:opacity-60"
+                >
+                  Delete
+                </button>
+              </div>
             </li>
           ))}
         </ul>

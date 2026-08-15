@@ -4,7 +4,7 @@ import { requireAuth, requireAdmin, optionalAuth } from '../middleware/auth.js';
 
 export const articlesRouter = Router();
 
-function slugify(title) {
+export function slugify(title) {
   return title
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')
