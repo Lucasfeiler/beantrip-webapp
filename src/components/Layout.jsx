@@ -50,7 +50,9 @@ function MoreMenu({ pillClassName }) {
   const toggleOpen = () => {
     if (!open && btnRef.current) {
       const rect = btnRef.current.getBoundingClientRect();
-      setMenuStyle({ position: 'fixed', top: rect.bottom + 4, right: window.innerWidth - rect.right });
+      const menuWidth = 160;
+      const left = Math.max(8, Math.min(rect.right - menuWidth, window.innerWidth - menuWidth - 8));
+      setMenuStyle({ position: 'fixed', top: rect.bottom + 4, left });
     }
     setOpen((o) => !o);
   };
