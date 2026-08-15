@@ -1,13 +1,62 @@
-import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { useShops } from '../context/ShopsContext';
+import { useAuth } from '../context/AuthContext';
+import { api } from '../lib/api';
 import ShopCard from '../components/ShopCard';
+
+function personalizedScore(shop, user) {
+  if (!user) return 0;
+  let score = 0;
+  if (user.favoriteRoast && shop.tags?.includes(user.favoriteRoast)) score += 1;
+  if (user.favoriteBrewMethod && shop.tags?.includes(user.favoriteBrewMethod)) score += 1;
+  return score;
+}
+
+function topTags(shopList, limit = 2) {
+  const freq = {};
+  shopList.forEach((s) => (s.tags ?? []).forEach((t) => { freq[t] = (freq[t] ?? 0) + 1; }));
+  return Object.entries(freq).sort((a, b) => b[1] - a[1]).slice(0, limit).map(([t]) => t);
+}
 
 export default function Home() {
   const { shops, cities, loading } = useShops();
-  const featured = shops.filter((s) => !s.placeholder).slice(0, 6);
+  const { user, loading: authLoading } = useAuth();
+  const navigate = useNavigate();
+  const [visitedShops, setVisitedShops] = useState([]);
+
+  useEffect(() => {
+    if (authLoading || !user) return;
+    if (user.accountType === 'business' && user.onboardingSeen) {
+      navigate('/my-shop', { replace: true });
+    }
+  }, [authLoading, user, navigate]);
+
+  useEffect(() => {
+    if (!user || user.accountType === 'business') {
+      setVisitedShops([]);
+      return;
+    }
+    api.listVisits().then(({ shops }) => setVisitedShops(shops)).catch(() => setVisitedShops([]));
+  }, [user]);
+
   const cityCount = (city) => shops.filter((s) => s.city === city).length;
 
-  if (loading) {
+  const personalized = !!(user?.favoriteRoast || user?.favoriteBrewMethod);
+  const featured = shops
+    .filter((s) => !s.placeholder)
+    .map((s) => ({ shop: s, score: personalizedScore(s, user) }))
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 6)
+    .map((entry) => entry.shop);
+
+  const visitedIds = new Set(visitedShops.map((s) => s.id));
+  const recommendedTags = topTags(visitedShops);
+  const recommended = recommendedTags.length === 0 ? [] : shops
+    .filter((s) => !s.placeholder && !visitedIds.has(s.id) && s.tags?.some((t) => recommendedTags.includes(t)))
+    .slice(0, 6);
+
+  if (loading || (user?.accountType === 'business' && user.onboardingSeen)) {
     return <div className="max-w-6xl mx-auto px-5 sm:px-8 py-20 text-center text-[var(--color-muted-fg)]">Loading shops…</div>;
   }
 
@@ -71,8 +120,8 @@ export default function Home() {
       <section className="max-w-6xl mx-auto px-5 sm:px-8 pb-16">
         <div className="flex items-end justify-between mb-6">
           <div>
-            <h2 className="font-display text-2xl font-semibold mb-1">Featured Shops</h2>
-            <p className="text-sm text-[var(--color-muted-fg)]">Top-rated specialty coffee.</p>
+            <h2 className="font-display text-2xl font-semibold mb-1">{personalized ? 'Picked for You' : 'Featured Shops'}</h2>
+            <p className="text-sm text-[var(--color-muted-fg)]">{personalized ? 'Matched to your taste.' : 'Top-rated specialty coffee.'}</p>
           </div>
           <Link to="/explore" className="text-sm font-semibold text-[var(--color-accent)] hover:underline shrink-0">
             View all
@@ -84,6 +133,18 @@ export default function Home() {
           ))}
         </div>
       </section>
+
+      {recommended.length > 0 && (
+        <section className="max-w-6xl mx-auto px-5 sm:px-8 pb-16">
+          <h2 className="font-display text-2xl font-semibold mb-1">More Like What You've Tried</h2>
+          <p className="text-sm text-[var(--color-muted-fg)] mb-6">Based on shops you've visited.</p>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {recommended.map((shop) => (
+              <ShopCard key={shop.id} shop={shop} />
+            ))}
+          </div>
+        </section>
+      )}
     </>
   );
 }
