@@ -3,6 +3,10 @@ import { useFavorites } from '../context/FavoritesContext';
 import { useAuth } from '../context/AuthContext';
 import PhotoGallery from './PhotoGallery';
 
+export function isTopVoted(shop) {
+  return shop.rating >= 4.5 && shop.reviewCount >= 3;
+}
+
 function beanGlyph(seed) {
   // deterministic subtle rotation/hue per shop for the placeholder art
   let h = 0;
@@ -85,6 +89,11 @@ export default function ShopCard({ shop }) {
       <Link to={`/shop/${shop.slug}`} className="block p-4">
         <div className="flex items-start justify-between gap-2">
           <h3 className="font-display font-semibold text-base leading-snug">{shop.name}</h3>
+          {isTopVoted(shop) && (
+            <span className="shrink-0 text-[10px] font-semibold uppercase tracking-wide bg-[var(--color-primary)] text-[var(--color-primary-fg)] px-2 py-1 rounded-full">
+              ⭐ Top Voted
+            </span>
+          )}
         </div>
         <p className="text-xs text-[var(--color-muted-fg)] mt-1">
           {shop.rating > 0 ? `★ ${shop.rating.toFixed(1)}` : '—'} ({shop.reviewCount} reviews)

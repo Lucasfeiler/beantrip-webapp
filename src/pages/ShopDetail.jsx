@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { api } from '../lib/api';
 import PhotoGallery from '../components/PhotoGallery';
+import { isTopVoted } from '../components/ShopCard';
 import { useFavorites } from '../context/FavoritesContext';
 import { useVisits } from '../context/VisitsContext';
 import { useAuth } from '../context/AuthContext';
@@ -142,7 +143,14 @@ export default function ShopDetail() {
       <PhotoGallery shop={shop} className="w-full h-56 sm:h-72 rounded-2xl mt-4" />
 
       <div className="flex items-start justify-between gap-4 mt-6">
-        <h1 className="font-display text-3xl sm:text-4xl font-semibold">{shop.name}</h1>
+        <div>
+          <h1 className="font-display text-3xl sm:text-4xl font-semibold">{shop.name}</h1>
+          {isTopVoted(shop) && (
+            <span className="inline-block mt-2 text-xs font-semibold uppercase tracking-wide bg-[var(--color-primary)] text-[var(--color-primary-fg)] px-3 py-1 rounded-full">
+              ⭐ Top Voted
+            </span>
+          )}
+        </div>
         <div className="flex flex-col gap-2 shrink-0">
           <button
             onClick={handleFavoriteClick}
