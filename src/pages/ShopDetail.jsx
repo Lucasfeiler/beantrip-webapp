@@ -186,7 +186,20 @@ export default function ShopDetail() {
         </p>
       )}
 
-      <div className="flex gap-4 mt-6">
+      <div className="flex items-center gap-4 mt-6">
+        <a
+          href={
+            shop.lat && shop.lng
+              ? `https://www.google.com/maps/dir/?api=1&destination=${shop.lat},${shop.lng}`
+              : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${shop.address}, ${shop.city}`)}`
+          }
+          target="_blank"
+          rel="noreferrer"
+          onClick={trackClick('directions')}
+          className="px-5 py-2.5 rounded-xl bg-[var(--color-accent)] text-[var(--color-accent-fg)] font-semibold text-sm hover:opacity-90 transition-opacity"
+        >
+          📍 Directions
+        </a>
         {shop.website && (
           <a href={shop.website} target="_blank" rel="noreferrer" onClick={trackClick('website')} className="text-sm font-semibold text-[var(--color-accent)] hover:underline">
             Website
@@ -197,19 +210,6 @@ export default function ShopDetail() {
             Instagram
           </a>
         )}
-        <a
-          href={
-            shop.lat && shop.lng
-              ? `https://www.google.com/maps/dir/?api=1&destination=${shop.lat},${shop.lng}`
-              : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${shop.address}, ${shop.city}`)}`
-          }
-          target="_blank"
-          rel="noreferrer"
-          onClick={trackClick('directions')}
-          className="text-sm font-semibold text-[var(--color-accent)] hover:underline"
-        >
-          Directions
-        </a>
       </div>
 
       <div className="border-t border-[var(--color-border)] mt-10 pt-8">
