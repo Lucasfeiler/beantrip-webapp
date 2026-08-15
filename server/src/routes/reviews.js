@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { prisma } from '../db.js';
-import { requireAuth } from '../middleware/auth.js';
+import { requireAuth, requireShopOwner, requirePremium } from '../middleware/auth.js';
 import { writeLimiter } from '../middleware/rateLimit.js';
 
 export const reviewsRouter = Router({ mergeParams: true });
@@ -37,6 +37,8 @@ reviewsRouter.get('/', async (req, res) => {
       text: r.text,
       createdAt: r.createdAt,
       authorName: r.user.name,
+      ownerReply: r.ownerReply,
+      ownerReplyAt: r.ownerReplyAt,
     })),
   });
 });
@@ -67,4 +69,24 @@ reviewsRouter.post('/', requireAuth, writeLimiter, async (req, res) => {
 
   await recomputeShopRating(shop.id);
   res.status(201).json({ ok: true });
+});
+
+reviewsRouter.patch('/:reviewId/reply', requireAuth, requireShopOwner, requirePremium, async (req, res) => {
+  const { reply } = req.body;
+  const review = await prisma.review.findUnique({ where: { id: Number(req.params.reviewId) } });
+  if (!review || review.shopId !== req.shop.id) return res.status(404).json({ error: 'Review not found' });
+
+  const trimmed = reply?.trim() || null;
+  const updated = await prisma.review.update({
+    where: { id: review.id },
+    data: { ownerReply: trimmed, ownerReplyAt: trimmed ? new Date() : null },
+  });
+
+  res.json({
+    review: {
+      id: updated.id,
+      ownerReply: updated.ownerReply,
+      ownerReplyAt: updated.ownerReplyAt,
+    },
+  });
 });

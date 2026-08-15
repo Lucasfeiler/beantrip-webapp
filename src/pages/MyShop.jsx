@@ -385,6 +385,67 @@ function PremiumPanel({ shop }) {
           </dl>
         </>
       )}
+      <ReviewReplies shop={shop} />
+    </div>
+  );
+}
+
+function ReviewReplies({ shop }) {
+  const [reviews, setReviews] = useState(null);
+  const [error, setError] = useState('');
+  const [drafts, setDrafts] = useState({});
+  const [savingId, setSavingId] = useState(null);
+
+  useEffect(() => {
+    api.listReviews(shop.slug)
+      .then(({ reviews }) => {
+        setReviews(reviews);
+        setDrafts(Object.fromEntries(reviews.map((r) => [r.id, r.ownerReply ?? ''])));
+      })
+      .catch((err) => setError(err.message));
+  }, [shop.slug]);
+
+  const saveReply = async (reviewId) => {
+    setSavingId(reviewId);
+    setError('');
+    try {
+      const { review } = await api.replyToReview(shop.slug, reviewId, drafts[reviewId]);
+      setReviews((rs) => rs.map((r) => (r.id === reviewId ? { ...r, ownerReply: review.ownerReply } : r)));
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setSavingId(null);
+    }
+  };
+
+  return (
+    <div className="mt-6 pt-6 border-t border-[var(--color-border)]">
+      <p className="text-sm font-semibold mb-3">Reply to reviews</p>
+      {error && <p className="text-sm text-red-600 mb-2">{error}</p>}
+      {!reviews && !error && <p className="text-sm text-[var(--color-muted-fg)]">Loading…</p>}
+      {reviews?.length === 0 && <p className="text-sm text-[var(--color-muted-fg)]">No reviews yet.</p>}
+      <div className="flex flex-col gap-4">
+        {reviews?.map((r) => (
+          <div key={r.id} className="border-b border-[var(--color-border)] pb-4 last:border-0">
+            <p className="text-sm font-semibold">{r.authorName} <span className="text-[var(--color-accent)] font-normal">· {'★'.repeat(r.rating)}</span></p>
+            <p className="text-sm text-[var(--color-muted-fg)] mt-1">{r.text}</p>
+            <textarea
+              rows={2}
+              value={drafts[r.id] ?? ''}
+              onChange={(e) => setDrafts((d) => ({ ...d, [r.id]: e.target.value }))}
+              placeholder="Write a public reply…"
+              className="w-full mt-2 px-3 py-2 rounded-lg border border-[var(--color-border)] bg-[var(--color-bg)] text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+            />
+            <button
+              disabled={savingId === r.id}
+              onClick={() => saveReply(r.id)}
+              className="mt-2 px-4 py-1.5 rounded-lg bg-[var(--color-primary)] text-[var(--color-primary-fg)] font-semibold text-xs disabled:opacity-60"
+            >
+              {savingId === r.id ? 'Saving…' : 'Save reply'}
+            </button>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

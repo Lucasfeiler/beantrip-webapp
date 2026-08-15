@@ -100,6 +100,7 @@ export const api = {
 
   listReviews: (slug) => request(`/api/shops/${slug}/reviews`),
   addReview: (slug, rating, text) => request(`/api/shops/${slug}/reviews`, { method: 'POST', auth: true, body: { rating, text } }),
+  replyToReview: (slug, reviewId, reply) => request(`/api/shops/${slug}/reviews/${reviewId}/reply`, { method: 'PATCH', auth: true, body: { reply } }),
 
   submitShop: (payload) => request('/api/submissions', { method: 'POST', auth: true, body: payload }),
   listSubmissions: () => request('/api/submissions', { auth: true }),

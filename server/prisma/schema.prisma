@@ -120,14 +120,16 @@ model Favorite {
 }
 
 model Review {
-  id        Int      @id @default(autoincrement())
-  userId    Int
-  shopId    Int
-  rating    Int
-  text      String
-  createdAt DateTime @default(now())
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  shop      Shop     @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  id           Int       @id @default(autoincrement())
+  userId       Int
+  shopId       Int
+  rating       Int
+  text         String
+  ownerReply   String?
+  ownerReplyAt DateTime?
+  createdAt    DateTime  @default(now())
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  shop         Shop      @relation(fields: [shopId], references: [id], onDelete: Cascade)
 
   @@unique([userId, shopId])
 }

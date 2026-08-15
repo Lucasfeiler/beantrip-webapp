@@ -285,6 +285,12 @@ export default function ShopDetail() {
               <li key={r.id} className="border-b border-[var(--color-border)] pb-4">
                 <p className="text-sm font-semibold">{r.authorName} <span className="text-[var(--color-accent)] font-normal">· {'★'.repeat(r.rating)}</span></p>
                 <p className="text-sm text-[var(--color-muted-fg)] mt-1">{r.text}</p>
+                {r.ownerReply && (
+                  <div className="mt-3 ml-4 pl-3 border-l-2 border-[var(--color-border)]">
+                    <p className="text-xs font-semibold text-[var(--color-accent)]">Response from {shop.name}</p>
+                    <p className="text-sm text-[var(--color-muted-fg)] mt-1">{r.ownerReply}</p>
+                  </div>
+                )}
               </li>
             ))}
           </ul>
