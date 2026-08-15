@@ -5,7 +5,10 @@ import { slugify } from './routes/articles.js';
 const parser = new Parser();
 
 export async function fetchNewArticles() {
+  const allSources = await prisma.feedSource.findMany();
+  console.log('[rss] all feed sources in DB:', JSON.stringify(allSources));
   const sources = await prisma.feedSource.findMany({ where: { active: true } });
+  console.log('[rss] active-filtered sources:', JSON.stringify(sources));
 
   let created = 0;
   let skipped = 0;
