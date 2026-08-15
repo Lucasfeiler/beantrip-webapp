@@ -69,6 +69,7 @@ export const api = {
   shopAnalytics: (slug) => request(`/api/shops/${slug}/analytics`, { auth: true }),
   listPremiumShops: () => request('/api/shops/admin/premium', { auth: true }),
   toggleShopPremium: (slug, isPremium) => request(`/api/shops/${slug}/premium`, { method: 'PATCH', auth: true, body: { isPremium } }),
+  remindShopOwners: () => request('/api/shops/admin/remind-owners', { method: 'POST', auth: true }),
 
   listArticles: () => request('/api/articles'),
   listAdminArticles: () => request('/api/articles/admin', { auth: true }),

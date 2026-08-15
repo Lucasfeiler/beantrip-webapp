@@ -5,8 +5,13 @@ import { prisma } from '../db.js';
 import { requireAuth, requireAdmin, requireShopOwner, requirePremium } from '../middleware/auth.js';
 import { writeLimiter, trackingLimiter } from '../middleware/rateLimit.js';
 import { getStorageBucket } from '../firebase.js';
+import { sendOwnerReminderEmail } from '../mailer.js';
 
 export const shopsRouter = Router();
+
+function publicOrigin() {
+  return (process.env.CLIENT_ORIGIN || '').split(',')[0].trim();
+}
 
 const upload = multer({
   storage: multer.memoryStorage(),
@@ -57,6 +62,22 @@ shopsRouter.get('/admin/premium', requireAuth, requireAdmin, async (_req, res) =
     orderBy: { name: 'asc' },
   });
   res.json({ shops });
+});
+
+shopsRouter.post('/admin/remind-owners', requireAuth, requireAdmin, async (_req, res) => {
+  const shops = await prisma.shop.findMany({
+    where: { ownerId: { not: null } },
+    include: { owner: { select: { email: true } } },
+  });
+
+  const myShopUrl = `${publicOrigin()}/my-shop`;
+  const results = await Promise.allSettled(
+    shops.map((shop) => sendOwnerReminderEmail(shop.owner.email, shop.name, myShopUrl))
+  );
+  const sent = results.filter((r) => r.status === 'fulfilled').length;
+  const failed = results.length - sent;
+
+  res.json({ sent, failed, total: shops.length });
 });
 
 shopsRouter.get('/:slug', async (req, res) => {

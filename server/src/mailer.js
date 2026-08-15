@@ -31,6 +31,25 @@ export async function sendPasswordResetEmail(to, resetUrl) {
   return result;
 }
 
+export async function sendOwnerReminderEmail(to, shopName, myShopUrl) {
+  const result = await getResend().emails.send({
+    from: 'Beantrip <onboarding@resend.dev>',
+    to,
+    subject: `A quick reminder to update your Beantrip listing`,
+    html: `
+      <p>Hi there,</p>
+      <p>Just a friendly reminder to keep "${shopName}"'s listing on Beantrip up to date — hours, photos, description, and more.</p>
+      <p><a href="${myShopUrl}">Click here to manage your listing</a>.</p>
+    `,
+  });
+
+  if (result.error) {
+    throw new Error(`Resend API error: ${result.error.message || JSON.stringify(result.error)}`);
+  }
+
+  return result;
+}
+
 export async function sendVerificationEmail(to, verifyUrl) {
   const result = await getResend().emails.send({
     from: 'Beantrip <onboarding@resend.dev>',

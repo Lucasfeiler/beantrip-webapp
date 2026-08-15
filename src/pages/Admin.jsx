@@ -23,6 +23,8 @@ export default function Admin() {
   const [flags, setFlags] = useState(null);
   const [events, setEvents] = useState(null);
   const [editingEvent, setEditingEvent] = useState(null);
+  const [remindingOwners, setRemindingOwners] = useState(false);
+  const [remindResult, setRemindResult] = useState('');
   const [error, setError] = useState('');
   const [busyId, setBusyId] = useState(null);
 
@@ -147,6 +149,21 @@ export default function Admin() {
       setError(err.message);
     } finally {
       setBusyId(null);
+    }
+  };
+
+  const handleRemindOwners = async () => {
+    if (!window.confirm('Send a reminder email to every café owner? This emails everyone with a claimed shop.')) return;
+    setRemindingOwners(true);
+    setRemindResult('');
+    setError('');
+    try {
+      const { sent, failed, total } = await api.remindShopOwners();
+      setRemindResult(`Sent to ${sent} of ${total} owners${failed ? ` (${failed} failed)` : ''}.`);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setRemindingOwners(false);
     }
   };
 
@@ -421,6 +438,17 @@ export default function Admin() {
 
       <h1 className="font-display text-3xl font-semibold mt-16">Café Premium</h1>
       <p className="text-[var(--color-muted-fg)] mt-1">Toggle Café Premium on for a claimed shop to unlock analytics and stock status.</p>
+
+      <div className="mt-6 flex items-center gap-3">
+        <button
+          disabled={remindingOwners}
+          onClick={handleRemindOwners}
+          className="px-4 py-2 rounded-xl border border-[var(--color-border)] font-semibold text-sm disabled:opacity-60"
+        >
+          {remindingOwners ? 'Sending…' : 'Send reminder to all café owners'}
+        </button>
+        {remindResult && <p className="text-sm text-[var(--color-muted-fg)]">{remindResult}</p>}
+      </div>
 
       {premiumShops === null ? (
         <p className="text-sm text-[var(--color-muted-fg)] mt-8">Loading…</p>
