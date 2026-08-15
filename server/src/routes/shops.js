@@ -65,14 +65,23 @@ shopsRouter.get('/:slug', async (req, res) => {
   res.json({ shop });
 });
 
+const TASTES = ['bright', 'earthy'];
+const ORIGIN_COUNTRIES = ['ethiopia', 'colombia', 'brazil', 'kenya', 'guatemala', 'tanzania', 'jamaica', 'costa-rica', 'indonesia', 'yemen'];
+
 shopsRouter.patch('/:slug', requireAuth, requireShopOwner, writeLimiter, async (req, res) => {
-  const { description, tags, hours, website, instagram, espressoMachine, beanType, beansInStock } = req.body;
+  const { description, tags, hours, website, instagram, espressoMachine, beanType, taste, originCountry, beansInStock } = req.body;
 
   if (beansInStock !== undefined && !req.shop.isPremium) {
     return res.status(403).json({ error: 'This feature requires Café Premium' });
   }
   if (beanType !== undefined && beanType !== null && !['arabica', 'robusta'].includes(beanType)) {
     return res.status(400).json({ error: 'Invalid bean type' });
+  }
+  if (taste !== undefined && taste !== null && !TASTES.includes(taste)) {
+    return res.status(400).json({ error: 'Invalid taste value' });
+  }
+  if (originCountry !== undefined && originCountry !== null && !ORIGIN_COUNTRIES.includes(originCountry)) {
+    return res.status(400).json({ error: 'Invalid origin country' });
   }
 
   const shop = await prisma.shop.update({
@@ -85,6 +94,8 @@ shopsRouter.patch('/:slug', requireAuth, requireShopOwner, writeLimiter, async (
       ...(instagram !== undefined ? { instagram: instagram?.trim() || null } : {}),
       ...(espressoMachine !== undefined ? { espressoMachine: espressoMachine?.trim() || null } : {}),
       ...(beanType !== undefined ? { beanType } : {}),
+      ...(taste !== undefined ? { taste } : {}),
+      ...(originCountry !== undefined ? { originCountry } : {}),
       ...(beansInStock !== undefined ? { beansInStock } : {}),
     },
   });

@@ -168,6 +168,8 @@ function EditShopForm({ shop, onSaved }) {
   const [instagram, setInstagram] = useState(shop.instagram ?? '');
   const [espressoMachine, setEspressoMachine] = useState(shop.espressoMachine ?? '');
   const [beanType, setBeanType] = useState(shop.beanType ?? '');
+  const [taste, setTaste] = useState(shop.taste ?? '');
+  const [originCountry, setOriginCountry] = useState(shop.originCountry ?? '');
   const [hours, setHours] = useState(shop.hours ?? {});
   const [beansInStock, setBeansInStock] = useState(shop.beansInStock ?? true);
   const [error, setError] = useState('');
@@ -184,7 +186,7 @@ function EditShopForm({ shop, onSaved }) {
     setSaving(true);
     try {
       const tagList = tags.split(',').map((t) => t.trim()).filter(Boolean);
-      const payload = { description, tags: tagList, website, instagram, espressoMachine, beanType: beanType || null, hours };
+      const payload = { description, tags: tagList, website, instagram, espressoMachine, beanType: beanType || null, taste: taste || null, originCountry: originCountry || null, hours };
       if (shop.isPremium) payload.beansInStock = beansInStock;
       const shopRes = await api.updateShop(shop.slug, payload);
       onSaved(shopRes.shop);
@@ -290,6 +292,40 @@ function EditShopForm({ shop, onSaved }) {
               </button>
             ))}
           </div>
+        </label>
+        <label className="flex flex-col gap-1.5">
+          <span className="text-sm font-medium">Taste</span>
+          <div className="grid grid-cols-3 gap-2">
+            {[['', 'Not set'], ['bright', 'Bright / Acidic'], ['earthy', 'Earthy / Full Body']].map(([value, label]) => (
+              <button
+                key={value || 'none'}
+                type="button"
+                onClick={() => setTaste(value)}
+                className={`px-4 py-2.5 rounded-xl text-sm font-semibold border transition-colors ${
+                  taste === value ? 'bg-[var(--color-primary)] text-[var(--color-primary-fg)] border-[var(--color-primary)]' : 'border-[var(--color-border)] hover:bg-[var(--color-card)]'
+                }`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        </label>
+        <label className="flex flex-col gap-1.5">
+          <span className="text-sm font-medium">Bean origin country</span>
+          <select
+            value={originCountry}
+            onChange={(e) => setOriginCountry(e.target.value)}
+            className={inputClass}
+          >
+            <option value="">Not set</option>
+            {[
+              ['ethiopia', 'Ethiopia'], ['colombia', 'Colombia'], ['brazil', 'Brazil'], ['kenya', 'Kenya'],
+              ['guatemala', 'Guatemala'], ['tanzania', 'Tanzania'], ['jamaica', 'Jamaica'],
+              ['costa-rica', 'Costa Rica'], ['indonesia', 'Indonesia'], ['yemen', 'Yemen'],
+            ].map(([value, label]) => (
+              <option key={value} value={value}>{label}</option>
+            ))}
+          </select>
         </label>
 
         {shop.isPremium && (

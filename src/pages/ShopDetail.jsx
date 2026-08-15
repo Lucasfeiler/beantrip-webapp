@@ -7,6 +7,11 @@ import { useVisits } from '../context/VisitsContext';
 import { useAuth } from '../context/AuthContext';
 
 const dayLabels = { mon: 'Mon', tue: 'Tue', wed: 'Wed', thu: 'Thu', fri: 'Fri', sat: 'Sat', sun: 'Sun' };
+const tasteLabels = { bright: 'Bright / Acidic', earthy: 'Earthy / Full Body' };
+const countryLabels = {
+  ethiopia: 'Ethiopia', colombia: 'Colombia', brazil: 'Brazil', kenya: 'Kenya', guatemala: 'Guatemala',
+  tanzania: 'Tanzania', jamaica: 'Jamaica', 'costa-rica': 'Costa Rica', indonesia: 'Indonesia', yemen: 'Yemen',
+};
 
 export default function ShopDetail() {
   const { slug } = useParams();
@@ -178,11 +183,19 @@ export default function ShopDetail() {
         </div>
       )}
 
-      {(shop.espressoMachine || shop.beanType) && (
+      {(shop.espressoMachine || shop.beanType || shop.taste || shop.originCountry) && (
         <p className="text-sm text-[var(--color-muted-fg)] mt-4">
-          {shop.espressoMachine && <>Espresso machine: <span className="text-[var(--color-fg)]">{shop.espressoMachine}</span></>}
-          {shop.espressoMachine && shop.beanType && ' · '}
-          {shop.beanType && <>Beans: <span className="text-[var(--color-fg)] capitalize">{shop.beanType}</span></>}
+          {[
+            shop.espressoMachine && <>Espresso machine: <span className="text-[var(--color-fg)]">{shop.espressoMachine}</span></>,
+            shop.beanType && <>Beans: <span className="text-[var(--color-fg)] capitalize">{shop.beanType}</span></>,
+            shop.taste && <>Taste: <span className="text-[var(--color-fg)]">{tasteLabels[shop.taste]}</span></>,
+            shop.originCountry && <>Origin: <span className="text-[var(--color-fg)]">{countryLabels[shop.originCountry]}</span></>,
+          ].filter(Boolean).map((part, i) => (
+            <span key={i}>
+              {i > 0 && ' · '}
+              {part}
+            </span>
+          ))}
         </p>
       )}
 
