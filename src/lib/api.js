@@ -115,6 +115,12 @@ export const api = {
   updateEvent: (id, data) => request(`/api/events/${id}`, { method: 'PATCH', auth: true, body: data }),
   deleteEvent: (id) => request(`/api/events/${id}`, { method: 'DELETE', auth: true }),
 
+  listGear: () => request('/api/gear'),
+  listAdminGear: () => request('/api/gear/admin', { auth: true }),
+  createGearItem: (data) => request('/api/gear', { method: 'POST', auth: true, body: data }),
+  updateGearItem: (id, data) => request(`/api/gear/${id}`, { method: 'PATCH', auth: true, body: data }),
+  deleteGearItem: (id) => request(`/api/gear/${id}`, { method: 'DELETE', auth: true }),
+
   submitShop: (payload) => request('/api/submissions', { method: 'POST', auth: true, body: payload }),
   listSubmissions: () => request('/api/submissions', { auth: true }),
   approveSubmission: (id) => request(`/api/submissions/${id}/approve`, { method: 'PATCH', auth: true }),

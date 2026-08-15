@@ -23,6 +23,8 @@ export default function Admin() {
   const [flags, setFlags] = useState(null);
   const [events, setEvents] = useState(null);
   const [editingEvent, setEditingEvent] = useState(null);
+  const [gearItems, setGearItems] = useState(null);
+  const [editingGearItem, setEditingGearItem] = useState(null);
   const [remindingOwners, setRemindingOwners] = useState(false);
   const [remindResult, setRemindResult] = useState('');
   const [error, setError] = useState('');
@@ -49,6 +51,9 @@ export default function Admin() {
       .catch((err) => setError(err.message));
     api.listAdminEvents()
       .then(({ events }) => setEvents(events))
+      .catch((err) => setError(err.message));
+    api.listAdminGear()
+      .then(({ items }) => setGearItems(items))
       .catch((err) => setError(err.message));
   };
 
@@ -186,6 +191,32 @@ export default function Admin() {
     try {
       await api.deleteEvent(id);
       setEvents((evts) => evts.filter((e) => e.id !== id));
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setBusyId(null);
+    }
+  };
+
+  const togglePublishGearItem = async (item) => {
+    setBusyId(item.id);
+    setError('');
+    try {
+      const { item: updated } = await api.updateGearItem(item.id, { published: !item.published });
+      setGearItems((items) => items.map((i) => (i.id === item.id ? updated : i)));
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setBusyId(null);
+    }
+  };
+
+  const deleteGearItem = async (id) => {
+    setBusyId(id);
+    setError('');
+    try {
+      await api.deleteGearItem(id);
+      setGearItems((items) => items.filter((i) => i.id !== id));
     } catch (err) {
       setError(err.message);
     } finally {
@@ -589,6 +620,62 @@ export default function Admin() {
         </ul>
       )}
 
+      <h1 className="font-display text-3xl font-semibold mt-16">Gear</h1>
+      <p className="text-[var(--color-muted-fg)] mt-1">Recommended equipment and beans, with affiliate links. Free and visible to everyone.</p>
+
+      <div className="mt-8">
+        <GearForm
+          key={editingGearItem?.id ?? 'new'}
+          item={editingGearItem}
+          onSaved={(item) => {
+            setGearItems((items) => {
+              const exists = items?.some((i) => i.id === item.id);
+              return exists ? items.map((i) => (i.id === item.id ? item : i)) : [item, ...(items ?? [])];
+            });
+            setEditingGearItem(null);
+          }}
+          onCancel={() => setEditingGearItem(null)}
+        />
+      </div>
+
+      {gearItems === null ? (
+        <p className="text-sm text-[var(--color-muted-fg)] mt-8">Loading…</p>
+      ) : gearItems.length === 0 ? (
+        <p className="text-sm text-[var(--color-muted-fg)] mt-8">No gear items yet.</p>
+      ) : (
+        <ul className="flex flex-col gap-2 mt-8">
+          {gearItems.map((item) => (
+            <li key={item.id} className="flex items-center justify-between text-sm py-2 border-b border-[var(--color-border)] gap-3">
+              <span>
+                {item.title} <span className={item.published ? 'text-[var(--color-accent)] font-semibold' : 'text-[var(--color-muted-fg)]'}>· {item.published ? 'Published' : 'Draft'}</span>
+              </span>
+              <div className="flex gap-2 shrink-0">
+                <button
+                  onClick={() => setEditingGearItem(item)}
+                  className="px-3 py-1.5 rounded-lg text-sm font-semibold border border-[var(--color-border)]"
+                >
+                  Edit
+                </button>
+                <button
+                  disabled={busyId === item.id}
+                  onClick={() => togglePublishGearItem(item)}
+                  className="px-3 py-1.5 rounded-lg text-sm font-semibold border border-[var(--color-border)] disabled:opacity-60"
+                >
+                  {item.published ? 'Unpublish' : 'Publish'}
+                </button>
+                <button
+                  disabled={busyId === item.id}
+                  onClick={() => deleteGearItem(item.id)}
+                  className="px-3 py-1.5 rounded-lg text-sm font-semibold border border-[var(--color-border)] disabled:opacity-60"
+                >
+                  Delete
+                </button>
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
+
       <h1 className="font-display text-3xl font-semibold mt-16">Premium Users</h1>
       <p className="text-[var(--color-muted-fg)] mt-1">Search for a user and toggle Beantrip Premium to unlock full articles for them.</p>
 
@@ -837,6 +924,74 @@ function EventForm({ event, onSaved, onCancel }) {
           {saving ? 'Saving…' : event ? 'Save changes' : 'Create event'}
         </button>
         {event && (
+          <button type="button" onClick={onCancel} className="px-6 py-3 rounded-xl border border-[var(--color-border)] font-semibold text-sm">
+            Cancel
+          </button>
+        )}
+      </div>
+    </form>
+  );
+}
+
+function GearForm({ item, onSaved, onCancel }) {
+  const [title, setTitle] = useState(item?.title ?? '');
+  const [image, setImage] = useState(item?.image ?? '');
+  const [description, setDescription] = useState(item?.description ?? '');
+  const [affiliateUrl, setAffiliateUrl] = useState(item?.affiliateUrl ?? '');
+  const [published, setPublished] = useState(item?.published ?? false);
+  const [error, setError] = useState('');
+  const [saving, setSaving] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    setSaving(true);
+    try {
+      const payload = { title, image, description, affiliateUrl, published };
+      const { item: saved } = item
+        ? await api.updateGearItem(item.id, payload)
+        : await api.createGearItem(payload);
+      onSaved(saved);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="flex flex-col gap-4 border border-[var(--color-border)] rounded-xl p-4">
+      <p className="text-sm font-semibold">{item ? 'Edit gear item' : 'New gear item'}</p>
+      <input required value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Title" className={inputClass} />
+      <input value={image} onChange={(e) => setImage(e.target.value)} placeholder="Image URL" className={inputClass} />
+      <textarea rows={2} value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Short description" className={inputClass} />
+      <input required type="url" value={affiliateUrl} onChange={(e) => setAffiliateUrl(e.target.value)} placeholder="Affiliate link (https://…)" className={inputClass} />
+      <div className="grid grid-cols-2 gap-2">
+        <button
+          type="button"
+          onClick={() => setPublished(false)}
+          className={`px-4 py-2.5 rounded-xl text-sm font-semibold border transition-colors ${
+            !published ? 'bg-[var(--color-primary)] text-[var(--color-primary-fg)] border-[var(--color-primary)]' : 'border-[var(--color-border)] hover:bg-[var(--color-card)]'
+          }`}
+        >
+          Draft
+        </button>
+        <button
+          type="button"
+          onClick={() => setPublished(true)}
+          className={`px-4 py-2.5 rounded-xl text-sm font-semibold border transition-colors ${
+            published ? 'bg-[var(--color-primary)] text-[var(--color-primary-fg)] border-[var(--color-primary)]' : 'border-[var(--color-border)] hover:bg-[var(--color-card)]'
+          }`}
+        >
+          Published
+        </button>
+      </div>
+      {error && <p className="text-sm text-red-600">{error}</p>}
+      <div className="flex gap-2">
+        <button disabled={saving} className="px-6 py-3 rounded-xl bg-[var(--color-primary)] text-[var(--color-primary-fg)] font-semibold text-sm disabled:opacity-60">
+          {saving ? 'Saving…' : item ? 'Save changes' : 'Create item'}
+        </button>
+        {item && (
           <button type="button" onClick={onCancel} className="px-6 py-3 rounded-xl border border-[var(--color-border)] font-semibold text-sm">
             Cancel
           </button>

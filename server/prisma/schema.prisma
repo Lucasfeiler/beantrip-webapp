@@ -230,3 +230,15 @@ model Event {
   createdAt   DateTime  @default(now())
   publishedAt DateTime?
 }
+
+model GearItem {
+  id            Int       @id @default(autoincrement())
+  slug          String    @unique
+  title         String
+  image         String?
+  description   String?
+  affiliateUrl  String
+  published     Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+  publishedAt   DateTime?
+}
