@@ -35,6 +35,7 @@ model User {
   claims       ShopClaim[]
   photos       Photo[]
   submissions  Submission[]
+  reviewFlags  ReviewFlag[]
 }
 
 model Shop {
@@ -122,16 +123,17 @@ model Favorite {
 }
 
 model Review {
-  id           Int       @id @default(autoincrement())
+  id           Int          @id @default(autoincrement())
   userId       Int
   shopId       Int
   rating       Int
   text         String
   ownerReply   String?
   ownerReplyAt DateTime?
-  createdAt    DateTime  @default(now())
-  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  shop         Shop      @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  createdAt    DateTime     @default(now())
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  shop         Shop         @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  flags        ReviewFlag[]
 
   @@unique([userId, shopId])
 }
@@ -199,4 +201,18 @@ model Article {
   published   Boolean   @default(false)
   createdAt   DateTime  @default(now())
   publishedAt DateTime?
+}
+
+model ReviewFlag {
+  id         Int       @id @default(autoincrement())
+  reviewId   Int?
+  userId     Int
+  reason     String?
+  status     String    @default("pending")
+  createdAt  DateTime  @default(now())
+  reviewedAt DateTime?
+  review     Review?   @relation(fields: [reviewId], references: [id], onDelete: SetNull)
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, reviewId])
 }

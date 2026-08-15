@@ -32,6 +32,19 @@ export default function ShopDetail() {
   const [photoError, setPhotoError] = useState('');
   const [photoSubmitted, setPhotoSubmitted] = useState(false);
 
+  const [flaggedIds, setFlaggedIds] = useState(new Set());
+
+  const handleFlag = async (reviewId) => {
+    if (!user) return navigate('/auth');
+    try {
+      await api.flagReview(slug, reviewId);
+      setFlaggedIds((ids) => new Set(ids).add(reviewId));
+    } catch {
+      // already flagged — treat as flagged either way
+      setFlaggedIds((ids) => new Set(ids).add(reviewId));
+    }
+  };
+
   const loadShop = () => {
     api.getShop(slug)
       .then(({ shop }) => setShop(shop))
@@ -296,7 +309,16 @@ export default function ShopDetail() {
           <ul className="flex flex-col gap-4">
             {reviews.map((r) => (
               <li key={r.id} className="border-b border-[var(--color-border)] pb-4">
-                <p className="text-sm font-semibold">{r.authorName} <span className="text-[var(--color-accent)] font-normal">· {'★'.repeat(r.rating)}</span></p>
+                <div className="flex items-start justify-between gap-2">
+                  <p className="text-sm font-semibold">{r.authorName} <span className="text-[var(--color-accent)] font-normal">· {'★'.repeat(r.rating)}</span></p>
+                  <button
+                    onClick={() => handleFlag(r.id)}
+                    disabled={flaggedIds.has(r.id)}
+                    className="text-xs text-[var(--color-muted-fg)] hover:text-[var(--color-accent)] disabled:hover:text-[var(--color-muted-fg)] shrink-0"
+                  >
+                    {flaggedIds.has(r.id) ? 'Flagged' : 'Flag'}
+                  </button>
+                </div>
                 <p className="text-sm text-[var(--color-muted-fg)] mt-1">{r.text}</p>
                 {r.ownerReply && (
                   <div className="mt-3 ml-4 pl-3 border-l-2 border-[var(--color-border)]">

@@ -101,6 +101,11 @@ export const api = {
   listReviews: (slug) => request(`/api/shops/${slug}/reviews`),
   addReview: (slug, rating, text) => request(`/api/shops/${slug}/reviews`, { method: 'POST', auth: true, body: { rating, text } }),
   replyToReview: (slug, reviewId, reply) => request(`/api/shops/${slug}/reviews/${reviewId}/reply`, { method: 'PATCH', auth: true, body: { reply } }),
+  flagReview: (slug, reviewId, reason) => request(`/api/shops/${slug}/reviews/${reviewId}/flag`, { method: 'POST', auth: true, body: { reason } }),
+
+  listFlags: () => request('/api/flags', { auth: true }),
+  dismissFlag: (id) => request(`/api/flags/${id}/dismiss`, { method: 'PATCH', auth: true }),
+  removeFlaggedReview: (id) => request(`/api/flags/${id}/remove`, { method: 'PATCH', auth: true }),
 
   submitShop: (payload) => request('/api/submissions', { method: 'POST', auth: true, body: payload }),
   listSubmissions: () => request('/api/submissions', { auth: true }),

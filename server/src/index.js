@@ -13,6 +13,7 @@ import { claimsRouter } from './routes/claims.js';
 import { photosRouter } from './routes/photos.js';
 import { articlesRouter } from './routes/articles.js';
 import { usersRouter } from './routes/users.js';
+import { flagsRouter } from './routes/flags.js';
 
 const app = express();
 app.set('trust proxy', 1);
@@ -41,6 +42,7 @@ app.use('/api/claims', claimsRouter);
 app.use('/api', photosRouter);
 app.use('/api/articles', articlesRouter);
 app.use('/api/users', usersRouter);
+app.use('/api/flags', flagsRouter);
 
 app.use((err, _req, res, _next) => {
   console.error(err);

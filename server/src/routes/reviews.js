@@ -5,7 +5,7 @@ import { writeLimiter } from '../middleware/rateLimit.js';
 
 export const reviewsRouter = Router({ mergeParams: true });
 
-async function recomputeShopRating(shopId) {
+export async function recomputeShopRating(shopId) {
   const agg = await prisma.review.aggregate({
     where: { shopId },
     _avg: { rating: true },
@@ -89,4 +89,25 @@ reviewsRouter.patch('/:reviewId/reply', requireAuth, requireShopOwner, requirePr
       ownerReplyAt: updated.ownerReplyAt,
     },
   });
+});
+
+reviewsRouter.post('/:reviewId/flag', requireAuth, writeLimiter, async (req, res) => {
+  const shop = await prisma.shop.findUnique({ where: { slug: req.params.slug } });
+  if (!shop) return res.status(404).json({ error: 'Shop not found' });
+
+  const review = await prisma.review.findUnique({ where: { id: Number(req.params.reviewId) } });
+  if (!review || review.shopId !== shop.id) return res.status(404).json({ error: 'Review not found' });
+
+  const { reason } = req.body;
+  try {
+    await prisma.reviewFlag.create({
+      data: { reviewId: review.id, userId: req.user.sub, reason: reason?.trim() || null },
+    });
+    res.status(201).json({ ok: true });
+  } catch (e) {
+    if (e.code === 'P2002') {
+      return res.status(409).json({ error: 'You already flagged this review' });
+    }
+    throw e;
+  }
 });

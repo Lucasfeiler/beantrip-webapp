@@ -20,6 +20,7 @@ export default function Admin() {
   const [editingArticle, setEditingArticle] = useState(null);
   const [premiumUsers, setPremiumUsers] = useState(null);
   const [userQuery, setUserQuery] = useState('');
+  const [flags, setFlags] = useState(null);
   const [error, setError] = useState('');
   const [busyId, setBusyId] = useState(null);
 
@@ -38,6 +39,9 @@ export default function Admin() {
       .catch((err) => setError(err.message));
     api.listAdminArticles()
       .then(({ articles }) => setArticles(articles))
+      .catch((err) => setError(err.message));
+    api.listFlags()
+      .then(({ flags }) => setFlags(flags))
       .catch((err) => setError(err.message));
   };
 
@@ -165,12 +169,29 @@ export default function Admin() {
     }
   };
 
+  const actOnFlag = async (id, action) => {
+    setBusyId(id);
+    setError('');
+    try {
+      if (action === 'dismiss') await api.dismissFlag(id);
+      else await api.removeFlaggedReview(id);
+      const reviewedAt = new Date().toISOString();
+      setFlags((fs) => fs.map((f) => (f.id === id ? { ...f, status: action === 'dismiss' ? 'dismissed' : 'removed', reviewedAt } : f)));
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setBusyId(null);
+    }
+  };
+
   const pending = submissions?.filter((s) => s.status === 'pending') ?? [];
   const decided = submissions?.filter((s) => s.status !== 'pending') ?? [];
   const pendingClaims = claims?.filter((c) => c.status === 'pending') ?? [];
   const decidedClaims = claims?.filter((c) => c.status !== 'pending') ?? [];
   const pendingPhotos = photos?.filter((p) => p.moderationStatus === 'pending') ?? [];
   const decidedPhotos = photos?.filter((p) => p.moderationStatus !== 'pending') ?? [];
+  const pendingFlags = flags?.filter((f) => f.status === 'pending') ?? [];
+  const decidedFlags = flags?.filter((f) => f.status !== 'pending') ?? [];
 
   return (
     <div className="max-w-3xl mx-auto px-5 sm:px-8 py-10">
@@ -491,6 +512,78 @@ export default function Admin() {
             ))}
           </ul>
         )
+      )}
+
+      <h1 className="font-display text-3xl font-semibold mt-16">Flagged Reviews</h1>
+      <p className="text-[var(--color-muted-fg)] mt-1">Dismiss to keep the review, remove to delete it.</p>
+
+      {flags === null ? (
+        <p className="text-sm text-[var(--color-muted-fg)] mt-8">Loading…</p>
+      ) : (
+        <>
+          <h2 className="font-display text-lg font-semibold mt-8 mb-3">Pending ({pendingFlags.length})</h2>
+          {pendingFlags.length === 0 ? (
+            <p className="text-sm text-[var(--color-muted-fg)]">Nothing waiting on review.</p>
+          ) : (
+            <ul className="flex flex-col gap-4">
+              {pendingFlags.map((f) => (
+                <li key={f.id} className="border border-[var(--color-border)] rounded-xl p-4">
+                  <div className="flex items-start justify-between gap-4">
+                    <div>
+                      {f.review ? (
+                        <>
+                          <p className="font-semibold">{f.review.shop.name} <span className="text-[var(--color-muted-fg)] font-normal">· {f.review.shop.city}</span></p>
+                          <p className="text-sm text-[var(--color-muted-fg)]">By {f.review.user.name} · {'★'.repeat(f.review.rating)}</p>
+                          <p className="text-sm mt-2">{f.review.text}</p>
+                        </>
+                      ) : (
+                        <p className="text-sm text-[var(--color-muted-fg)] italic">Review already removed</p>
+                      )}
+                      <p className="text-sm text-[var(--color-muted-fg)] mt-2">Flagged by {f.user.name} ({f.user.email}){f.reason ? `: "${f.reason}"` : ''}</p>
+                    </div>
+                    <div className="flex gap-2 shrink-0">
+                      <button
+                        disabled={busyId === f.id}
+                        onClick={() => actOnFlag(f.id, 'dismiss')}
+                        className="px-3 py-1.5 rounded-lg text-sm font-semibold bg-[var(--color-primary)] text-[var(--color-primary-fg)] disabled:opacity-60"
+                      >
+                        Dismiss
+                      </button>
+                      {f.review && (
+                        <button
+                          disabled={busyId === f.id}
+                          onClick={() => actOnFlag(f.id, 'remove')}
+                          className="px-3 py-1.5 rounded-lg text-sm font-semibold border border-[var(--color-border)] disabled:opacity-60"
+                        >
+                          Remove review
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+
+          {decidedFlags.length > 0 && (
+            <>
+              <h2 className="font-display text-lg font-semibold mt-10 mb-3">Reviewed</h2>
+              <ul className="flex flex-col gap-2">
+                {decidedFlags.map((f) => (
+                  <li key={f.id} className="flex items-center justify-between text-sm py-2 border-b border-[var(--color-border)]">
+                    <span>{f.review ? f.review.shop.name : 'Review removed'} <span className="text-[var(--color-muted-fg)]">· flagged by {f.user.name}</span></span>
+                    <span className="text-right">
+                      <span className={f.status === 'removed' ? 'text-red-500 font-semibold' : 'text-[var(--color-muted-fg)]'}>
+                        {f.status}
+                      </span>
+                      {f.reviewedAt && <span className="block text-xs text-[var(--color-muted-fg)]">{formatReviewedAt(f.reviewedAt)}</span>}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
+        </>
       )}
     </div>
   );
