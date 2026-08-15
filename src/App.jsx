@@ -18,6 +18,8 @@ import Auth from './pages/Auth';
 import ResetPassword from './pages/ResetPassword';
 import VerifyEmail from './pages/VerifyEmail';
 import Onboarding from './pages/Onboarding';
+import News from './pages/News';
+import Article from './pages/Article';
 import { Privacy, Terms, Impressum } from './pages/StaticPages';
 
 export default function App() {
@@ -41,6 +43,8 @@ export default function App() {
                   <Route path="/my-shop" element={<MyShop />} />
                   <Route path="/auth" element={<Auth />} />
                   <Route path="/onboarding" element={<Onboarding />} />
+                  <Route path="/news" element={<News />} />
+                  <Route path="/news/:slug" element={<Article />} />
                   <Route path="/reset-password" element={<ResetPassword />} />
                   <Route path="/verify-email" element={<VerifyEmail />} />
                   <Route path="/privacy" element={<Privacy />} />

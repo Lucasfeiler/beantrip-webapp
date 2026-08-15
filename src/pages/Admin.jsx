@@ -16,6 +16,10 @@ export default function Admin() {
   const [claims, setClaims] = useState(null);
   const [photos, setPhotos] = useState(null);
   const [premiumShops, setPremiumShops] = useState(null);
+  const [articles, setArticles] = useState(null);
+  const [editingArticle, setEditingArticle] = useState(null);
+  const [premiumUsers, setPremiumUsers] = useState(null);
+  const [userQuery, setUserQuery] = useState('');
   const [error, setError] = useState('');
   const [busyId, setBusyId] = useState(null);
 
@@ -31,6 +35,9 @@ export default function Admin() {
       .catch((err) => setError(err.message));
     api.listPremiumShops()
       .then(({ shops }) => setPremiumShops(shops))
+      .catch((err) => setError(err.message));
+    api.listAdminArticles()
+      .then(({ articles }) => setArticles(articles))
       .catch((err) => setError(err.message));
   };
 
@@ -101,6 +108,56 @@ export default function Admin() {
     try {
       await api.toggleShopPremium(slug, nextValue);
       setPremiumShops((shops) => shops.map((s) => (s.slug === slug ? { ...s, isPremium: nextValue } : s)));
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setBusyId(null);
+    }
+  };
+
+  const togglePublish = async (article) => {
+    setBusyId(article.id);
+    setError('');
+    try {
+      const { article: updated } = await api.updateArticle(article.id, { published: !article.published });
+      setArticles((arts) => arts.map((a) => (a.id === article.id ? updated : a)));
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setBusyId(null);
+    }
+  };
+
+  const deleteArticle = async (id) => {
+    setBusyId(id);
+    setError('');
+    try {
+      await api.deleteArticle(id);
+      setArticles((arts) => arts.filter((a) => a.id !== id));
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setBusyId(null);
+    }
+  };
+
+  const handleSearchUsers = async (e) => {
+    e.preventDefault();
+    setError('');
+    try {
+      const { users } = await api.searchUsers(userQuery);
+      setPremiumUsers(users);
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  const actOnUserPremium = async (id, nextValue) => {
+    setBusyId(id);
+    setError('');
+    try {
+      await api.toggleUserPremium(id, nextValue);
+      setPremiumUsers((users) => users.map((u) => (u.id === id ? { ...u, isPremium: nextValue } : u)));
     } catch (err) {
       setError(err.message);
     } finally {
@@ -339,6 +396,172 @@ export default function Admin() {
           ))}
         </ul>
       )}
+
+      <h1 className="font-display text-3xl font-semibold mt-16">Articles</h1>
+      <p className="text-[var(--color-muted-fg)] mt-1">Write and publish News articles. Full articles are visible to Beantrip Premium members only.</p>
+
+      <div className="mt-8">
+        <ArticleForm
+          key={editingArticle?.id ?? 'new'}
+          article={editingArticle}
+          onSaved={(article) => {
+            setArticles((arts) => {
+              const exists = arts?.some((a) => a.id === article.id);
+              return exists ? arts.map((a) => (a.id === article.id ? article : a)) : [article, ...(arts ?? [])];
+            });
+            setEditingArticle(null);
+          }}
+          onCancel={() => setEditingArticle(null)}
+        />
+      </div>
+
+      {articles === null ? (
+        <p className="text-sm text-[var(--color-muted-fg)] mt-8">Loading…</p>
+      ) : articles.length === 0 ? (
+        <p className="text-sm text-[var(--color-muted-fg)] mt-8">No articles yet.</p>
+      ) : (
+        <ul className="flex flex-col gap-2 mt-8">
+          {articles.map((a) => (
+            <li key={a.id} className="flex items-center justify-between text-sm py-2 border-b border-[var(--color-border)] gap-3">
+              <span>
+                {a.title} <span className={a.published ? 'text-[var(--color-accent)] font-semibold' : 'text-[var(--color-muted-fg)]'}>· {a.published ? 'Published' : 'Draft'}</span>
+              </span>
+              <div className="flex gap-2 shrink-0">
+                <button
+                  onClick={() => setEditingArticle(a)}
+                  className="px-3 py-1.5 rounded-lg text-sm font-semibold border border-[var(--color-border)]"
+                >
+                  Edit
+                </button>
+                <button
+                  disabled={busyId === a.id}
+                  onClick={() => togglePublish(a)}
+                  className="px-3 py-1.5 rounded-lg text-sm font-semibold border border-[var(--color-border)] disabled:opacity-60"
+                >
+                  {a.published ? 'Unpublish' : 'Publish'}
+                </button>
+                <button
+                  disabled={busyId === a.id}
+                  onClick={() => deleteArticle(a.id)}
+                  className="px-3 py-1.5 rounded-lg text-sm font-semibold border border-[var(--color-border)] disabled:opacity-60"
+                >
+                  Delete
+                </button>
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
+
+      <h1 className="font-display text-3xl font-semibold mt-16">Premium Users</h1>
+      <p className="text-[var(--color-muted-fg)] mt-1">Search for a user and toggle Beantrip Premium to unlock full articles for them.</p>
+
+      <form onSubmit={handleSearchUsers} className="flex gap-2 mt-8">
+        <input
+          value={userQuery}
+          onChange={(e) => setUserQuery(e.target.value)}
+          placeholder="Search by name or email…"
+          className="flex-1 px-4 py-2.5 rounded-xl border border-[var(--color-border)] bg-[var(--color-card)] text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+        />
+        <button className="px-5 py-2.5 rounded-xl bg-[var(--color-primary)] text-[var(--color-primary-fg)] font-semibold text-sm">
+          Search
+        </button>
+      </form>
+
+      {premiumUsers !== null && (
+        premiumUsers.length === 0 ? (
+          <p className="text-sm text-[var(--color-muted-fg)] mt-4">No users match.</p>
+        ) : (
+          <ul className="flex flex-col gap-2 mt-4">
+            {premiumUsers.map((u) => (
+              <li key={u.id} className="flex items-center justify-between text-sm py-2 border-b border-[var(--color-border)]">
+                <span>{u.name} <span className="text-[var(--color-muted-fg)]">· {u.email}</span></span>
+                <button
+                  disabled={busyId === u.id}
+                  onClick={() => actOnUserPremium(u.id, !u.isPremium)}
+                  className={`px-3 py-1.5 rounded-lg text-sm font-semibold border disabled:opacity-60 ${
+                    u.isPremium
+                      ? 'bg-[var(--color-primary)] text-[var(--color-primary-fg)] border-[var(--color-primary)]'
+                      : 'border-[var(--color-border)]'
+                  }`}
+                >
+                  {u.isPremium ? 'Premium' : 'Free'}
+                </button>
+              </li>
+            ))}
+          </ul>
+        )
+      )}
     </div>
+  );
+}
+
+const inputClass = "w-full px-4 py-2.5 rounded-xl border border-[var(--color-border)] bg-[var(--color-card)] text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]";
+
+function ArticleForm({ article, onSaved, onCancel }) {
+  const [title, setTitle] = useState(article?.title ?? '');
+  const [coverImage, setCoverImage] = useState(article?.coverImage ?? '');
+  const [excerpt, setExcerpt] = useState(article?.excerpt ?? '');
+  const [body, setBody] = useState(article?.body ?? '');
+  const [published, setPublished] = useState(article?.published ?? false);
+  const [error, setError] = useState('');
+  const [saving, setSaving] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    setSaving(true);
+    try {
+      const payload = { title, coverImage, excerpt, body, published };
+      const { article: saved } = article
+        ? await api.updateArticle(article.id, payload)
+        : await api.createArticle(payload);
+      onSaved(saved);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="flex flex-col gap-4 border border-[var(--color-border)] rounded-xl p-4">
+      <p className="text-sm font-semibold">{article ? 'Edit article' : 'New article'}</p>
+      <input required value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Title" className={inputClass} />
+      <input value={coverImage} onChange={(e) => setCoverImage(e.target.value)} placeholder="Cover image URL" className={inputClass} />
+      <textarea rows={2} value={excerpt} onChange={(e) => setExcerpt(e.target.value)} placeholder="Short excerpt (shown in the free preview)" className={inputClass} />
+      <textarea required rows={10} value={body} onChange={(e) => setBody(e.target.value)} placeholder="Full article body (separate paragraphs with a blank line)" className={inputClass} />
+      <div className="grid grid-cols-2 gap-2">
+        <button
+          type="button"
+          onClick={() => setPublished(false)}
+          className={`px-4 py-2.5 rounded-xl text-sm font-semibold border transition-colors ${
+            !published ? 'bg-[var(--color-primary)] text-[var(--color-primary-fg)] border-[var(--color-primary)]' : 'border-[var(--color-border)] hover:bg-[var(--color-card)]'
+          }`}
+        >
+          Draft
+        </button>
+        <button
+          type="button"
+          onClick={() => setPublished(true)}
+          className={`px-4 py-2.5 rounded-xl text-sm font-semibold border transition-colors ${
+            published ? 'bg-[var(--color-primary)] text-[var(--color-primary-fg)] border-[var(--color-primary)]' : 'border-[var(--color-border)] hover:bg-[var(--color-card)]'
+          }`}
+        >
+          Published
+        </button>
+      </div>
+      {error && <p className="text-sm text-red-600">{error}</p>}
+      <div className="flex gap-2">
+        <button disabled={saving} className="px-6 py-3 rounded-xl bg-[var(--color-primary)] text-[var(--color-primary-fg)] font-semibold text-sm disabled:opacity-60">
+          {saving ? 'Saving…' : article ? 'Save changes' : 'Create article'}
+        </button>
+        {article && (
+          <button type="button" onClick={onCancel} className="px-6 py-3 rounded-xl border border-[var(--color-border)] font-semibold text-sm">
+            Cancel
+          </button>
+        )}
+      </div>
+    </form>
   );
 }

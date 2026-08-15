@@ -52,6 +52,7 @@ function publicUser(user, visitCount = 0) {
     bio: user.bio,
     avatarUrl: user.avatarUrl,
     isAdmin: user.isAdmin,
+    isPremium: user.isPremium,
     accountType: user.accountType,
     emailVerified: user.emailVerified,
     gender: user.gender,

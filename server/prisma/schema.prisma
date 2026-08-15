@@ -16,6 +16,7 @@ model User {
   bio          String?
   avatarUrl    String?
   isAdmin      Boolean    @default(false)
+  isPremium    Boolean    @default(false)
   accountType  String     @default("customer")
   emailVerified Boolean   @default(false)
   gender             String?
@@ -182,4 +183,16 @@ model Submission {
   createdAt    DateTime  @default(now())
   reviewedAt   DateTime?
   user         User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+}
+
+model Article {
+  id          Int       @id @default(autoincrement())
+  slug        String    @unique
+  title       String
+  coverImage  String?
+  excerpt     String?
+  body        String
+  published   Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  publishedAt DateTime?
 }

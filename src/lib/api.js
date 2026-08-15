@@ -70,6 +70,16 @@ export const api = {
   listPremiumShops: () => request('/api/shops/admin/premium', { auth: true }),
   toggleShopPremium: (slug, isPremium) => request(`/api/shops/${slug}/premium`, { method: 'PATCH', auth: true, body: { isPremium } }),
 
+  listArticles: () => request('/api/articles'),
+  listAdminArticles: () => request('/api/articles/admin', { auth: true }),
+  getArticle: (slug) => request(`/api/articles/${slug}`, { auth: true }),
+  createArticle: (data) => request('/api/articles', { method: 'POST', auth: true, body: data }),
+  updateArticle: (id, data) => request(`/api/articles/${id}`, { method: 'PATCH', auth: true, body: data }),
+  deleteArticle: (id) => request(`/api/articles/${id}`, { method: 'DELETE', auth: true }),
+
+  searchUsers: (query) => request(`/api/users/admin/search?query=${encodeURIComponent(query)}`, { auth: true }),
+  toggleUserPremium: (id, isPremium) => request(`/api/users/${id}/premium`, { method: 'PATCH', auth: true, body: { isPremium } }),
+
   listShopUserPhotos: (slug) => request(`/api/shops/${slug}/photos`),
   uploadShopUserPhoto: (slug, file) => uploadFile(`/api/shops/${slug}/photos`, file),
   listAllPhotos: () => request('/api/photos', { auth: true }),

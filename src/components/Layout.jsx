@@ -11,6 +11,7 @@ const navLinks = [
   { to: '/near-me', label: 'Near Me' },
   { to: '/map', label: 'Map' },
   { to: '/favorites', label: 'Favorites' },
+  { to: '/news', label: 'News' },
   { to: '/add-shop', label: 'Add' },
 ];
 

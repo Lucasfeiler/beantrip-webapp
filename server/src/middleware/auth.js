@@ -50,3 +50,9 @@ export function requirePremium(req, res, next) {
   if (!req.shop?.isPremium) return res.status(403).json({ error: 'This feature requires Café Premium' });
   next();
 }
+
+export async function requirePremiumUser(req, res, next) {
+  const user = await prisma.user.findUnique({ where: { id: req.user.sub } });
+  if (!user?.isPremium) return res.status(403).json({ error: 'This feature requires Beantrip Premium' });
+  next();
+}
