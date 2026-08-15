@@ -178,6 +178,14 @@ export default function ShopDetail() {
         </div>
       )}
 
+      {(shop.espressoMachine || shop.beanType) && (
+        <p className="text-sm text-[var(--color-muted-fg)] mt-4">
+          {shop.espressoMachine && <>Espresso machine: <span className="text-[var(--color-fg)]">{shop.espressoMachine}</span></>}
+          {shop.espressoMachine && shop.beanType && ' · '}
+          {shop.beanType && <>Beans: <span className="text-[var(--color-fg)] capitalize">{shop.beanType}</span></>}
+        </p>
+      )}
+
       <div className="flex gap-4 mt-6">
         {shop.website && (
           <a href={shop.website} target="_blank" rel="noreferrer" onClick={trackClick('website')} className="text-sm font-semibold text-[var(--color-accent)] hover:underline">

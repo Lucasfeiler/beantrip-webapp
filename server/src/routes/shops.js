@@ -66,10 +66,13 @@ shopsRouter.get('/:slug', async (req, res) => {
 });
 
 shopsRouter.patch('/:slug', requireAuth, requireShopOwner, writeLimiter, async (req, res) => {
-  const { description, tags, hours, website, instagram, beansInStock } = req.body;
+  const { description, tags, hours, website, instagram, espressoMachine, beanType, beansInStock } = req.body;
 
   if (beansInStock !== undefined && !req.shop.isPremium) {
     return res.status(403).json({ error: 'This feature requires Café Premium' });
+  }
+  if (beanType !== undefined && beanType !== null && !['arabica', 'robusta'].includes(beanType)) {
+    return res.status(400).json({ error: 'Invalid bean type' });
   }
 
   const shop = await prisma.shop.update({
@@ -80,6 +83,8 @@ shopsRouter.patch('/:slug', requireAuth, requireShopOwner, writeLimiter, async (
       ...(hours !== undefined ? { hours } : {}),
       ...(website !== undefined ? { website: website?.trim() || null } : {}),
       ...(instagram !== undefined ? { instagram: instagram?.trim() || null } : {}),
+      ...(espressoMachine !== undefined ? { espressoMachine: espressoMachine?.trim() || null } : {}),
+      ...(beanType !== undefined ? { beanType } : {}),
       ...(beansInStock !== undefined ? { beansInStock } : {}),
     },
   });

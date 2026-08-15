@@ -48,6 +48,8 @@ model Shop {
   hours        Json?
   website      String?
   instagram    String?
+  espressoMachine String?
+  beanType     String?
   image        String?
   images       Json?
   placeholder  Boolean    @default(false)

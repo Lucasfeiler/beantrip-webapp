@@ -166,6 +166,8 @@ function EditShopForm({ shop, onSaved }) {
   const [tags, setTags] = useState((shop.tags ?? []).join(', '));
   const [website, setWebsite] = useState(shop.website ?? '');
   const [instagram, setInstagram] = useState(shop.instagram ?? '');
+  const [espressoMachine, setEspressoMachine] = useState(shop.espressoMachine ?? '');
+  const [beanType, setBeanType] = useState(shop.beanType ?? '');
   const [hours, setHours] = useState(shop.hours ?? {});
   const [beansInStock, setBeansInStock] = useState(shop.beansInStock ?? true);
   const [error, setError] = useState('');
@@ -182,7 +184,7 @@ function EditShopForm({ shop, onSaved }) {
     setSaving(true);
     try {
       const tagList = tags.split(',').map((t) => t.trim()).filter(Boolean);
-      const payload = { description, tags: tagList, website, instagram, hours };
+      const payload = { description, tags: tagList, website, instagram, espressoMachine, beanType: beanType || null, hours };
       if (shop.isPremium) payload.beansInStock = beansInStock;
       const shopRes = await api.updateShop(shop.slug, payload);
       onSaved(shopRes.shop);
@@ -267,6 +269,27 @@ function EditShopForm({ shop, onSaved }) {
         <label className="flex flex-col gap-1.5">
           <span className="text-sm font-medium">Instagram</span>
           <input value={instagram} onChange={(e) => setInstagram(e.target.value)} placeholder="https://instagram.com/…" className={inputClass} />
+        </label>
+        <label className="flex flex-col gap-1.5">
+          <span className="text-sm font-medium">Espresso machine</span>
+          <input value={espressoMachine} onChange={(e) => setEspressoMachine(e.target.value)} placeholder="e.g. La Marzocco, Flair, La Pavoni…" className={inputClass} />
+        </label>
+        <label className="flex flex-col gap-1.5">
+          <span className="text-sm font-medium">Bean type</span>
+          <div className="grid grid-cols-3 gap-2">
+            {[['', 'Not set'], ['arabica', 'Arabica'], ['robusta', 'Robusta']].map(([value, label]) => (
+              <button
+                key={value || 'none'}
+                type="button"
+                onClick={() => setBeanType(value)}
+                className={`px-4 py-2.5 rounded-xl text-sm font-semibold border transition-colors ${
+                  beanType === value ? 'bg-[var(--color-primary)] text-[var(--color-primary-fg)] border-[var(--color-primary)]' : 'border-[var(--color-border)] hover:bg-[var(--color-card)]'
+                }`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
         </label>
 
         {shop.isPremium && (
