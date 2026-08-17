@@ -1,0 +1,233 @@
+{
+  "kanso-coffee-lab": {
+    "image": "/images/shops/kanso-coffee-lab.jpg",
+    "images": [
+      "/images/shops/gallery/kanso-coffee-lab-1.jpg",
+      "/images/shops/gallery/kanso-coffee-lab-2.jpg",
+      "/images/shops/gallery/kanso-coffee-lab-3.jpg",
+      "/images/shops/gallery/kanso-coffee-lab-4.jpg",
+      "/images/shops/gallery/kanso-coffee-lab-5.jpg"
+    ],
+    "hours": {
+      "mon": "08:00-20:00",
+      "tue": "08:00-20:00",
+      "wed": "08:00-20:00",
+      "thu": "08:00-20:00",
+      "fri": "08:00-20:00",
+      "sat": "08:00-20:00"
+    },
+    "website": "https://kansocoffeelab.com/"
+  },
+  "stray-coffee-roasters": {
+    "image": "/images/shops/stray-coffee-roasters.jpg",
+    "images": [
+      "/images/shops/gallery/stray-coffee-roasters-1.jpg",
+      "/images/shops/gallery/stray-coffee-roasters-2.jpg",
+      "/images/shops/gallery/stray-coffee-roasters-3.jpg",
+      "/images/shops/gallery/stray-coffee-roasters-4.jpg",
+      "/images/shops/gallery/stray-coffee-roasters-5.jpg"
+    ],
+    "hours": {
+      "sun": "10:00-16:00",
+      "mon": "08:00-16:00",
+      "tue": "08:00-16:00",
+      "wed": "08:00-16:00",
+      "thu": "08:00-16:00",
+      "fri": "08:00-16:00",
+      "sat": "10:00-16:00"
+    },
+    "website": "http://www.stray.coffee/"
+  },
+  "cafe-faber": {
+    "image": "/images/shops/cafe-faber.jpg",
+    "images": [
+      "/images/shops/gallery/cafe-faber-1.jpg",
+      "/images/shops/gallery/cafe-faber-2.jpg",
+      "/images/shops/gallery/cafe-faber-3.jpg",
+      "/images/shops/gallery/cafe-faber-4.jpg",
+      "/images/shops/gallery/cafe-faber-5.jpg"
+    ],
+    "hours": {
+      "sun": "10:00-17:00",
+      "wed": "10:00-17:00",
+      "thu": "10:00-17:00",
+      "fri": "10:00-17:00",
+      "sat": "10:00-17:00"
+    },
+    "website": "https://www.instagram.com/cafefaber_"
+  },
+  "coffee-twins": {
+    "image": "/images/shops/coffee-twins.jpg",
+    "images": [
+      "/images/shops/gallery/coffee-twins-1.jpg",
+      "/images/shops/gallery/coffee-twins-2.jpg",
+      "/images/shops/gallery/coffee-twins-3.jpg",
+      "/images/shops/gallery/coffee-twins-4.jpg",
+      "/images/shops/gallery/coffee-twins-5.jpg"
+    ],
+    "hours": {
+      "mon": "08:00-17:00",
+      "tue": "08:00-16:00",
+      "wed": "08:00-16:00",
+      "thu": "08:00-17:00",
+      "fri": "08:00-17:00",
+      "sat": "09:00-16:00"
+    },
+    "website": "https://www.coffeetwins.de/"
+  },
+  "sweet-spot-kaffee-viktualienmarkt": {
+    "image": "/images/shops/sweet-spot-kaffee-viktualienmarkt.jpg",
+    "images": [
+      "/images/shops/gallery/sweet-spot-kaffee-viktualienmarkt-1.jpg",
+      "/images/shops/gallery/sweet-spot-kaffee-viktualienmarkt-2.jpg",
+      "/images/shops/gallery/sweet-spot-kaffee-viktualienmarkt-3.jpg",
+      "/images/shops/gallery/sweet-spot-kaffee-viktualienmarkt-4.jpg",
+      "/images/shops/gallery/sweet-spot-kaffee-viktualienmarkt-5.jpg"
+    ],
+    "hours": {
+      "mon": "08:00-19:00",
+      "tue": "08:00-19:00",
+      "wed": "08:00-19:00",
+      "thu": "08:00-19:00",
+      "fri": "08:00-19:00",
+      "sat": "09:00-18:00"
+    },
+    "website": "http://sweetspotkaffee.de/"
+  },
+  "sweet-spot-kaffee-reichenbachstrasse": {
+    "image": "/images/shops/sweet-spot-kaffee-reichenbachstrasse.jpg",
+    "images": [
+      "/images/shops/gallery/sweet-spot-kaffee-reichenbachstrasse-1.jpg",
+      "/images/shops/gallery/sweet-spot-kaffee-reichenbachstrasse-2.jpg",
+      "/images/shops/gallery/sweet-spot-kaffee-reichenbachstrasse-3.jpg",
+      "/images/shops/gallery/sweet-spot-kaffee-reichenbachstrasse-4.jpg",
+      "/images/shops/gallery/sweet-spot-kaffee-reichenbachstrasse-5.jpg"
+    ],
+    "hours": {
+      "sun": "09:00-18:00",
+      "mon": "08:00-19:00",
+      "tue": "08:00-19:00",
+      "wed": "08:00-19:00",
+      "thu": "08:00-19:00",
+      "fri": "08:00-19:00",
+      "sat": "09:00-18:00"
+    },
+    "website": "https://sweetspotkaffee.de/"
+  },
+  "southbank-specialty-coffee": {
+    "image": "/images/shops/southbank-specialty-coffee.jpg",
+    "images": [
+      "/images/shops/gallery/southbank-specialty-coffee-1.jpg",
+      "/images/shops/gallery/southbank-specialty-coffee-2.jpg",
+      "/images/shops/gallery/southbank-specialty-coffee-3.jpg",
+      "/images/shops/gallery/southbank-specialty-coffee-4.jpg",
+      "/images/shops/gallery/southbank-specialty-coffee-5.jpg"
+    ],
+    "hours": {
+      "sun": "09:00-17:00",
+      "wed": "07:00-17:00",
+      "thu": "07:00-17:00",
+      "fri": "07:00-17:00",
+      "sat": "09:00-17:00"
+    },
+    "website": "https://www.instagram.com/southbank.coffee/"
+  },
+  "calima-specialty-coffee": {
+    "image": "/images/shops/calima-specialty-coffee.jpg",
+    "images": [
+      "/images/shops/gallery/calima-specialty-coffee-1.jpg",
+      "/images/shops/gallery/calima-specialty-coffee-2.jpg",
+      "/images/shops/gallery/calima-specialty-coffee-3.jpg",
+      "/images/shops/gallery/calima-specialty-coffee-4.jpg",
+      "/images/shops/gallery/calima-specialty-coffee-5.jpg"
+    ],
+    "hours": {
+      "sun": "09:00-17:00",
+      "wed": "08:00-17:00",
+      "thu": "08:00-17:00",
+      "fri": "08:00-17:00",
+      "sat": "09:00-17:00"
+    },
+    "website": "https://calimacoffee.de/"
+  },
+  "humpback-whale-specialty-coffee": {
+    "image": "/images/shops/humpback-whale-specialty-coffee.jpg",
+    "images": [
+      "/images/shops/gallery/humpback-whale-specialty-coffee-1.jpg",
+      "/images/shops/gallery/humpback-whale-specialty-coffee-2.jpg",
+      "/images/shops/gallery/humpback-whale-specialty-coffee-3.jpg",
+      "/images/shops/gallery/humpback-whale-specialty-coffee-4.jpg",
+      "/images/shops/gallery/humpback-whale-specialty-coffee-5.jpg"
+    ],
+    "hours": {
+      "sun": "09:00-18:00",
+      "mon": "08:30-18:00",
+      "tue": "08:30-18:00",
+      "wed": "08:30-18:00",
+      "thu": "08:30-18:00",
+      "fri": "08:30-18:00",
+      "sat": "09:00-18:00"
+    },
+    "website": "https://humpbackwhalecoffee.com/"
+  },
+  "suuapinga": {
+    "image": "/images/shops/suuapinga.jpg",
+    "images": [
+      "/images/shops/gallery/suuapinga-1.jpg",
+      "/images/shops/gallery/suuapinga-2.jpg",
+      "/images/shops/gallery/suuapinga-3.jpg",
+      "/images/shops/gallery/suuapinga-4.jpg",
+      "/images/shops/gallery/suuapinga-5.jpg"
+    ],
+    "hours": {
+      "sun": "09:00-18:00",
+      "mon": "08:00-18:00",
+      "tue": "08:00-18:00",
+      "wed": "08:00-18:00",
+      "thu": "08:00-18:00",
+      "fri": "08:00-18:00",
+      "sat": "09:00-18:00"
+    },
+    "website": "https://www.suuapinga.com/"
+  },
+  "the-barn-tal": {
+    "image": "/images/shops/the-barn-tal.jpg",
+    "images": [
+      "/images/shops/gallery/the-barn-tal-1.jpg",
+      "/images/shops/gallery/the-barn-tal-2.jpg",
+      "/images/shops/gallery/the-barn-tal-3.jpg",
+      "/images/shops/gallery/the-barn-tal-4.jpg",
+      "/images/shops/gallery/the-barn-tal-5.jpg"
+    ],
+    "hours": {
+      "sun": "09:00-18:00",
+      "mon": "08:00-18:00",
+      "tue": "08:00-18:00",
+      "wed": "08:00-18:00",
+      "thu": "08:00-18:00",
+      "fri": "08:00-18:00",
+      "sat": "09:00-18:00"
+    },
+    "website": "https://thebarn.de/"
+  },
+  "the-barn-glockenbachviertel": {
+    "image": "/images/shops/the-barn-glockenbachviertel.jpg",
+    "images": [
+      "/images/shops/gallery/the-barn-glockenbachviertel-1.jpg",
+      "/images/shops/gallery/the-barn-glockenbachviertel-2.jpg",
+      "/images/shops/gallery/the-barn-glockenbachviertel-3.jpg",
+      "/images/shops/gallery/the-barn-glockenbachviertel-4.jpg",
+      "/images/shops/gallery/the-barn-glockenbachviertel-5.jpg"
+    ],
+    "hours": {
+      "sun": "10:00-18:00",
+      "mon": "08:00-18:00",
+      "tue": "08:00-18:00",
+      "wed": "08:00-18:00",
+      "thu": "08:00-18:00",
+      "fri": "08:00-18:00",
+      "sat": "09:00-18:00"
+    },
+    "website": "https://thebarn.de/"
+  }
+}
