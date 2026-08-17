@@ -23,7 +23,7 @@ export async function fetchNewArticles() {
           continue;
         }
 
-        const excerpt = (item.contentSnippet ?? item.summary ?? '').slice(0, 300) || null;
+        const excerpt = (item.contentSnippet ?? item.summary ?? '').slice(0, 900) || null;
 
         try {
           await prisma.article.create({

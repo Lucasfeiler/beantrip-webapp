@@ -960,7 +960,7 @@ function ArticleForm({ article, onSaved, onCancel }) {
       <p className="text-sm font-semibold">{article ? 'Edit article' : 'New article'}</p>
       <input required value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Title" className={inputClass} />
       <input value={coverImage} onChange={(e) => setCoverImage(e.target.value)} placeholder="Cover image URL" className={inputClass} />
-      <textarea rows={2} value={excerpt} onChange={(e) => setExcerpt(e.target.value)} placeholder="Your own short summary (write this yourself — shown free to everyone)" className={inputClass} />
+      <textarea rows={5} value={excerpt} onChange={(e) => setExcerpt(e.target.value)} placeholder="Your own summary or take on this article — shown free to everyone" className={inputClass} />
       <input required type="url" value={externalUrl} onChange={(e) => setExternalUrl(e.target.value)} placeholder="Link to the original article (https://…)" className={inputClass} />
       <div className="grid grid-cols-2 gap-2">
         <button
