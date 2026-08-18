@@ -122,12 +122,12 @@ export default function Home() {
         <p className="text-sm text-[var(--color-muted-fg)] mb-6">
           {t('home.browseByCitySubtitle')}
         </p>
-        <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
+        <div className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-2 -mx-5 px-5 sm:mx-0 sm:px-0 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
           {cities.map((city) => (
             <Link
               key={city}
               to={`/explore?city=${encodeURIComponent(city)}`}
-              className="group relative rounded-2xl overflow-hidden h-28 flex items-end p-4 border border-[var(--color-border)] hover:shadow-md transition-shadow"
+              className="group relative shrink-0 snap-start w-40 sm:w-48 rounded-2xl overflow-hidden h-28 flex items-end p-4 border border-[var(--color-border)] hover:shadow-md transition-shadow"
             >
               <img
                 src={`/images/cities/${city.toLowerCase()}.jpg`}
