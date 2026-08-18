@@ -91,52 +91,90 @@ export default function Home() {
           </div>
         </div>
       )}
-      <section className="relative overflow-hidden min-h-[440px] sm:min-h-[520px] flex items-center">
-        <img
-          src="/images/shops/gallery/man-vs-machine-muellerstrasse-2.jpg"
-          alt=""
-          className="absolute inset-0 w-full h-full object-cover"
+      <section className="relative overflow-hidden">
+        <div
+          className="absolute -top-40 -left-32 w-96 h-96 rounded-full opacity-30 blur-3xl pointer-events-none"
+          style={{ background: 'var(--color-accent)', animation: 'hero-blob 9s ease-in-out infinite alternate' }}
         />
         <div
-          className="absolute inset-0"
-          style={{ background: 'linear-gradient(100deg, rgba(76,43,8,0.94) 5%, rgba(76,43,8,0.8) 45%, rgba(76,43,8,0.45) 100%)' }}
+          className="absolute top-1/4 -right-32 w-[26rem] h-[26rem] rounded-full opacity-25 blur-3xl pointer-events-none"
+          style={{ background: 'var(--color-primary)', animation: 'hero-blob 12s ease-in-out infinite alternate-reverse' }}
         />
 
-        <div className="relative max-w-6xl mx-auto px-5 sm:px-8 py-16 w-full">
-          <p
-            className="uppercase tracking-[0.2em] text-xs font-semibold text-[var(--color-accent)] mb-4"
-            style={{ animation: 'splash-fade-in 0.7s ease-out both' }}
-          >
-            {t('home.kicker')}
-          </p>
-          <h1
-            className="font-display text-4xl sm:text-5xl md:text-6xl font-semibold leading-[1.05] max-w-2xl text-white"
-            style={{ animation: 'splash-fade-in 0.7s ease-out 0.12s both' }}
-          >
-            {t('home.title')}
-          </h1>
-          <p
-            className="mt-5 text-base sm:text-lg text-white/80 max-w-xl"
-            style={{ animation: 'splash-fade-in 0.7s ease-out 0.24s both' }}
-          >
-            {t('home.subtitle')}
-          </p>
-          <div
-            className="mt-8 flex flex-wrap gap-3"
-            style={{ animation: 'splash-fade-in 0.7s ease-out 0.36s both' }}
-          >
-            <Link
-              to="/explore"
-              className="px-6 py-3 rounded-xl bg-[var(--color-primary)] text-[var(--color-primary-fg)] font-semibold text-sm hover:opacity-90 transition-opacity"
-            >
-              {t('home.exploreShops')}
-            </Link>
-            <Link
-              to="/auth"
-              className="px-6 py-3 rounded-xl border border-white/30 text-white font-semibold text-sm hover:bg-white/10 transition-colors"
-            >
-              {t('home.saveFavorites')}
-            </Link>
+        <div className="relative max-w-6xl mx-auto px-5 sm:px-8 pt-20 pb-16 sm:pt-28 sm:pb-24">
+          <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-14 items-center">
+            <div>
+              <p
+                className="uppercase tracking-[0.2em] text-xs font-semibold text-[var(--color-accent)] mb-4"
+                style={{ animation: 'splash-fade-in 0.7s ease-out both' }}
+              >
+                {t('home.kicker')}
+              </p>
+              <h1
+                className="font-display text-5xl sm:text-6xl md:text-7xl font-semibold leading-[1.02] tracking-tight"
+                style={{ animation: 'splash-fade-in 0.7s ease-out 0.12s both' }}
+              >
+                {t('home.title')}
+              </h1>
+              <p
+                className="mt-5 text-base sm:text-lg text-[var(--color-muted-fg)] max-w-xl"
+                style={{ animation: 'splash-fade-in 0.7s ease-out 0.24s both' }}
+              >
+                {t('home.subtitle')}
+              </p>
+              <div
+                className="mt-8 flex flex-wrap gap-3"
+                style={{ animation: 'splash-fade-in 0.7s ease-out 0.36s both' }}
+              >
+                <Link
+                  to="/explore"
+                  className="px-6 py-3 rounded-xl bg-[var(--color-primary)] text-[var(--color-primary-fg)] font-semibold text-sm hover:opacity-90 transition-opacity"
+                >
+                  {t('home.exploreShops')}
+                </Link>
+                <Link
+                  to="/auth"
+                  className="px-6 py-3 rounded-xl border border-[var(--color-border)] font-semibold text-sm hover:bg-[var(--color-card)] transition-colors"
+                >
+                  {t('home.saveFavorites')}
+                </Link>
+              </div>
+              <div
+                className="mt-10 flex items-center gap-8"
+                style={{ animation: 'splash-fade-in 0.7s ease-out 0.46s both' }}
+              >
+                <div>
+                  <p className="font-display text-2xl font-semibold">{shops.length}+</p>
+                  <p className="text-xs text-[var(--color-muted-fg)] uppercase tracking-wide mt-0.5">{t('home.statShops')}</p>
+                </div>
+                <div className="w-px h-8 bg-[var(--color-border)]" />
+                <div>
+                  <p className="font-display text-2xl font-semibold">{cities.length}</p>
+                  <p className="text-xs text-[var(--color-muted-fg)] uppercase tracking-wide mt-0.5">{t('home.statCities')}</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="relative hidden lg:block h-80">
+              <img
+                src="/images/shops/gallery/kanso-coffee-lab-1.jpg"
+                alt=""
+                className="absolute top-0 left-6 w-52 h-40 object-cover rounded-2xl border border-[var(--color-border)] shadow-xl"
+                style={{ '--r': '-6deg', transform: 'rotate(-6deg)', animation: 'hero-float 6s ease-in-out infinite' }}
+              />
+              <img
+                src="/images/shops/gallery/man-vs-machine-muellerstrasse-2.jpg"
+                alt=""
+                className="absolute top-28 right-2 w-44 h-36 object-cover rounded-2xl border border-[var(--color-border)] shadow-xl"
+                style={{ '--r': '5deg', transform: 'rotate(5deg)', animation: 'hero-float 7s ease-in-out infinite 0.4s' }}
+              />
+              <img
+                src="/images/shops/gallery/the-barn-glockenbachviertel-1.jpg"
+                alt=""
+                className="absolute bottom-0 left-16 w-48 h-36 object-cover rounded-2xl border border-[var(--color-border)] shadow-xl"
+                style={{ '--r': '3deg', transform: 'rotate(3deg)', animation: 'hero-float 8s ease-in-out infinite 0.8s' }}
+              />
+            </div>
           </div>
         </div>
       </section>
