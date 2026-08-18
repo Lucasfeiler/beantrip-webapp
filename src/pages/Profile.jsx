@@ -18,6 +18,21 @@ function nextBadge(visitCount) {
   return badges.find((b) => visitCount < b.count) ?? null;
 }
 
+const roasts = [
+  { value: 'light', label: 'Light' },
+  { value: 'medium', label: 'Medium' },
+  { value: 'dark', label: 'Dark' },
+];
+
+const brewMethods = [
+  { value: 'espresso', label: 'Espresso' },
+  { value: 'pour-over', label: 'Pour-over' },
+  { value: 'cold-brew', label: 'Cold brew' },
+  { value: 'french-press', label: 'French press' },
+  { value: 'aeropress', label: 'Aeropress' },
+  { value: 'v60', label: 'V60' },
+];
+
 function formatJoinDate(dateString) {
   if (!dateString) return null;
   return new Date(dateString).toLocaleDateString(undefined, { day: 'numeric', month: 'long', year: 'numeric' });
@@ -60,6 +75,8 @@ export default function Profile() {
   const [resetSending, setResetSending] = useState(false);
   const [resetError, setResetError] = useState('');
 
+  const [savingTaste, setSavingTaste] = useState(false);
+
   useEffect(() => {
     if (user) {
       setName(user.name ?? '');
@@ -86,6 +103,17 @@ export default function Profile() {
       setError(err.message);
     } finally {
       setSubmitting(false);
+    }
+  };
+
+  const handleTasteChange = async (field, value) => {
+    setSavingTaste(true);
+    try {
+      await updateProfile({ [field]: user[field] === value ? null : value });
+    } catch {
+      // non-critical preference — fail silently rather than interrupt the page
+    } finally {
+      setSavingTaste(false);
     }
   };
 
@@ -291,6 +319,53 @@ export default function Profile() {
               ? `${upcoming.count - user.visitCount} more for ${upcoming.name}.`
               : `You've earned every badge!`}
         </p>
+      </div>
+
+      <div className="mt-4 bg-[var(--color-card)] border border-[var(--color-border)] rounded-xl p-4">
+        <p className="text-sm font-semibold">Taste preferences</p>
+        <p className="text-xs text-[var(--color-muted-fg)] mt-1">
+          This is what "Picked for You" on the home page uses to match you with shops — change it anytime.
+        </p>
+        <div className="mt-3">
+          <p className="text-xs font-semibold text-[var(--color-muted-fg)] mb-1.5">Favorite roast</p>
+          <div className="flex flex-wrap gap-1.5">
+            {roasts.map((o) => (
+              <button
+                key={o.value}
+                type="button"
+                onClick={() => handleTasteChange('favoriteRoast', o.value)}
+                disabled={savingTaste}
+                className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition-colors disabled:opacity-60 ${
+                  user.favoriteRoast === o.value
+                    ? 'bg-[var(--color-primary)] text-[var(--color-primary-fg)] border-[var(--color-primary)]'
+                    : 'border-[var(--color-border)] hover:bg-[var(--color-bg)]'
+                }`}
+              >
+                {o.label}
+              </button>
+            ))}
+          </div>
+        </div>
+        <div className="mt-3">
+          <p className="text-xs font-semibold text-[var(--color-muted-fg)] mb-1.5">Favorite brewing method</p>
+          <div className="flex flex-wrap gap-1.5">
+            {brewMethods.map((o) => (
+              <button
+                key={o.value}
+                type="button"
+                onClick={() => handleTasteChange('favoriteBrewMethod', o.value)}
+                disabled={savingTaste}
+                className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition-colors disabled:opacity-60 ${
+                  user.favoriteBrewMethod === o.value
+                    ? 'bg-[var(--color-primary)] text-[var(--color-primary-fg)] border-[var(--color-primary)]'
+                    : 'border-[var(--color-border)] hover:bg-[var(--color-bg)]'
+                }`}
+              >
+                {o.label}
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
 
       <div className="mt-4 bg-[var(--color-card)] border border-[var(--color-border)] rounded-xl p-4">

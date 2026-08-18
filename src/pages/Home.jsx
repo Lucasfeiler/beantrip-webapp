@@ -2,15 +2,21 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useShops } from '../context/ShopsContext';
 import { useAuth } from '../context/AuthContext';
+import { useFavorites } from '../context/FavoritesContext';
 import { useLanguage } from '../context/LanguageContext';
 import { api } from '../lib/api';
 import ShopCard from '../components/ShopCard';
 
-function personalizedScore(shop, user) {
+// Explicit onboarding taste settings count double a tag merely shared with
+// something the user already favorited -- a stated preference is a stronger
+// signal than an inferred one.
+function personalizedScore(shop, user, favoriteTagFreq) {
   if (!user) return 0;
+  const tags = shop.tags ?? [];
   let score = 0;
-  if (user.favoriteRoast && shop.tags?.includes(user.favoriteRoast)) score += 1;
-  if (user.favoriteBrewMethod && shop.tags?.includes(user.favoriteBrewMethod)) score += 1;
+  if (user.favoriteRoast && tags.includes(user.favoriteRoast)) score += 2;
+  if (user.favoriteBrewMethod && tags.includes(user.favoriteBrewMethod)) score += 2;
+  tags.forEach((tag) => { if (favoriteTagFreq[tag]) score += 1; });
   return score;
 }
 
@@ -25,6 +31,7 @@ const FEEDBACK_BANNER_KEY = 'beantrip:feedback-banner-dismissed';
 export default function Home() {
   const { shops, cities, loading } = useShops();
   const { user, loading: authLoading } = useAuth();
+  const { favorites } = useFavorites();
   const { t } = useLanguage();
   const navigate = useNavigate();
   const [visitedShops, setVisitedShops] = useState([]);
@@ -65,15 +72,19 @@ export default function Home() {
 
   const cityCount = (city) => shops.filter((s) => s.city === city).length;
 
-  const personalized = !!(user?.favoriteRoast || user?.favoriteBrewMethod);
+  const visitedIds = new Set(visitedShops.map((s) => s.id));
+  const favoriteShops = shops.filter((s) => favorites.has(s.id));
+  const favoriteTagFreq = {};
+  favoriteShops.forEach((s) => (s.tags ?? []).forEach((tag) => { favoriteTagFreq[tag] = (favoriteTagFreq[tag] ?? 0) + 1; }));
+
+  const personalized = !!(user?.favoriteRoast || user?.favoriteBrewMethod || favoriteShops.length > 0);
   const featured = shops
-    .filter((s) => !s.placeholder)
-    .map((s) => ({ shop: s, score: personalizedScore(s, user) }))
-    .sort((a, b) => b.score - a.score)
+    .filter((s) => !s.placeholder && !visitedIds.has(s.id) && !favorites.has(s.id))
+    .map((s) => ({ shop: s, score: personalizedScore(s, user, favoriteTagFreq) }))
+    .sort((a, b) => b.score - a.score || b.shop.rating - a.shop.rating || b.shop.reviewCount - a.shop.reviewCount)
     .slice(0, 6)
     .map((entry) => entry.shop);
 
-  const visitedIds = new Set(visitedShops.map((s) => s.id));
   const recommendedTags = topTags(visitedShops);
   const recommended = recommendedTags.length === 0 ? [] : shops
     .filter((s) => !s.placeholder && !visitedIds.has(s.id) && s.tags?.some((t) => recommendedTags.includes(t)))
