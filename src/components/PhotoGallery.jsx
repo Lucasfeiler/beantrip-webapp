@@ -20,6 +20,9 @@ export default function PhotoGallery({ shop, className = '' }) {
   // the element's bounds mid-gesture, and without capture the "up" event
   // fires on whatever's under the pointer at that moment, not this element.
   const handlePointerDown = (e) => {
+    // Skip drag tracking when the press starts on a button (arrows, dots) --
+    // grabbing pointer capture here would hijack that button's own click.
+    if (e.target.closest('button')) return;
     e.currentTarget.setPointerCapture(e.pointerId);
     dragStartX.current = e.clientX;
     draggedFar.current = false;

@@ -19,6 +19,7 @@ const moreLinks = [
   { to: '/news', label: 'News' },
   { to: '/events', label: 'Events' },
   { to: '/gear', label: 'Gear' },
+  { to: '/feedback', label: 'Feedback' },
 ];
 
 function getPrimaryLinks(user) {

@@ -26,6 +26,8 @@ export default function Admin() {
   const [premiumUsers, setPremiumUsers] = useState(null);
   const [userQuery, setUserQuery] = useState('');
   const [flags, setFlags] = useState(null);
+  const [feedback, setFeedback] = useState(null);
+  const [feedbackDrafts, setFeedbackDrafts] = useState({});
   const [events, setEvents] = useState(null);
   const [editingEvent, setEditingEvent] = useState(null);
   const [gearItems, setGearItems] = useState(null);
@@ -56,6 +58,12 @@ export default function Admin() {
       .catch((err) => setError(err.message));
     api.listFlags()
       .then(({ flags }) => setFlags(flags))
+      .catch((err) => setError(err.message));
+    api.listFeedback()
+      .then(({ feedback }) => {
+        setFeedback(feedback);
+        setFeedbackDrafts(Object.fromEntries(feedback.map((f) => [f.id, f.adminNote ?? ''])));
+      })
       .catch((err) => setError(err.message));
     api.listAdminEvents()
       .then(({ events }) => setEvents(events))
@@ -326,6 +334,32 @@ export default function Admin() {
     }
   };
 
+  const updateFeedbackStatus = async (id, status) => {
+    setBusyId(id);
+    setError('');
+    try {
+      const { feedback: updated } = await api.updateFeedback(id, { status });
+      setFeedback((fs) => fs.map((f) => (f.id === id ? updated : f)));
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setBusyId(null);
+    }
+  };
+
+  const saveFeedbackNote = async (id) => {
+    setBusyId(id);
+    setError('');
+    try {
+      const { feedback: updated } = await api.updateFeedback(id, { adminNote: feedbackDrafts[id] });
+      setFeedback((fs) => fs.map((f) => (f.id === id ? updated : f)));
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setBusyId(null);
+    }
+  };
+
   const pending = submissions?.filter((s) => s.status === 'pending') ?? [];
   const decided = submissions?.filter((s) => s.status !== 'pending') ?? [];
   const pendingClaims = claims?.filter((c) => c.status === 'pending') ?? [];
@@ -334,6 +368,8 @@ export default function Admin() {
   const decidedPhotos = photos?.filter((p) => p.moderationStatus !== 'pending') ?? [];
   const pendingFlags = flags?.filter((f) => f.status === 'pending') ?? [];
   const decidedFlags = flags?.filter((f) => f.status !== 'pending') ?? [];
+  const newFeedback = feedback?.filter((f) => f.status === 'new') ?? [];
+  const otherFeedback = feedback?.filter((f) => f.status !== 'new') ?? [];
 
   return (
     <div className="max-w-3xl mx-auto px-5 sm:px-8 py-10">
@@ -921,9 +957,105 @@ export default function Admin() {
               </ul>
             </>
           )}
+
+          <h1 className="font-display text-3xl font-semibold mt-16">Feedback</h1>
+          <p className="text-[var(--color-muted-fg)] mt-1">
+            Mark as Planned or Done as you act on it. Add a note and mark Done to show it publicly under "You said, we did" on the feedback page.
+          </p>
+
+          {feedback === null ? (
+            <p className="text-sm text-[var(--color-muted-fg)] mt-8">Loading…</p>
+          ) : (
+            <>
+              <h2 className="font-display text-lg font-semibold mt-8 mb-3">New ({newFeedback.length})</h2>
+              {newFeedback.length === 0 ? (
+                <p className="text-sm text-[var(--color-muted-fg)]">Nothing new.</p>
+              ) : (
+                <ul className="flex flex-col gap-4">
+                  {newFeedback.map((f) => (
+                    <FeedbackItem
+                      key={f.id}
+                      f={f}
+                      draft={feedbackDrafts[f.id] ?? ''}
+                      onDraftChange={(v) => setFeedbackDrafts((d) => ({ ...d, [f.id]: v }))}
+                      onStatusChange={(status) => updateFeedbackStatus(f.id, status)}
+                      onSaveNote={() => saveFeedbackNote(f.id)}
+                      busy={busyId === f.id}
+                    />
+                  ))}
+                </ul>
+              )}
+
+              {otherFeedback.length > 0 && (
+                <>
+                  <h2 className="font-display text-lg font-semibold mt-10 mb-3">Reviewed</h2>
+                  <ul className="flex flex-col gap-4">
+                    {otherFeedback.map((f) => (
+                      <FeedbackItem
+                        key={f.id}
+                        f={f}
+                        draft={feedbackDrafts[f.id] ?? ''}
+                        onDraftChange={(v) => setFeedbackDrafts((d) => ({ ...d, [f.id]: v }))}
+                        onStatusChange={(status) => updateFeedbackStatus(f.id, status)}
+                        onSaveNote={() => saveFeedbackNote(f.id)}
+                        busy={busyId === f.id}
+                      />
+                    ))}
+                  </ul>
+                </>
+              )}
+            </>
+          )}
         </>
       )}
     </div>
+  );
+}
+
+const CATEGORY_LABEL = { idea: '💡 Idea', bug: '🐛 Bug', general: '💬 General' };
+const FEEDBACK_STATUSES = ['new', 'planned', 'done', 'closed'];
+
+function FeedbackItem({ f, draft, onDraftChange, onStatusChange, onSaveNote, busy }) {
+  return (
+    <li className="border border-[var(--color-border)] rounded-xl p-4">
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <p className="text-sm font-semibold">
+            {CATEGORY_LABEL[f.category] ?? f.category}
+            {f.rating != null && <span className="ml-2 text-[var(--color-accent)]">{'★'.repeat(f.rating)}{'☆'.repeat(5 - f.rating)}</span>}
+          </p>
+          <p className="text-sm mt-1.5 whitespace-pre-wrap">{f.message}</p>
+          <p className="text-xs text-[var(--color-muted-fg)] mt-2">
+            {f.user ? `${f.user.name} (${f.user.email})` : 'Anonymous'} · {formatReviewedAt(f.createdAt)}
+          </p>
+        </div>
+        <select
+          value={f.status}
+          onChange={(e) => onStatusChange(e.target.value)}
+          disabled={busy}
+          className="shrink-0 px-2.5 py-1.5 rounded-lg text-sm border border-[var(--color-border)] bg-[var(--color-card)] disabled:opacity-60"
+        >
+          {FEEDBACK_STATUSES.map((s) => (
+            <option key={s} value={s}>{s}</option>
+          ))}
+        </select>
+      </div>
+      <div className="flex items-center gap-2 mt-3">
+        <input
+          value={draft}
+          onChange={(e) => onDraftChange(e.target.value)}
+          placeholder="Note shown publicly once marked Done…"
+          className="flex-1 px-3 py-1.5 rounded-lg text-sm border border-[var(--color-border)] bg-[var(--color-bg)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+        />
+        <button
+          onClick={onSaveNote}
+          disabled={busy || draft === (f.adminNote ?? '')}
+          className="shrink-0 px-3 py-1.5 rounded-lg text-sm font-semibold border border-[var(--color-border)] disabled:opacity-40"
+        >
+          Save note
+        </button>
+      </div>
+    </li>
   );
 }
 

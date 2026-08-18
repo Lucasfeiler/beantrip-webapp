@@ -36,6 +36,7 @@ model User {
   photos       Photo[]
   submissions  Submission[]
   reviewFlags  ReviewFlag[]
+  feedback     Feedback[]
 }
 
 model Shop {
@@ -189,6 +190,20 @@ model Submission {
   createdAt    DateTime  @default(now())
   reviewedAt   DateTime?
   user         User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+}
+
+model Feedback {
+  id         Int       @id @default(autoincrement())
+  userId     Int?
+  category   String
+  rating     Int?
+  message    String
+  page       String?
+  status     String    @default("new")
+  adminNote  String?
+  createdAt  DateTime  @default(now())
+  reviewedAt DateTime?
+  user       User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
 }
 
 model Article {

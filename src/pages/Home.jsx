@@ -19,11 +19,21 @@ function topTags(shopList, limit = 2) {
   return Object.entries(freq).sort((a, b) => b[1] - a[1]).slice(0, limit).map(([t]) => t);
 }
 
+const FEEDBACK_BANNER_KEY = 'beantrip:feedback-banner-dismissed';
+
 export default function Home() {
   const { shops, cities, loading } = useShops();
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const [visitedShops, setVisitedShops] = useState([]);
+  const [showFeedbackBanner, setShowFeedbackBanner] = useState(
+    () => localStorage.getItem(FEEDBACK_BANNER_KEY) !== 'true'
+  );
+
+  const dismissFeedbackBanner = () => {
+    localStorage.setItem(FEEDBACK_BANNER_KEY, 'true');
+    setShowFeedbackBanner(false);
+  };
 
   useEffect(() => {
     if (authLoading || !user) return;
@@ -62,6 +72,23 @@ export default function Home() {
 
   return (
     <>
+      {showFeedbackBanner && (
+        <div className="bg-[var(--color-primary)] text-[var(--color-primary-fg)]">
+          <div className="max-w-6xl mx-auto px-5 sm:px-8 py-2.5 flex items-center justify-between gap-4 text-sm">
+            <p className="font-medium">
+              ☕ Beantrip is still a work in progress —{' '}
+              <Link to="/feedback" className="underline underline-offset-2 hover:opacity-80">tell us what to build next</Link>.
+            </p>
+            <button
+              onClick={dismissFeedbackBanner}
+              aria-label="Dismiss"
+              className="shrink-0 opacity-70 hover:opacity-100 text-base leading-none"
+            >
+              ×
+            </button>
+          </div>
+        </div>
+      )}
       <section className="max-w-6xl mx-auto px-5 sm:px-8 pt-16 pb-14">
         <p className="uppercase tracking-[0.2em] text-xs font-semibold text-[var(--color-accent)] mb-4">
           Your Specialty Coffee Finder

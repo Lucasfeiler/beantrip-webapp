@@ -137,4 +137,9 @@ export const api = {
 
   registerDeviceToken: (token) => request('/api/notifications/register', { method: 'POST', auth: true, body: { token } }),
   sendTestNotification: () => request('/api/notifications/test', { method: 'POST', auth: true }),
+
+  submitFeedback: (payload) => request('/api/feedback', { method: 'POST', auth: true, body: payload }),
+  shippedFeedback: () => request('/api/feedback/shipped'),
+  listFeedback: () => request('/api/feedback', { auth: true }),
+  updateFeedback: (id, data) => request(`/api/feedback/${id}`, { method: 'PATCH', auth: true, body: data }),
 };

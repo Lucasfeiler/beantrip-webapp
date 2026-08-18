@@ -17,6 +17,7 @@ import { flagsRouter } from './routes/flags.js';
 import { eventsRouter } from './routes/events.js';
 import { gearRouter } from './routes/gear.js';
 import { feedSourcesRouter } from './routes/feedSources.js';
+import { feedbackRouter } from './routes/feedback.js';
 import { startScheduler } from './scheduler.js';
 
 const app = express();
@@ -50,6 +51,7 @@ app.use('/api/flags', flagsRouter);
 app.use('/api/events', eventsRouter);
 app.use('/api/gear', gearRouter);
 app.use('/api/feed-sources', feedSourcesRouter);
+app.use('/api/feedback', feedbackRouter);
 
 app.use((err, _req, res, _next) => {
   console.error(err);

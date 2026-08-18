@@ -24,6 +24,7 @@ import Events from './pages/Events';
 import EventDetail from './pages/EventDetail';
 import Passport from './pages/Passport';
 import Gear from './pages/Gear';
+import Feedback from './pages/Feedback';
 import { Privacy, Terms, Impressum } from './pages/StaticPages';
 
 export default function App() {
@@ -53,6 +54,7 @@ export default function App() {
                   <Route path="/events/:slug" element={<EventDetail />} />
                   <Route path="/passport" element={<Passport />} />
                   <Route path="/gear" element={<Gear />} />
+                  <Route path="/feedback" element={<Feedback />} />
                   <Route path="/reset-password" element={<ResetPassword />} />
                   <Route path="/verify-email" element={<VerifyEmail />} />
                   <Route path="/privacy" element={<Privacy />} />
