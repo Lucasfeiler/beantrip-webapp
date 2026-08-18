@@ -169,6 +169,9 @@ export const translations = {
     'feedback.backHome': 'Back to Beantrip',
     'feedback.shippedTitle': 'You said, we did',
     'feedback.shippedSubtitle': 'Changes made because of feedback like yours.',
+    'feedback.modalKicker': "We're still building this — help us out",
+    'feedback.maybeLater': 'Maybe later',
+    'feedback.close': 'Close',
 
     'profile.title': 'Profile',
     'profile.language': 'Language',
@@ -344,6 +347,9 @@ export const translations = {
     'feedback.backHome': 'Zurück zu Beantrip',
     'feedback.shippedTitle': 'Gesagt, getan',
     'feedback.shippedSubtitle': 'Änderungen, die dank Feedback wie deinem entstanden sind.',
+    'feedback.modalKicker': 'Wir bauen noch daran — hilf uns dabei',
+    'feedback.maybeLater': 'Vielleicht später',
+    'feedback.close': 'Schließen',
 
     'profile.title': 'Profil',
     'profile.language': 'Sprache',

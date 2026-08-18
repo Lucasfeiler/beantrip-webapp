@@ -3,6 +3,7 @@ import { NavLink, Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import NotificationPrompt from './NotificationPrompt';
+import FeedbackModal from './FeedbackModal';
 
 const ONBOARDING_EXEMPT_PATHS = ['/onboarding', '/reset-password', '/verify-email'];
 
@@ -200,6 +201,7 @@ export default function Layout({ children }) {
 
       <main className="flex-1">{children}</main>
 
+      <FeedbackModal />
       <NotificationPrompt />
 
       <footer className="border-t border-[var(--color-border)] mt-20">
