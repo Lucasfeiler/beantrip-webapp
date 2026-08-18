@@ -26,11 +26,13 @@ import EventDetail from './pages/EventDetail';
 import Passport from './pages/Passport';
 import Gear from './pages/Gear';
 import Feedback from './pages/Feedback';
+import SplashScreen from './components/SplashScreen';
 import { Privacy, Terms, Impressum } from './pages/StaticPages';
 
 export default function App() {
   return (
     <LanguageProvider>
+      <SplashScreen />
       <AuthProvider>
         <ShopsProvider>
           <FavoritesProvider>

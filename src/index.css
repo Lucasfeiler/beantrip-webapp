@@ -44,3 +44,19 @@ body {
 @media (prefers-reduced-motion: reduce) {
   * { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
 }
+
+@keyframes splash-fill {
+  from { transform: scaleY(0); }
+  to { transform: scaleY(1); }
+}
+
+@keyframes splash-steam {
+  0% { transform: translateY(0) scale(1); opacity: 0; }
+  35% { opacity: 0.7; }
+  100% { transform: translateY(-16px) scale(1.5); opacity: 0; }
+}
+
+@keyframes splash-fade-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
