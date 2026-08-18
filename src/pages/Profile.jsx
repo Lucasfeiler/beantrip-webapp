@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 import { api } from '../lib/api';
 import { requestNotificationToken } from '../lib/firebase';
 
@@ -24,6 +25,7 @@ function formatJoinDate(dateString) {
 
 export default function Profile() {
   const { user, loading, updateProfile, deleteAccount, uploadPhoto, removePhoto, changeEmail } = useAuth();
+  const { t, lang, setLang } = useLanguage();
   const navigate = useNavigate();
   const [name, setName] = useState('');
   const [location, setLocation] = useState('');
@@ -206,6 +208,24 @@ export default function Profile() {
   return (
     <div className="max-w-sm mx-auto px-5 sm:px-8 py-16">
       <h1 className="font-display text-3xl font-semibold mb-6">Your profile</h1>
+
+      <div className="mb-6 flex items-center justify-between">
+        <span className="text-sm font-semibold">{t('profile.language')}</span>
+        <div className="flex items-center rounded-full border border-[var(--color-border)] text-xs font-semibold overflow-hidden">
+          {['en', 'de'].map((l) => (
+            <button
+              key={l}
+              type="button"
+              onClick={() => setLang(l)}
+              className={`px-3 py-1.5 transition-colors ${
+                lang === l ? 'bg-[var(--color-primary)] text-[var(--color-primary-fg)]' : 'text-[var(--color-muted-fg)] hover:bg-[var(--color-card)]'
+              }`}
+            >
+              {l.toUpperCase()}
+            </button>
+          ))}
+        </div>
+      </div>
 
       {!user.emailVerified && (
         <div className="mb-6 bg-[var(--color-card)] border border-[var(--color-border)] rounded-xl p-4">

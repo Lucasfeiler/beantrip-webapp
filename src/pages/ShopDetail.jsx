@@ -6,18 +6,21 @@ import { isTopVoted } from '../components/ShopCard';
 import { useFavorites } from '../context/FavoritesContext';
 import { useVisits } from '../context/VisitsContext';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 
-const dayLabels = { mon: 'Mon', tue: 'Tue', wed: 'Wed', thu: 'Thu', fri: 'Fri', sat: 'Sat', sun: 'Sun' };
-const tasteLabels = { bright: 'Bright / Acidic', earthy: 'Earthy / Full Body' };
-const countryLabels = {
-  ethiopia: 'Ethiopia', colombia: 'Colombia', brazil: 'Brazil', kenya: 'Kenya', guatemala: 'Guatemala',
-  tanzania: 'Tanzania', jamaica: 'Jamaica', 'costa-rica': 'Costa Rica', indonesia: 'Indonesia', yemen: 'Yemen',
+const dayKeys = { mon: 'shop.dayMon', tue: 'shop.dayTue', wed: 'shop.dayWed', thu: 'shop.dayThu', fri: 'shop.dayFri', sat: 'shop.daySat', sun: 'shop.daySun' };
+const tasteKeys = { bright: 'shop.tasteBright', earthy: 'shop.tasteEarthy' };
+const originKeys = {
+  ethiopia: 'shop.originEthiopia', colombia: 'shop.originColombia', brazil: 'shop.originBrazil', kenya: 'shop.originKenya',
+  guatemala: 'shop.originGuatemala', tanzania: 'shop.originTanzania', jamaica: 'shop.originJamaica',
+  'costa-rica': 'shop.originCostaRica', indonesia: 'shop.originIndonesia', yemen: 'shop.originYemen',
 };
 
 export default function ShopDetail() {
   const { slug } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { t } = useLanguage();
   const { isFavorite, toggleFavorite } = useFavorites();
   const { isVisited, toggleVisit } = useVisits();
 
@@ -93,9 +96,9 @@ export default function ShopDetail() {
   if (notFound) {
     return (
       <div className="max-w-3xl mx-auto px-5 sm:px-8 py-20 text-center">
-        <p className="font-display text-2xl mb-3">Shop not found</p>
+        <p className="font-display text-2xl mb-3">{t('shop.notFound')}</p>
         <Link to="/explore" className="text-[var(--color-accent)] font-semibold hover:underline">
-          Back to explore
+          {t('shop.backToExploreLink')}
         </Link>
       </div>
     );
@@ -137,7 +140,7 @@ export default function ShopDetail() {
   return (
     <div className="max-w-3xl mx-auto px-5 sm:px-8 py-8">
       <Link to="/explore" className="text-sm font-semibold text-[var(--color-accent)] hover:underline">
-        ← Back to explore
+        {t('shop.backToExplore')}
       </Link>
 
       <PhotoGallery shop={shop} className="w-full h-56 sm:h-72 rounded-2xl mt-4" />
@@ -147,7 +150,7 @@ export default function ShopDetail() {
           <h1 className="font-display text-3xl sm:text-4xl font-semibold">{shop.name}</h1>
           {isTopVoted(shop) && (
             <span className="inline-block mt-2 text-xs font-semibold uppercase tracking-wide bg-[var(--color-primary)] text-[var(--color-primary-fg)] px-3 py-1 rounded-full">
-              ⭐ Top Voted
+              {t('shop.topVoted')}
             </span>
           )}
         </div>
@@ -160,7 +163,7 @@ export default function ShopDetail() {
                 : 'border-[var(--color-border)] hover:bg-[var(--color-card)]'
             }`}
           >
-            {fav ? '♥ Saved' : '♡ Save'}
+            {fav ? `♥ ${t('shop.saved')}` : `♡ ${t('shop.save')}`}
           </button>
           <button
             onClick={handleVisitClick}
@@ -170,25 +173,24 @@ export default function ShopDetail() {
                 : 'border-[var(--color-border)] hover:bg-[var(--color-card)]'
             }`}
           >
-            {visited ? '✓ Visited' : "I've been here"}
+            {visited ? `✓ ${t('shop.visited')}` : t('shop.beenHere')}
           </button>
         </div>
       </div>
       <p className="text-[var(--color-muted-fg)] mt-1">{shop.address}</p>
       <p className="text-sm text-[var(--color-muted-fg)] mt-1">
-        {shop.rating > 0 ? `★ ${shop.rating.toFixed(1)}` : '—'} ({shop.reviewCount} reviews)
+        {shop.rating > 0 ? `★ ${shop.rating.toFixed(1)}` : '—'} ({shop.reviewCount} {t('shop.reviews')})
         {shop.neighborhood && <span className="text-[var(--color-accent)] font-medium"> · {shop.neighborhood}</span>}
         {shop.beansInStock != null && (
           <span className={shop.beansInStock ? 'text-[var(--color-accent)] font-medium' : 'text-red-500 font-medium'}>
-            {' '}· Beans {shop.beansInStock ? 'in stock' : 'out of stock'}
+            {' '}· {shop.beansInStock ? t('shop.beansInStock') : t('shop.beansOutOfStock')}
           </span>
         )}
       </p>
 
       {shop.placeholder ? (
         <p className="mt-5 text-sm italic text-[var(--color-muted-fg)] bg-[var(--color-card)] rounded-xl px-4 py-3">
-          Full description, tags, and hours for this shop weren't available from the list view when this
-          was pulled from your live site — add them here once you have the details.
+          {t('shop.placeholderNotice')}
         </p>
       ) : (
         <p className="mt-5 text-base leading-relaxed">{shop.description}</p>
@@ -196,9 +198,9 @@ export default function ShopDetail() {
 
       {shop.tags?.length > 0 && (
         <div className="flex flex-wrap gap-2 mt-5">
-          {shop.tags.map((t) => (
-            <span key={t} className="text-xs uppercase tracking-wide bg-[var(--color-border)] text-[var(--color-muted-fg)] px-3 py-1.5 rounded-full">
-              {t}
+          {shop.tags.map((tag) => (
+            <span key={tag} className="text-xs uppercase tracking-wide bg-[var(--color-border)] text-[var(--color-muted-fg)] px-3 py-1.5 rounded-full">
+              {tag}
             </span>
           ))}
         </div>
@@ -207,10 +209,10 @@ export default function ShopDetail() {
       {(shop.espressoMachine || shop.beanType || shop.taste || shop.originCountry) && (
         <p className="text-sm text-[var(--color-muted-fg)] mt-4">
           {[
-            shop.espressoMachine && <>Espresso machine: <span className="text-[var(--color-fg)]">{shop.espressoMachine}</span></>,
-            shop.beanType && <>Beans: <span className="text-[var(--color-fg)] capitalize">{shop.beanType}</span></>,
-            shop.taste && <>Taste: <span className="text-[var(--color-fg)]">{tasteLabels[shop.taste]}</span></>,
-            shop.originCountry && <>Origin: <span className="text-[var(--color-fg)]">{countryLabels[shop.originCountry]}</span></>,
+            shop.espressoMachine && <>{t('shop.espressoMachine')} <span className="text-[var(--color-fg)]">{shop.espressoMachine}</span></>,
+            shop.beanType && <>{t('shop.beans')} <span className="text-[var(--color-fg)] capitalize">{shop.beanType}</span></>,
+            shop.taste && <>{t('shop.taste')} <span className="text-[var(--color-fg)]">{t(tasteKeys[shop.taste])}</span></>,
+            shop.originCountry && <>{t('shop.origin')} <span className="text-[var(--color-fg)]">{t(originKeys[shop.originCountry])}</span></>,
           ].filter(Boolean).map((part, i) => (
             <span key={i}>
               {i > 0 && ' · '}
@@ -232,36 +234,36 @@ export default function ShopDetail() {
           onClick={trackClick('directions')}
           className="px-5 py-2.5 rounded-xl bg-[var(--color-accent)] text-[var(--color-accent-fg)] font-semibold text-sm hover:opacity-90 transition-opacity"
         >
-          📍 Directions
+          {t('shop.directions')}
         </a>
         {shop.website && (
           <a href={shop.website} target="_blank" rel="noreferrer" onClick={trackClick('website')} className="text-sm font-semibold text-[var(--color-accent)] hover:underline">
-            Website
+            {t('shop.website')}
           </a>
         )}
         {shop.instagram && (
           <a href={shop.instagram} target="_blank" rel="noreferrer" onClick={trackClick('instagram')} className="text-sm font-semibold text-[var(--color-accent)] hover:underline">
-            Instagram
+            {t('shop.instagram')}
           </a>
         )}
       </div>
 
       <div className="border-t border-[var(--color-border)] mt-10 pt-8">
-        <h2 className="font-display text-xl font-semibold mb-3">Visitor Photos</h2>
+        <h2 className="font-display text-xl font-semibold mb-3">{t('shop.visitorPhotos')}</h2>
 
         {user ? (
           <div className="mb-4">
             <label className="inline-block text-sm font-semibold text-[var(--color-accent)] hover:underline cursor-pointer">
-              {uploadingPhoto ? 'Uploading…' : 'Add a photo'}
+              {uploadingPhoto ? t('shop.uploading') : t('shop.addPhoto')}
               <input type="file" accept="image/jpeg,image/png,image/webp" onChange={handlePhotoUpload} disabled={uploadingPhoto} className="hidden" />
             </label>
-            <p className="text-xs text-[var(--color-muted-fg)] mt-1">JPEG, PNG, or WebP — up to 5MB. Reviewed before it appears publicly.</p>
-            {photoSubmitted && <p className="text-sm text-[var(--color-accent)] font-semibold mt-2">Thanks! Your photo is queued for review.</p>}
+            <p className="text-xs text-[var(--color-muted-fg)] mt-1">{t('shop.photoHint')}</p>
+            {photoSubmitted && <p className="text-sm text-[var(--color-accent)] font-semibold mt-2">{t('shop.photoQueued')}</p>}
             {photoError && <p className="text-sm text-red-600 mt-2">{photoError}</p>}
           </div>
         ) : (
           <p className="text-sm text-[var(--color-muted-fg)] mb-4">
-            <Link to="/auth" className="text-[var(--color-accent)] font-semibold hover:underline">Sign in</Link> to add a photo.
+            <Link to="/auth" className="text-[var(--color-accent)] font-semibold hover:underline">{t('auth.signIn')}</Link> {t('shop.signInToAddPhoto')}
           </p>
         )}
 
@@ -275,12 +277,12 @@ export default function ShopDetail() {
       </div>
 
       <div className="border-t border-[var(--color-border)] mt-10 pt-8">
-        <h2 className="font-display text-xl font-semibold mb-3">Reviews</h2>
+        <h2 className="font-display text-xl font-semibold mb-3">{t('shop.reviewsHeading')}</h2>
 
         {user ? (
           <form onSubmit={handleReviewSubmit} className="flex flex-col gap-3 mb-8 bg-[var(--color-card)] border border-[var(--color-border)] rounded-xl p-4">
             <label className="flex items-center gap-2 text-sm font-medium">
-              Rating
+              {t('shop.rating')}
               <select
                 value={reviewForm.rating}
                 onChange={(e) => setReviewForm((f) => ({ ...f, rating: e.target.value }))}
@@ -292,7 +294,7 @@ export default function ShopDetail() {
             <textarea
               required
               rows={3}
-              placeholder="Share your experience…"
+              placeholder={t('shop.shareExperience')}
               value={reviewForm.text}
               onChange={(e) => setReviewForm((f) => ({ ...f, text: e.target.value }))}
               className="w-full px-4 py-2.5 rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
@@ -302,17 +304,17 @@ export default function ShopDetail() {
               disabled={submitting}
               className="self-start px-5 py-2 rounded-xl bg-[var(--color-primary)] text-[var(--color-primary-fg)] font-semibold text-sm disabled:opacity-60"
             >
-              {submitting ? 'Posting…' : 'Post review'}
+              {submitting ? t('shop.posting') : t('shop.postReview')}
             </button>
           </form>
         ) : (
           <p className="text-sm text-[var(--color-muted-fg)] mb-6">
-            <Link to="/auth" className="text-[var(--color-accent)] font-semibold hover:underline">Sign in</Link> to leave a review.
+            <Link to="/auth" className="text-[var(--color-accent)] font-semibold hover:underline">{t('auth.signIn')}</Link> {t('shop.signInToReview')}
           </p>
         )}
 
         {reviews.length === 0 ? (
-          <p className="text-sm text-[var(--color-muted-fg)]">No reviews yet. Be the first!</p>
+          <p className="text-sm text-[var(--color-muted-fg)]">{t('shop.noReviewsYet')}</p>
         ) : (
           <ul className="flex flex-col gap-4">
             {reviews.map((r) => (
@@ -324,13 +326,13 @@ export default function ShopDetail() {
                     disabled={flaggedIds.has(r.id)}
                     className="text-xs text-[var(--color-muted-fg)] hover:text-[var(--color-accent)] disabled:hover:text-[var(--color-muted-fg)] shrink-0"
                   >
-                    {flaggedIds.has(r.id) ? 'Flagged' : 'Flag'}
+                    {flaggedIds.has(r.id) ? t('shop.flagged') : t('shop.flag')}
                   </button>
                 </div>
                 <p className="text-sm text-[var(--color-muted-fg)] mt-1">{r.text}</p>
                 {r.ownerReply && (
                   <div className="mt-3 ml-4 pl-3 border-l-2 border-[var(--color-border)]">
-                    <p className="text-xs font-semibold text-[var(--color-accent)]">Response from {shop.name}</p>
+                    <p className="text-xs font-semibold text-[var(--color-accent)]">{t('shop.responseFrom')} {shop.name}</p>
                     <p className="text-sm text-[var(--color-muted-fg)] mt-1">{r.ownerReply}</p>
                   </div>
                 )}
@@ -342,11 +344,11 @@ export default function ShopDetail() {
 
       {shop.hours && (
         <div className="border-t border-[var(--color-border)] mt-8 pt-8">
-          <h2 className="font-display text-xl font-semibold mb-3">Opening Hours</h2>
+          <h2 className="font-display text-xl font-semibold mb-3">{t('shop.openingHours')}</h2>
           <dl className="text-sm divide-y divide-[var(--color-border)]">
             {Object.entries(shop.hours).map(([day, val]) => (
               <div key={day} className="flex justify-between py-1.5">
-                <dt className="font-medium">{dayLabels[day]}</dt>
+                <dt className="font-medium">{t(dayKeys[day])}</dt>
                 <dd className="text-[var(--color-muted-fg)]">{val}</dd>
               </div>
             ))}

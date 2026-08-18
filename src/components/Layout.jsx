@@ -1,35 +1,56 @@
 import { useEffect, useRef, useState } from 'react';
 import { NavLink, Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 import NotificationPrompt from './NotificationPrompt';
 
 const ONBOARDING_EXEMPT_PATHS = ['/onboarding', '/reset-password', '/verify-email'];
 
 const primaryLinks = [
-  { to: '/', label: 'Home', end: true },
-  { to: '/explore', label: 'Explore' },
-  { to: '/near-me', label: 'Near Me' },
-  { to: '/map', label: 'Map' },
-  { to: '/favorites', label: 'Favorites' },
-  { to: '/add-shop', label: 'Add' },
+  { to: '/', key: 'nav.home', end: true },
+  { to: '/explore', key: 'nav.explore' },
+  { to: '/near-me', key: 'nav.nearMe' },
+  { to: '/map', key: 'nav.map' },
+  { to: '/favorites', key: 'nav.favorites' },
+  { to: '/add-shop', key: 'nav.add' },
 ];
 
 const moreLinks = [
-  { to: '/passport', label: 'Passport' },
-  { to: '/news', label: 'News' },
-  { to: '/events', label: 'Events' },
-  { to: '/gear', label: 'Gear' },
-  { to: '/feedback', label: 'Feedback' },
+  { to: '/passport', key: 'nav.passport' },
+  { to: '/news', key: 'nav.news' },
+  { to: '/events', key: 'nav.events' },
+  { to: '/gear', key: 'nav.gear' },
+  { to: '/feedback', key: 'nav.feedback' },
 ];
 
 function getPrimaryLinks(user) {
   const links = [...primaryLinks];
-  if (user?.accountType === 'business') links.push({ to: '/my-shop', label: 'My Shop' });
-  if (user?.isAdmin) links.push({ to: '/admin', label: 'Admin' });
+  if (user?.accountType === 'business') links.push({ to: '/my-shop', key: 'nav.myShop' });
+  if (user?.isAdmin) links.push({ to: '/admin', key: 'nav.admin' });
   return links;
 }
 
+function LanguageToggle() {
+  const { lang, setLang } = useLanguage();
+  return (
+    <div className="flex items-center rounded-full border border-[var(--color-border)] text-xs font-semibold overflow-hidden shrink-0">
+      {['en', 'de'].map((l) => (
+        <button
+          key={l}
+          onClick={() => setLang(l)}
+          className={`px-2.5 py-1.5 transition-colors ${
+            lang === l ? 'bg-[var(--color-primary)] text-[var(--color-primary-fg)]' : 'text-[var(--color-muted-fg)] hover:bg-[var(--color-card)]'
+          }`}
+        >
+          {l.toUpperCase()}
+        </button>
+      ))}
+    </div>
+  );
+}
+
 function MoreMenu({ pillClassName }) {
+  const { t } = useLanguage();
   const [open, setOpen] = useState(false);
   const [menuStyle, setMenuStyle] = useState(null);
   const btnRef = useRef(null);
@@ -68,7 +89,7 @@ function MoreMenu({ pillClassName }) {
           active ? 'bg-[var(--color-primary)] text-[var(--color-primary-fg)]' : 'text-[var(--color-muted-fg)] hover:bg-[var(--color-card)]'
         }`}
       >
-        More ▾
+        {t('nav.more')}
       </button>
       {open && (
         <div ref={menuRef} style={menuStyle} className="w-40 bg-[var(--color-card)] border border-[var(--color-border)] rounded-xl shadow-lg py-1 z-50">
@@ -80,7 +101,7 @@ function MoreMenu({ pillClassName }) {
                 `block px-4 py-2 text-sm transition-colors ${isActive ? 'text-[var(--color-accent)] font-semibold' : 'text-[var(--color-fg)] hover:bg-[var(--color-bg)]'}`
               }
             >
-              {l.label}
+              {t(l.key)}
             </NavLink>
           ))}
         </div>
@@ -91,6 +112,7 @@ function MoreMenu({ pillClassName }) {
 
 export default function Layout({ children }) {
   const { user, loading, logout } = useAuth();
+  const { t } = useLanguage();
   const navigate = useNavigate();
   const location = useLocation();
   const links = getPrimaryLinks(user);
@@ -122,34 +144,37 @@ export default function Layout({ children }) {
                   }`
                 }
               >
-                {l.label}
+                {t(l.key)}
               </NavLink>
             ))}
             <MoreMenu pillClassName="px-3 py-2 rounded-full text-sm font-medium transition-colors" />
           </nav>
-          {user ? (
-            <div className="flex items-center gap-2 shrink-0">
+          <div className="flex items-center gap-2 shrink-0">
+            <LanguageToggle />
+            {user ? (
+              <>
+                <Link
+                  to="/profile"
+                  className="text-sm font-semibold px-4 py-2 rounded-xl border border-[var(--color-border)] hover:bg-[var(--color-card)] transition-colors"
+                >
+                  {user.name}
+                </Link>
+                <button
+                  onClick={() => { logout(); navigate('/'); }}
+                  className="text-sm font-semibold px-4 py-2 rounded-xl border border-[var(--color-border)] hover:bg-[var(--color-card)] transition-colors"
+                >
+                  {t('nav.signOut')}
+                </button>
+              </>
+            ) : (
               <Link
-                to="/profile"
-                className="text-sm font-semibold px-4 py-2 rounded-xl border border-[var(--color-border)] hover:bg-[var(--color-card)] transition-colors"
+                to="/auth"
+                className="text-sm font-semibold px-4 py-2 rounded-xl bg-[var(--color-primary)] text-[var(--color-primary-fg)] hover:opacity-90 transition-opacity shrink-0"
               >
-                {user.name}
+                {t('nav.signIn')}
               </Link>
-              <button
-                onClick={() => { logout(); navigate('/'); }}
-                className="text-sm font-semibold px-4 py-2 rounded-xl border border-[var(--color-border)] hover:bg-[var(--color-card)] transition-colors"
-              >
-                Sign out
-              </button>
-            </div>
-          ) : (
-            <Link
-              to="/auth"
-              className="text-sm font-semibold px-4 py-2 rounded-xl bg-[var(--color-primary)] text-[var(--color-primary-fg)] hover:opacity-90 transition-opacity shrink-0"
-            >
-              Sign in
-            </Link>
-          )}
+            )}
+          </div>
         </div>
         <nav className="sm:hidden flex items-center gap-1 px-5 pb-3 text-sm font-medium overflow-x-auto">
           {links.map((l) => (
@@ -165,10 +190,11 @@ export default function Layout({ children }) {
                 }`
               }
             >
-              {l.label}
+              {t(l.key)}
             </NavLink>
           ))}
           <MoreMenu pillClassName="px-3 py-1.5 rounded-full whitespace-nowrap text-sm font-medium transition-colors" />
+          <LanguageToggle />
         </nav>
       </header>
 
@@ -180,9 +206,9 @@ export default function Layout({ children }) {
         <div className="max-w-6xl mx-auto px-5 sm:px-8 py-10 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-[var(--color-muted-fg)]">
           <p>© 2026 Beantrip</p>
           <div className="flex items-center gap-6">
-            <Link to="/privacy" className="hover:text-[var(--color-accent)]">Privacy</Link>
-            <Link to="/terms" className="hover:text-[var(--color-accent)]">Terms</Link>
-            <Link to="/impressum" className="hover:text-[var(--color-accent)]">Impressum</Link>
+            <Link to="/privacy" className="hover:text-[var(--color-accent)]">{t('footer.privacy')}</Link>
+            <Link to="/terms" className="hover:text-[var(--color-accent)]">{t('footer.terms')}</Link>
+            <Link to="/impressum" className="hover:text-[var(--color-accent)]">{t('footer.impressum')}</Link>
           </div>
         </div>
       </footer>

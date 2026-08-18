@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 import { api } from '../lib/api';
 
 const inputClass = "w-full px-4 py-2.5 rounded-xl border border-[var(--color-border)] bg-[var(--color-card)] text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]";
 
 export default function Auth() {
   const { login, register } = useAuth();
+  const { t } = useLanguage();
   const navigate = useNavigate();
   const [mode, setMode] = useState('login'); // login | register | forgot
   const [form, setForm] = useState({ name: '', email: '', password: '', accountType: 'customer' });
@@ -50,31 +52,31 @@ export default function Auth() {
   if (mode === 'forgot') {
     return (
       <div className="max-w-sm mx-auto px-5 sm:px-8 py-20">
-        <h1 className="font-display text-3xl font-semibold mb-2 text-center">Reset password</h1>
+        <h1 className="font-display text-3xl font-semibold mb-2 text-center">{t('auth.resetTitle')}</h1>
         <p className="text-sm text-[var(--color-muted-fg)] text-center mb-8">
-          Enter your email and we'll send you a link to set a new password.
+          {t('auth.resetSubtitle')}
         </p>
 
         {resetSent ? (
           <p className="text-sm text-center text-[var(--color-accent)]">
-            If that email has an account, a reset link is on its way. Check your inbox.
+            {t('auth.resetSent')}
           </p>
         ) : (
           <form onSubmit={handleForgotSubmit} className="flex flex-col gap-4">
-            <input required type="email" placeholder="Email" value={form.email} onChange={update('email')} className={inputClass} />
+            <input required type="email" placeholder={t('auth.email')} value={form.email} onChange={update('email')} className={inputClass} />
             {error && <p className="text-sm text-red-600">{error}</p>}
             <button
               disabled={submitting}
               className="px-6 py-3 rounded-xl bg-[var(--color-primary)] text-[var(--color-primary-fg)] font-semibold text-sm disabled:opacity-60"
             >
-              {submitting ? 'Sending…' : 'Send reset link'}
+              {submitting ? t('auth.sending') : t('auth.sendResetLink')}
             </button>
           </form>
         )}
 
         <p className="text-sm text-center mt-6 text-[var(--color-muted-fg)]">
           <button onClick={() => { setMode('login'); setResetSent(false); setError(''); }} className="text-[var(--color-accent)] font-semibold hover:underline">
-            Back to sign in
+            {t('auth.backToSignIn')}
           </button>
         </p>
       </div>
@@ -84,10 +86,10 @@ export default function Auth() {
   return (
     <div className="max-w-sm mx-auto px-5 sm:px-8 py-20">
       <h1 className="font-display text-3xl font-semibold mb-2 text-center">
-        {mode === 'login' ? 'Sign in' : 'Create account'}
+        {mode === 'login' ? t('auth.signIn') : t('auth.createAccount')}
       </h1>
       <p className="text-sm text-[var(--color-muted-fg)] text-center mb-8">
-        Save favorites and leave reviews.
+        {t('auth.subtitle')}
       </p>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
@@ -103,7 +105,7 @@ export default function Auth() {
                     : 'border-[var(--color-border)] hover:bg-[var(--color-card)]'
                 }`}
               >
-                Customer
+                {t('auth.customer')}
               </button>
               <button
                 type="button"
@@ -114,23 +116,23 @@ export default function Auth() {
                     : 'border-[var(--color-border)] hover:bg-[var(--color-card)]'
                 }`}
               >
-                Cafe owner
+                {t('auth.cafeOwner')}
               </button>
             </div>
             {form.accountType === 'business' && (
               <p className="text-xs text-[var(--color-muted-fg)] -mt-2">
-                You'll be able to claim your cafe's listing and edit its details after signing up.
+                {t('auth.businessHint')}
               </p>
             )}
-            <input required placeholder="Name" value={form.name} onChange={update('name')} className={inputClass} />
+            <input required placeholder={t('auth.name')} value={form.name} onChange={update('name')} className={inputClass} />
           </>
         )}
-        <input required type="email" placeholder="Email" value={form.email} onChange={update('email')} className={inputClass} />
+        <input required type="email" placeholder={t('auth.email')} value={form.email} onChange={update('email')} className={inputClass} />
         <div className="relative">
           <input
             required
             type={showPassword ? 'text' : 'password'}
-            placeholder="Password"
+            placeholder={t('auth.password')}
             value={form.password}
             onChange={update('password')}
             className={`${inputClass} pr-16`}
@@ -140,7 +142,7 @@ export default function Auth() {
             onClick={() => setShowPassword((s) => !s)}
             className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-semibold text-[var(--color-accent)] hover:underline"
           >
-            {showPassword ? 'Hide' : 'Show'}
+            {showPassword ? t('auth.hide') : t('auth.show')}
           </button>
         </div>
 
@@ -150,7 +152,7 @@ export default function Auth() {
             onClick={() => { setMode('forgot'); setError(''); }}
             className="text-xs text-[var(--color-accent)] hover:underline self-end -mt-2"
           >
-            Forgot password?
+            {t('auth.forgotPassword')}
           </button>
         )}
 
@@ -160,15 +162,15 @@ export default function Auth() {
           disabled={submitting}
           className="px-6 py-3 rounded-xl bg-[var(--color-primary)] text-[var(--color-primary-fg)] font-semibold text-sm disabled:opacity-60"
         >
-          {submitting ? 'Please wait…' : mode === 'login' ? 'Sign in' : 'Create account'}
+          {submitting ? t('auth.pleaseWait') : mode === 'login' ? t('auth.signIn') : t('auth.createAccount')}
         </button>
       </form>
 
       <p className="text-sm text-center mt-6 text-[var(--color-muted-fg)]">
         {mode === 'login' ? (
-          <>No account? <button onClick={() => setMode('register')} className="text-[var(--color-accent)] font-semibold hover:underline">Create one</button></>
+          <>{t('auth.noAccount')} <button onClick={() => setMode('register')} className="text-[var(--color-accent)] font-semibold hover:underline">{t('auth.createOne')}</button></>
         ) : (
-          <>Already have an account? <button onClick={() => setMode('login')} className="text-[var(--color-accent)] font-semibold hover:underline">Sign in</button></>
+          <>{t('auth.haveAccount')} <button onClick={() => setMode('login')} className="text-[var(--color-accent)] font-semibold hover:underline">{t('auth.signIn')}</button></>
         )}
       </p>
     </div>

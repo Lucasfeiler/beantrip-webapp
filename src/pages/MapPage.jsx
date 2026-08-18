@@ -1,9 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
 import { useShops } from '../context/ShopsContext';
+import { useLanguage } from '../context/LanguageContext';
 import { loadGoogleMaps } from '../lib/loadGoogleMaps';
 
 export default function MapPage() {
   const { shops } = useShops();
+  const { t } = useLanguage();
   const mapRef = useRef(null);
   const [status, setStatus] = useState('loading'); // loading | ready | error
   const [errorMessage, setErrorMessage] = useState('');
@@ -54,7 +56,7 @@ export default function MapPage() {
               <div style="font-family: sans-serif; padding: 2px;">
                 <p style="font-weight: 600; margin: 0 0 4px;">${shop.name}</p>
                 <p style="font-size: 12px; color: #666; margin: 0 0 6px;">${shop.address}</p>
-                <a href="/shop/${shop.slug}" style="font-size: 13px; font-weight: 600;">View shop &rarr;</a>
+                <a href="/shop/${shop.slug}" style="font-size: 13px; font-weight: 600;">${t('map.viewShop')}</a>
               </div>
             `);
             infoWindow.open({ map, anchor: marker });
@@ -67,7 +69,7 @@ export default function MapPage() {
           new maps.Marker({
             map,
             position: userLocation,
-            title: 'You are here',
+            title: t('map.youAreHere'),
             icon: {
               path: maps.SymbolPath.CIRCLE,
               scale: 8,
@@ -98,21 +100,21 @@ export default function MapPage() {
 
   return (
     <div className="max-w-6xl mx-auto px-5 sm:px-8 py-12">
-      <h1 className="font-display text-3xl sm:text-4xl font-semibold">Map</h1>
+      <h1 className="font-display text-3xl sm:text-4xl font-semibold">{t('map.title')}</h1>
       <p className="text-[var(--color-muted-fg)] mt-2 max-w-xl">
-        All {located.length} coffee spots with a known location. Click a pin for details.
+        {t('map.subtitle', { count: located.length })}
       </p>
 
       <div className="relative mt-8 w-full h-[600px] rounded-2xl border border-[var(--color-border)] overflow-hidden">
         {status === 'error' && (
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-[var(--color-card)] text-center px-6 py-8 overflow-y-auto">
-            <p className="text-sm font-semibold text-red-600">Couldn't load the map</p>
+            <p className="text-sm font-semibold text-red-600">{t('map.couldntLoad')}</p>
             <p className="text-sm text-[var(--color-fg)] max-w-md break-words">{errorMessage}</p>
           </div>
         )}
         {status === 'loading' && (
           <div className="absolute inset-0 flex items-center justify-center bg-[var(--color-card)]">
-            <p className="text-sm text-[var(--color-muted-fg)]">Loading map…</p>
+            <p className="text-sm text-[var(--color-muted-fg)]">{t('map.loadingMap')}</p>
           </div>
         )}
         <div ref={mapRef} className="w-full h-full" />

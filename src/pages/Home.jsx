@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useShops } from '../context/ShopsContext';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 import { api } from '../lib/api';
 import ShopCard from '../components/ShopCard';
 
@@ -24,6 +25,7 @@ const FEEDBACK_BANNER_KEY = 'beantrip:feedback-banner-dismissed';
 export default function Home() {
   const { shops, cities, loading } = useShops();
   const { user, loading: authLoading } = useAuth();
+  const { t } = useLanguage();
   const navigate = useNavigate();
   const [visitedShops, setVisitedShops] = useState([]);
   const [showFeedbackBanner, setShowFeedbackBanner] = useState(
@@ -67,7 +69,7 @@ export default function Home() {
     .slice(0, 6);
 
   if (loading || (user?.accountType === 'business' && user.onboardingSeen)) {
-    return <div className="max-w-6xl mx-auto px-5 sm:px-8 py-20 text-center text-[var(--color-muted-fg)]">Loading shops…</div>;
+    return <div className="max-w-6xl mx-auto px-5 sm:px-8 py-20 text-center text-[var(--color-muted-fg)]">{t('home.loading')}</div>;
   }
 
   return (
@@ -76,8 +78,8 @@ export default function Home() {
         <div className="bg-[var(--color-primary)] text-[var(--color-primary-fg)]">
           <div className="max-w-6xl mx-auto px-5 sm:px-8 py-2.5 flex items-center justify-between gap-4 text-sm">
             <p className="font-medium">
-              ☕ Beantrip is still a work in progress —{' '}
-              <Link to="/feedback" className="underline underline-offset-2 hover:opacity-80">tell us what to build next</Link>.
+              {t('home.feedbackBannerPrefix')}{' '}
+              <Link to="/feedback" className="underline underline-offset-2 hover:opacity-80">{t('home.feedbackBannerLink')}</Link>.
             </p>
             <button
               onClick={dismissFeedbackBanner}
@@ -91,35 +93,34 @@ export default function Home() {
       )}
       <section className="max-w-6xl mx-auto px-5 sm:px-8 pt-16 pb-14">
         <p className="uppercase tracking-[0.2em] text-xs font-semibold text-[var(--color-accent)] mb-4">
-          Your Specialty Coffee Finder
+          {t('home.kicker')}
         </p>
         <h1 className="font-display text-4xl sm:text-5xl md:text-6xl font-semibold leading-[1.05] max-w-2xl">
-          Find Your Perfect Coffee
+          {t('home.title')}
         </h1>
         <p className="mt-5 text-base sm:text-lg text-[var(--color-muted-fg)] max-w-xl">
-          Beantrip takes you to the world's best specialty coffee shops. Filter by roast type,
-          brewing method, and ambiance to find your next favorite spot.
+          {t('home.subtitle')}
         </p>
         <div className="mt-8 flex flex-wrap gap-3">
           <Link
             to="/explore"
             className="px-6 py-3 rounded-xl bg-[var(--color-primary)] text-[var(--color-primary-fg)] font-semibold text-sm hover:opacity-90 transition-opacity"
           >
-            Explore shops
+            {t('home.exploreShops')}
           </Link>
           <Link
             to="/auth"
             className="px-6 py-3 rounded-xl border border-[var(--color-border)] font-semibold text-sm hover:bg-[var(--color-card)] transition-colors"
           >
-            Save favorites
+            {t('home.saveFavorites')}
           </Link>
         </div>
       </section>
 
       <section className="max-w-6xl mx-auto px-5 sm:px-8 pb-16">
-        <h2 className="font-display text-2xl font-semibold mb-1">Browse by city</h2>
+        <h2 className="font-display text-2xl font-semibold mb-1">{t('home.browseByCity')}</h2>
         <p className="text-sm text-[var(--color-muted-fg)] mb-6">
-          Pick a city to explore its specialty coffee scene.
+          {t('home.browseByCitySubtitle')}
         </p>
         <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
           {cities.map((city) => (
@@ -137,7 +138,7 @@ export default function Home() {
               <div className="absolute inset-0" style={{ background: 'linear-gradient(180deg, rgba(0,0,0,0) 30%, rgba(0,0,0,0.75) 100%)' }} />
               <div className="relative text-white">
                 <p className="font-display font-semibold">{city}</p>
-                <p className="text-xs opacity-80">{cityCount(city)} spots</p>
+                <p className="text-xs opacity-80">{cityCount(city)} {t('home.spots')}</p>
               </div>
             </Link>
           ))}
@@ -147,11 +148,11 @@ export default function Home() {
       <section className="max-w-6xl mx-auto px-5 sm:px-8 pb-16">
         <div className="flex items-end justify-between mb-6">
           <div>
-            <h2 className="font-display text-2xl font-semibold mb-1">{personalized ? 'Picked for You' : 'Featured Shops'}</h2>
-            <p className="text-sm text-[var(--color-muted-fg)]">{personalized ? 'Matched to your taste.' : 'Top-rated specialty coffee.'}</p>
+            <h2 className="font-display text-2xl font-semibold mb-1">{personalized ? t('home.pickedForYou') : t('home.featuredShops')}</h2>
+            <p className="text-sm text-[var(--color-muted-fg)]">{personalized ? t('home.pickedForYouSubtitle') : t('home.featuredSubtitle')}</p>
           </div>
           <Link to="/explore" className="text-sm font-semibold text-[var(--color-accent)] hover:underline shrink-0">
-            View all
+            {t('home.viewAll')}
           </Link>
         </div>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -163,8 +164,8 @@ export default function Home() {
 
       {recommended.length > 0 && (
         <section className="max-w-6xl mx-auto px-5 sm:px-8 pb-16">
-          <h2 className="font-display text-2xl font-semibold mb-1">More Like What You've Tried</h2>
-          <p className="text-sm text-[var(--color-muted-fg)] mb-6">Based on shops you've visited.</p>
+          <h2 className="font-display text-2xl font-semibold mb-1">{t('home.moreLikeTried')}</h2>
+          <p className="text-sm text-[var(--color-muted-fg)] mb-6">{t('home.moreLikeTriedSubtitle')}</p>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {recommended.map((shop) => (
               <ShopCard key={shop.id} shop={shop} />

@@ -1,18 +1,19 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { api } from '../lib/api';
-
-const CATEGORIES = [
-  { value: 'idea', label: '💡 Idea' },
-  { value: 'bug', label: '🐛 Something broken' },
-  { value: 'general', label: '💬 General thoughts' },
-];
+import { useLanguage } from '../context/LanguageContext';
 
 function formatDate(dateString) {
   return new Date(dateString).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' });
 }
 
 export default function Feedback() {
+  const { t } = useLanguage();
+  const CATEGORIES = [
+    { value: 'idea', label: t('feedback.categoryIdea') },
+    { value: 'bug', label: t('feedback.categoryBug') },
+    { value: 'general', label: t('feedback.categoryGeneral') },
+  ];
   const [category, setCategory] = useState('idea');
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
@@ -45,27 +46,25 @@ export default function Feedback() {
     return (
       <div className="max-w-lg mx-auto px-5 sm:px-8 py-24 text-center">
         <p className="text-4xl mb-4">☕🙏</p>
-        <p className="font-display text-2xl mb-3">Thank you!</p>
+        <p className="font-display text-2xl mb-3">{t('feedback.thanksTitle')}</p>
         <p className="text-sm text-[var(--color-muted-fg)]">
-          Beantrip is still very much a work in progress, and notes like yours are exactly what shapes what we build next.
-          We read every single one.
+          {t('feedback.thanksBody')}
         </p>
-        <Link to="/" className="inline-block mt-6 text-[var(--color-accent)] font-semibold hover:underline">Back to Beantrip</Link>
+        <Link to="/" className="inline-block mt-6 text-[var(--color-accent)] font-semibold hover:underline">{t('feedback.backHome')}</Link>
       </div>
     );
   }
 
   return (
     <div className="max-w-lg mx-auto px-5 sm:px-8 py-12">
-      <h1 className="font-display text-3xl sm:text-4xl font-semibold">Help shape Beantrip</h1>
+      <h1 className="font-display text-3xl sm:text-4xl font-semibold">{t('feedback.title')}</h1>
       <p className="text-[var(--color-muted-fg)] mt-2">
-        Beantrip is still a work in progress — tell us what's missing, what's broken, or what you'd love to see.
-        This app is built based on what people like you tell us.
+        {t('feedback.subtitle')}
       </p>
 
       <form onSubmit={handleSubmit} className="mt-8 flex flex-col gap-6">
         <div>
-          <span className="text-sm font-medium">What's this about?</span>
+          <span className="text-sm font-medium">{t('feedback.whatAbout')}</span>
           <div className="flex flex-wrap gap-2 mt-2">
             {CATEGORIES.map((c) => (
               <button
@@ -85,7 +84,7 @@ export default function Feedback() {
         </div>
 
         <div>
-          <span className="text-sm font-medium">How's Beantrip working for you so far? <span className="text-[var(--color-muted-fg)] font-normal">(optional)</span></span>
+          <span className="text-sm font-medium">{t('feedback.ratingLabel')} <span className="text-[var(--color-muted-fg)] font-normal">{t('feedback.optional')}</span></span>
           <div className="flex gap-1 mt-2">
             {[1, 2, 3, 4, 5].map((n) => (
               <button
@@ -104,13 +103,13 @@ export default function Feedback() {
         </div>
 
         <label className="flex flex-col gap-1.5">
-          <span className="text-sm font-medium">Your feedback</span>
+          <span className="text-sm font-medium">{t('feedback.messageLabel')}</span>
           <textarea
             required
             rows={5}
             value={message}
             onChange={(e) => setMessage(e.target.value)}
-            placeholder="What would make Beantrip better for you?"
+            placeholder={t('feedback.messagePlaceholder')}
             className="w-full px-4 py-2.5 rounded-xl border border-[var(--color-border)] bg-[var(--color-card)] text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
           />
         </label>
@@ -122,14 +121,14 @@ export default function Feedback() {
           type="submit"
           className="px-6 py-3 rounded-xl bg-[var(--color-primary)] text-[var(--color-primary-fg)] font-semibold text-sm hover:opacity-90 transition-opacity disabled:opacity-60"
         >
-          {submitting ? 'Sending…' : 'Send feedback'}
+          {submitting ? t('feedback.sending') : t('feedback.send')}
         </button>
       </form>
 
       {shipped?.length > 0 && (
         <div className="mt-14">
-          <h2 className="font-display text-xl font-semibold">You said, we did</h2>
-          <p className="text-sm text-[var(--color-muted-fg)] mt-1">Changes made because of feedback like yours.</p>
+          <h2 className="font-display text-xl font-semibold">{t('feedback.shippedTitle')}</h2>
+          <p className="text-sm text-[var(--color-muted-fg)] mt-1">{t('feedback.shippedSubtitle')}</p>
           <ul className="mt-4 flex flex-col gap-3">
             {shipped.map((item) => (
               <li key={item.id} className="bg-[var(--color-card)] border border-[var(--color-border)] rounded-xl px-4 py-3">

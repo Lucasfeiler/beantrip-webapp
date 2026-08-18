@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { api } from '../lib/api';
+import { useLanguage } from '../context/LanguageContext';
 
 function formatDistance(meters) {
   if (meters < 1000) return `${meters} m`;
@@ -7,6 +8,7 @@ function formatDistance(meters) {
 }
 
 export default function NearMe() {
+  const { t } = useLanguage();
   const [status, setStatus] = useState('prompting'); // prompting | loading | ready | denied | error
   const [errorMessage, setErrorMessage] = useState('');
   const [shops, setShops] = useState([]);
@@ -14,7 +16,7 @@ export default function NearMe() {
   const requestLocation = () => {
     if (!navigator.geolocation) {
       setStatus('error');
-      setErrorMessage("Your browser doesn't support location lookup.");
+      setErrorMessage(t('nearMe.noGeoSupport'));
       return;
     }
 
@@ -46,49 +48,49 @@ export default function NearMe() {
 
   return (
     <div className="max-w-3xl mx-auto px-5 sm:px-8 py-12">
-      <h1 className="font-display text-3xl sm:text-4xl font-semibold">Near Me</h1>
+      <h1 className="font-display text-3xl sm:text-4xl font-semibold">{t('nearMe.title')}</h1>
       <p className="text-[var(--color-muted-fg)] mt-2">
-        Coffee spots close to wherever you are right now, sourced from OpenStreetMap.
+        {t('nearMe.subtitle')}
       </p>
 
       {status === 'loading' && (
         <div className="mt-10 flex flex-col items-center gap-3 text-[var(--color-muted-fg)]">
           <div className="w-8 h-8 rounded-full border-2 border-[var(--color-border)] border-t-[var(--color-accent)] animate-spin" />
-          <p>Finding coffee spots near you…</p>
+          <p>{t('nearMe.locating')}</p>
         </div>
       )}
 
       {status === 'denied' && (
         <div className="mt-10 bg-[var(--color-card)] border border-[var(--color-border)] rounded-xl p-5">
-          <p className="font-semibold">Location access was denied.</p>
+          <p className="font-semibold">{t('nearMe.deniedTitle')}</p>
           <p className="text-sm text-[var(--color-muted-fg)] mt-1">
-            Enable location access for this site in your browser settings, then try again.
+            {t('nearMe.deniedBody')}
           </p>
           <button
             onClick={requestLocation}
             className="mt-4 px-5 py-2 rounded-xl bg-[var(--color-primary)] text-[var(--color-primary-fg)] font-semibold text-sm"
           >
-            Try again
+            {t('nearMe.tryAgain')}
           </button>
         </div>
       )}
 
       {status === 'error' && (
         <div className="mt-10 bg-[var(--color-card)] border border-[var(--color-border)] rounded-xl p-5">
-          <p className="font-semibold">Couldn't load nearby coffee spots.</p>
+          <p className="font-semibold">{t('nearMe.errorTitle')}</p>
           <p className="text-sm text-[var(--color-muted-fg)] mt-1">{errorMessage}</p>
           <button
             onClick={requestLocation}
             className="mt-4 px-5 py-2 rounded-xl bg-[var(--color-primary)] text-[var(--color-primary-fg)] font-semibold text-sm"
           >
-            Try again
+            {t('nearMe.tryAgain')}
           </button>
         </div>
       )}
 
       {status === 'ready' && shops.length === 0 && (
         <p className="mt-10 text-[var(--color-muted-fg)]">
-          No coffee spots found nearby. Try again in a busier area.
+          {t('nearMe.empty')}
         </p>
       )}
 
@@ -109,7 +111,7 @@ export default function NearMe() {
                     rel="noreferrer"
                     className="text-sm font-semibold text-[var(--color-accent)] hover:underline mt-1 inline-block"
                   >
-                    Website
+                    {t('nearMe.website')}
                   </a>
                 )}
               </div>

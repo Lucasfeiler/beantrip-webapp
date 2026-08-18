@@ -1,10 +1,12 @@
 import { useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useShops } from '../context/ShopsContext';
+import { useLanguage } from '../context/LanguageContext';
 import ShopCard from '../components/ShopCard';
 
 export default function Explore() {
   const { shops, cities, allTags, loading } = useShops();
+  const { t } = useLanguage();
   const [params, setParams] = useSearchParams();
   const cityParam = params.get('city') || '';
   const [query, setQuery] = useState('');
@@ -24,18 +26,18 @@ export default function Explore() {
   }, [shops, cityParam, activeTag, query, openNow, todayKey]);
 
   if (loading) {
-    return <div className="max-w-6xl mx-auto px-5 sm:px-8 py-20 text-center text-[var(--color-muted-fg)]">Loading shops…</div>;
+    return <div className="max-w-6xl mx-auto px-5 sm:px-8 py-20 text-center text-[var(--color-muted-fg)]">{t('explore.loading')}</div>;
   }
 
   return (
     <div className="max-w-6xl mx-auto px-5 sm:px-8 py-12">
-      <h1 className="font-display text-3xl sm:text-4xl font-semibold">Explore the Coffee Scene</h1>
-      <p className="text-[var(--color-muted-fg)] mt-2">Find your perfect specialty coffee shop.</p>
+      <h1 className="font-display text-3xl sm:text-4xl font-semibold">{t('explore.title')}</h1>
+      <p className="text-[var(--color-muted-fg)] mt-2">{t('explore.subtitle')}</p>
 
       <div className="mt-6 flex flex-col gap-4">
         <input
           type="text"
-          placeholder="Search by name or neighborhood…"
+          placeholder={t('explore.searchPlaceholder')}
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           className="w-full sm:w-96 px-4 py-2.5 rounded-full border border-[var(--color-border)] bg-[var(--color-card)] text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
@@ -50,7 +52,7 @@ export default function Explore() {
                 : 'border-[var(--color-border)] hover:bg-[var(--color-card)]'
             }`}
           >
-            Open now
+            {t('explore.openNow')}
           </button>
 
           <select
@@ -61,7 +63,7 @@ export default function Explore() {
             }}
             className="px-4 py-1.5 rounded-full text-sm font-medium border border-[var(--color-border)] bg-[var(--color-card)] focus:outline-none"
           >
-            <option value="">All cities</option>
+            <option value="">{t('explore.allCities')}</option>
             {cities.map((c) => (
               <option key={c} value={c}>{c}</option>
             ))}
@@ -72,15 +74,15 @@ export default function Explore() {
             onChange={(e) => setActiveTag(e.target.value)}
             className="px-4 py-1.5 rounded-full text-sm font-medium border border-[var(--color-border)] bg-[var(--color-card)] focus:outline-none"
           >
-            <option value="">All filters</option>
-            {allTags.map((t) => (
-              <option key={t} value={t}>{t}</option>
+            <option value="">{t('explore.allFilters')}</option>
+            {allTags.map((tag) => (
+              <option key={tag} value={tag}>{tag}</option>
             ))}
           </select>
         </div>
       </div>
 
-      <p className="mt-6 text-sm text-[var(--color-muted-fg)]">{filtered.length} shops found</p>
+      <p className="mt-6 text-sm text-[var(--color-muted-fg)]">{filtered.length} {t('explore.shopsFound')}</p>
 
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 mt-4">
         {filtered.map((shop) => (
@@ -90,8 +92,8 @@ export default function Explore() {
 
       {filtered.length === 0 && (
         <div className="text-center py-20 text-[var(--color-muted-fg)]">
-          <p className="font-display text-xl mb-2">No shops match those filters</p>
-          <p className="text-sm">Try clearing a filter or searching something broader.</p>
+          <p className="font-display text-xl mb-2">{t('explore.noMatchTitle')}</p>
+          <p className="text-sm">{t('explore.noMatchSubtitle')}</p>
         </div>
       )}
     </div>

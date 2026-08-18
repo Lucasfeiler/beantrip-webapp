@@ -1,6 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useFavorites } from '../context/FavoritesContext';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 import PhotoGallery from './PhotoGallery';
 
 export function isTopVoted(shop) {
@@ -15,6 +16,7 @@ function beanGlyph(seed) {
 }
 
 export function ShopThumb({ shop, className = '' }) {
+  const { t } = useLanguage();
   const hue = beanGlyph(shop.slug);
 
   if (shop.image) {
@@ -28,7 +30,7 @@ export function ShopThumb({ shop, className = '' }) {
         />
         {shop.placeholder && (
           <span className="absolute top-2 left-2 text-[10px] font-semibold uppercase tracking-wide bg-[var(--color-card)]/90 text-[var(--color-fg)] px-2 py-0.5 rounded-full">
-            Needs details
+            {t('card.needsDetails')}
           </span>
         )}
       </div>
@@ -54,7 +56,7 @@ export function ShopThumb({ shop, className = '' }) {
       </svg>
       {shop.placeholder && (
         <span className="absolute top-2 left-2 text-[10px] font-semibold uppercase tracking-wide bg-[var(--color-card)]/90 text-[var(--color-fg)] px-2 py-0.5 rounded-full">
-          Needs details
+          {t('card.needsDetails')}
         </span>
       )}
     </div>
@@ -64,6 +66,7 @@ export function ShopThumb({ shop, className = '' }) {
 export default function ShopCard({ shop }) {
   const { isFavorite, toggleFavorite } = useFavorites();
   const { user } = useAuth();
+  const { t } = useLanguage();
   const navigate = useNavigate();
   const fav = isFavorite(shop.id);
 
@@ -79,7 +82,7 @@ export default function ShopCard({ shop }) {
       </Link>
       <button
         onClick={handleFavoriteClick}
-        aria-label={fav ? 'Remove from favorites' : 'Save to favorites'}
+        aria-label={fav ? t('card.removeFavorite') : t('card.saveFavorite')}
         className={`absolute top-2 right-2 w-8 h-8 rounded-full flex items-center justify-center text-sm transition-colors ${
           fav ? 'bg-[var(--color-primary)] text-[var(--color-primary-fg)]' : 'bg-[var(--color-card)]/90 text-[var(--color-fg)] hover:bg-[var(--color-card)]'
         }`}
@@ -91,12 +94,12 @@ export default function ShopCard({ shop }) {
           <h3 className="font-display font-semibold text-base leading-snug">{shop.name}</h3>
           {isTopVoted(shop) && (
             <span className="shrink-0 text-[10px] font-semibold uppercase tracking-wide bg-[var(--color-primary)] text-[var(--color-primary-fg)] px-2 py-1 rounded-full">
-              ⭐ Top Voted
+              {t('shop.topVoted')}
             </span>
           )}
         </div>
         <p className="text-xs text-[var(--color-muted-fg)] mt-1">
-          {shop.rating > 0 ? `★ ${shop.rating.toFixed(1)}` : '—'} ({shop.reviewCount} reviews)
+          {shop.rating > 0 ? `★ ${shop.rating.toFixed(1)}` : '—'} ({shop.reviewCount} {t('shop.reviews')})
         </p>
         <p className="text-sm text-[var(--color-muted-fg)] mt-2 line-clamp-2">
           {shop.address}
@@ -106,20 +109,20 @@ export default function ShopCard({ shop }) {
         )}
         {shop.tags?.length > 0 && (
           <div className="flex flex-wrap gap-1 mt-3">
-            {shop.tags.slice(0, 4).map((t) => (
-              <span key={t} className="text-[10px] uppercase tracking-wide bg-[var(--color-border)] text-[var(--color-muted-fg)] px-2 py-1 rounded-full">
-                {t}
+            {shop.tags.slice(0, 4).map((tag) => (
+              <span key={tag} className="text-[10px] uppercase tracking-wide bg-[var(--color-border)] text-[var(--color-muted-fg)] px-2 py-1 rounded-full">
+                {tag}
               </span>
             ))}
             {shop.tags.length > 4 && (
               <span className="text-[10px] uppercase tracking-wide text-[var(--color-muted-fg)] px-2 py-1">
-                +more
+                {t('card.moreTag')}
               </span>
             )}
           </div>
         )}
         <p className="text-xs text-[var(--color-muted-fg)] mt-3">
-          Today: {shop.hours ? shop.hours[todayKey()] || '—' : '—'}
+          {t('card.today')} {shop.hours ? shop.hours[todayKey()] || '—' : '—'}
         </p>
       </Link>
     </div>
