@@ -31,11 +31,22 @@ export default function Home() {
   const [showFeedbackBanner, setShowFeedbackBanner] = useState(
     () => localStorage.getItem(FEEDBACK_BANNER_KEY) !== 'true'
   );
+  const [heroFading, setHeroFading] = useState(false);
+  const [heroCollapsed, setHeroCollapsed] = useState(false);
 
   const dismissFeedbackBanner = () => {
     localStorage.setItem(FEEDBACK_BANNER_KEY, 'true');
     setShowFeedbackBanner(false);
   };
+
+  useEffect(() => {
+    const fadeTimer = setTimeout(() => setHeroFading(true), 2200);
+    const collapseTimer = setTimeout(() => setHeroCollapsed(true), 2800);
+    return () => {
+      clearTimeout(fadeTimer);
+      clearTimeout(collapseTimer);
+    };
+  }, []);
 
   useEffect(() => {
     if (authLoading || !user) return;
@@ -91,7 +102,15 @@ export default function Home() {
           </div>
         </div>
       )}
-      <section className="relative overflow-hidden">
+      <section
+        className="relative overflow-hidden"
+        style={{
+          opacity: heroFading ? 0 : 1,
+          maxHeight: heroCollapsed ? '0px' : '900px',
+          transition: 'opacity 0.6s ease, max-height 0.6s ease',
+          pointerEvents: heroFading ? 'none' : 'auto',
+        }}
+      >
         <div
           className="absolute -top-40 -left-32 w-96 h-96 rounded-full opacity-30 blur-3xl pointer-events-none"
           style={{ background: 'var(--color-accent)', animation: 'hero-blob 9s ease-in-out infinite alternate' }}
