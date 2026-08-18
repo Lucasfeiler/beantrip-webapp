@@ -91,29 +91,53 @@ export default function Home() {
           </div>
         </div>
       )}
-      <section className="max-w-6xl mx-auto px-5 sm:px-8 pt-16 pb-14">
-        <p className="uppercase tracking-[0.2em] text-xs font-semibold text-[var(--color-accent)] mb-4">
-          {t('home.kicker')}
-        </p>
-        <h1 className="font-display text-4xl sm:text-5xl md:text-6xl font-semibold leading-[1.05] max-w-2xl">
-          {t('home.title')}
-        </h1>
-        <p className="mt-5 text-base sm:text-lg text-[var(--color-muted-fg)] max-w-xl">
-          {t('home.subtitle')}
-        </p>
-        <div className="mt-8 flex flex-wrap gap-3">
-          <Link
-            to="/explore"
-            className="px-6 py-3 rounded-xl bg-[var(--color-primary)] text-[var(--color-primary-fg)] font-semibold text-sm hover:opacity-90 transition-opacity"
+      <section className="relative overflow-hidden min-h-[440px] sm:min-h-[520px] flex items-center">
+        <img
+          src="/images/shops/gallery/man-vs-machine-muellerstrasse-2.jpg"
+          alt=""
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        <div
+          className="absolute inset-0"
+          style={{ background: 'linear-gradient(100deg, rgba(76,43,8,0.94) 5%, rgba(76,43,8,0.8) 45%, rgba(76,43,8,0.45) 100%)' }}
+        />
+
+        <div className="relative max-w-6xl mx-auto px-5 sm:px-8 py-16 w-full">
+          <p
+            className="uppercase tracking-[0.2em] text-xs font-semibold text-[var(--color-accent)] mb-4"
+            style={{ animation: 'splash-fade-in 0.7s ease-out both' }}
           >
-            {t('home.exploreShops')}
-          </Link>
-          <Link
-            to="/auth"
-            className="px-6 py-3 rounded-xl border border-[var(--color-border)] font-semibold text-sm hover:bg-[var(--color-card)] transition-colors"
+            {t('home.kicker')}
+          </p>
+          <h1
+            className="font-display text-4xl sm:text-5xl md:text-6xl font-semibold leading-[1.05] max-w-2xl text-white"
+            style={{ animation: 'splash-fade-in 0.7s ease-out 0.12s both' }}
           >
-            {t('home.saveFavorites')}
-          </Link>
+            {t('home.title')}
+          </h1>
+          <p
+            className="mt-5 text-base sm:text-lg text-white/80 max-w-xl"
+            style={{ animation: 'splash-fade-in 0.7s ease-out 0.24s both' }}
+          >
+            {t('home.subtitle')}
+          </p>
+          <div
+            className="mt-8 flex flex-wrap gap-3"
+            style={{ animation: 'splash-fade-in 0.7s ease-out 0.36s both' }}
+          >
+            <Link
+              to="/explore"
+              className="px-6 py-3 rounded-xl bg-[var(--color-primary)] text-[var(--color-primary-fg)] font-semibold text-sm hover:opacity-90 transition-opacity"
+            >
+              {t('home.exploreShops')}
+            </Link>
+            <Link
+              to="/auth"
+              className="px-6 py-3 rounded-xl border border-white/30 text-white font-semibold text-sm hover:bg-white/10 transition-colors"
+            >
+              {t('home.saveFavorites')}
+            </Link>
+          </div>
         </div>
       </section>
 
