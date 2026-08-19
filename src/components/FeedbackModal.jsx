@@ -4,8 +4,6 @@ import { api } from '../lib/api';
 import { useLanguage } from '../context/LanguageContext';
 
 const SUBMITTED_KEY = 'beantrip:feedback-modal-submitted';
-const DISMISSED_AT_KEY = 'beantrip:feedback-modal-dismissed-at';
-const DISMISS_COOLDOWN_MS = 3 * 24 * 60 * 60 * 1000; // 3 days
 const SHOW_DELAY_MS = 1500;
 
 const SKIP_PATHS = ['/feedback', '/auth', '/onboarding', '/reset-password', '/verify-email'];
@@ -26,8 +24,6 @@ export default function FeedbackModal() {
   useEffect(() => {
     if (SKIP_PATHS.includes(location.pathname)) return;
     if (localStorage.getItem(SUBMITTED_KEY)) return;
-    const dismissedAt = Number(localStorage.getItem(DISMISSED_AT_KEY) || 0);
-    if (Date.now() - dismissedAt < DISMISS_COOLDOWN_MS) return;
 
     const timer = setTimeout(() => setVisible(true), SHOW_DELAY_MS);
     return () => clearTimeout(timer);
@@ -43,7 +39,6 @@ export default function FeedbackModal() {
   }, [visible]);
 
   const dismiss = () => {
-    localStorage.setItem(DISMISSED_AT_KEY, String(Date.now()));
     setVisible(false);
   };
 
