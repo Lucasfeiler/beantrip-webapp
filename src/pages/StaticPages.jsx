@@ -63,8 +63,13 @@ export function Privacy() {
         <a href="/impressum" className="text-[var(--color-accent)] font-semibold hover:underline">Impressum</a> page.</p>
 
       <H2>Cookies and local storage</H2>
-      <p>We don't use advertising or tracking cookies. Your sign-in session is kept in your browser's
-        local storage, not a cookie, and isn't shared with third parties.</p>
+      <p>Your sign-in session and preferences (like your language choice) are kept in your browser's
+        local storage, not a cookie, and aren't shared with third parties. When you first visit
+        Beantrip, we ask whether you're okay with optional cookies used for analytics and advertising.
+        We only load those if you say yes, and you can decline without losing access to any feature of
+        the app. At the time of writing we haven't yet connected an advertising platform, so declining
+        or accepting currently has no practical effect — but the setting is in place so tracking never
+        starts without your permission once we do.</p>
 
       <H2>Changes to this policy</H2>
       <p>If this policy changes in a meaningful way, we'll update the date at the top of this page.</p>

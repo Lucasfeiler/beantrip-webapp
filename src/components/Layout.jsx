@@ -4,6 +4,8 @@ import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import NotificationPrompt from './NotificationPrompt';
 import FeedbackModal from './FeedbackModal';
+import CookieConsent from './CookieConsent';
+import { initAdTracking } from '../lib/adTracking';
 
 const ONBOARDING_EXEMPT_PATHS = ['/onboarding', '/reset-password', '/verify-email'];
 
@@ -124,6 +126,10 @@ export default function Layout({ children }) {
     navigate('/onboarding');
   }, [loading, user, location.pathname, navigate]);
 
+  useEffect(() => {
+    initAdTracking();
+  }, []);
+
   return (
     <div className="min-h-screen flex flex-col">
       <header className="border-b border-[var(--color-border)] bg-[var(--color-bg)]/80 backdrop-blur sticky top-0 z-40">
@@ -203,6 +209,7 @@ export default function Layout({ children }) {
 
       <FeedbackModal />
       <NotificationPrompt />
+      <CookieConsent />
 
       <footer className="border-t border-[var(--color-border)] mt-20">
         <div className="max-w-6xl mx-auto px-5 sm:px-8 py-10 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-[var(--color-muted-fg)]">
