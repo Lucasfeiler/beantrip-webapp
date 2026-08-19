@@ -76,7 +76,18 @@ model Shop {
   claims       ShopClaim[]
   userPhotos   Photo[]
   events       ShopEvent[]
+  beans        Bean[]
   owner        User?      @relation(fields: [ownerId], references: [id], onDelete: SetNull)
+}
+
+model Bean {
+  id        Int      @id @default(autoincrement())
+  shopId    Int
+  shop      Shop     @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  name      String
+  roast     String?
+  origin    String?
+  createdAt DateTime @default(now())
 }
 
 model ShopEvent {

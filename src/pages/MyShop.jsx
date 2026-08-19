@@ -178,6 +178,15 @@ function EditShopForm({ shop, onSaved }) {
 
   const [photoError, setPhotoError] = useState('');
   const [uploading, setUploading] = useState(false);
+  const [deletingPhoto, setDeletingPhoto] = useState(null);
+
+  const [beans, setBeans] = useState(shop.beans ?? []);
+  const [beanName, setBeanName] = useState('');
+  const [beanRoast, setBeanRoast] = useState('');
+  const [beanOrigin, setBeanOrigin] = useState('');
+  const [beanError, setBeanError] = useState('');
+  const [addingBean, setAddingBean] = useState(false);
+  const [deletingBeanId, setDeletingBeanId] = useState(null);
 
   const handleSave = async (e) => {
     e.preventDefault();
@@ -189,7 +198,7 @@ function EditShopForm({ shop, onSaved }) {
       const payload = { description, tags: tagList, website, instagram, espressoMachine, beanType: beanType || null, taste: taste || null, originCountry: originCountry || null, hours };
       if (shop.isPremium) payload.beansInStock = beansInStock;
       const shopRes = await api.updateShop(shop.slug, payload);
-      onSaved(shopRes.shop);
+      onSaved({ ...shopRes.shop, beans });
       setSaved(true);
     } catch (err) {
       setError(err.message);
@@ -205,12 +214,56 @@ function EditShopForm({ shop, onSaved }) {
     setUploading(true);
     try {
       const { shop: updated } = await api.uploadShopPhoto(shop.slug, file);
-      onSaved(updated);
+      onSaved({ ...updated, beans });
     } catch (err) {
       setPhotoError(err.message);
     } finally {
       setUploading(false);
       e.target.value = '';
+    }
+  };
+
+  const handlePhotoDelete = async (url) => {
+    setPhotoError('');
+    setDeletingPhoto(url);
+    try {
+      const { shop: updated } = await api.deleteShopPhoto(shop.slug, url);
+      onSaved({ ...updated, beans });
+    } catch (err) {
+      setPhotoError(err.message);
+    } finally {
+      setDeletingPhoto(null);
+    }
+  };
+
+  const handleAddBean = async (e) => {
+    e.preventDefault();
+    if (!beanName.trim()) return;
+    setBeanError('');
+    setAddingBean(true);
+    try {
+      const { bean } = await api.addBean(shop.slug, { name: beanName.trim(), roast: beanRoast || null, origin: beanOrigin || null });
+      setBeans((bs) => [...bs, bean]);
+      setBeanName('');
+      setBeanRoast('');
+      setBeanOrigin('');
+    } catch (err) {
+      setBeanError(err.message);
+    } finally {
+      setAddingBean(false);
+    }
+  };
+
+  const handleDeleteBean = async (beanId) => {
+    setBeanError('');
+    setDeletingBeanId(beanId);
+    try {
+      await api.deleteBean(shop.slug, beanId);
+      setBeans((bs) => bs.filter((b) => b.id !== beanId));
+    } catch (err) {
+      setBeanError(err.message);
+    } finally {
+      setDeletingBeanId(null);
     }
   };
 
@@ -243,7 +296,18 @@ function EditShopForm({ shop, onSaved }) {
         {shop.images?.length > 0 && (
           <div className="flex gap-2 flex-wrap mb-3">
             {shop.images.map((src) => (
-              <img key={src} src={src} alt={shop.name} className="w-20 h-20 rounded-lg object-cover" />
+              <div key={src} className="relative w-20 h-20">
+                <img src={src} alt={shop.name} className="w-full h-full rounded-lg object-cover" />
+                <button
+                  type="button"
+                  onClick={() => handlePhotoDelete(src)}
+                  disabled={deletingPhoto === src}
+                  aria-label="Remove photo"
+                  className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-red-600 text-white text-xs flex items-center justify-center disabled:opacity-60"
+                >
+                  {deletingPhoto === src ? '…' : '×'}
+                </button>
+              </div>
             ))}
           </div>
         )}
@@ -253,6 +317,66 @@ function EditShopForm({ shop, onSaved }) {
         </label>
         <p className="text-xs text-[var(--color-muted-fg)] mt-1">JPEG, PNG, or WebP — up to 5MB</p>
         {photoError && <p className="text-sm text-red-600 mt-2">{photoError}</p>}
+      </div>
+
+      <div className="mt-6">
+        <p className="text-sm font-semibold mb-2">Beans</p>
+        <p className="text-xs text-[var(--color-muted-fg)] mb-3">The beans you currently serve. Add new ones, remove any you no longer carry.</p>
+        {beans.length > 0 && (
+          <ul className="flex flex-col gap-2 mb-3">
+            {beans.map((b) => (
+              <li key={b.id} className="flex items-center justify-between bg-[var(--color-card)] border border-[var(--color-border)] rounded-xl px-3 py-2">
+                <div>
+                  <p className="text-sm font-semibold">{b.name}</p>
+                  {(b.roast || b.origin) && (
+                    <p className="text-xs text-[var(--color-muted-fg)] capitalize">
+                      {[b.roast, b.origin?.replace('-', ' ')].filter(Boolean).join(' · ')}
+                    </p>
+                  )}
+                </div>
+                <button
+                  type="button"
+                  onClick={() => handleDeleteBean(b.id)}
+                  disabled={deletingBeanId === b.id}
+                  className="text-xs font-semibold text-red-600 hover:underline disabled:opacity-60"
+                >
+                  {deletingBeanId === b.id ? 'Removing…' : 'Remove'}
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
+        <form onSubmit={handleAddBean} className="flex flex-wrap gap-2 items-start">
+          <input
+            value={beanName}
+            onChange={(e) => setBeanName(e.target.value)}
+            placeholder="Bean name, e.g. Ethiopia Guji"
+            className={`${inputClass} flex-1 min-w-[10rem]`}
+          />
+          <select value={beanRoast} onChange={(e) => setBeanRoast(e.target.value)} className={`${inputClass} w-auto`}>
+            <option value="">Roast</option>
+            <option value="light">Light</option>
+            <option value="medium">Medium</option>
+            <option value="dark">Dark</option>
+          </select>
+          <select value={beanOrigin} onChange={(e) => setBeanOrigin(e.target.value)} className={`${inputClass} w-auto`}>
+            <option value="">Origin</option>
+            {[
+              ['ethiopia', 'Ethiopia'], ['colombia', 'Colombia'], ['brazil', 'Brazil'], ['kenya', 'Kenya'],
+              ['guatemala', 'Guatemala'], ['tanzania', 'Tanzania'], ['jamaica', 'Jamaica'],
+              ['costa-rica', 'Costa Rica'], ['indonesia', 'Indonesia'], ['yemen', 'Yemen'],
+            ].map(([value, label]) => (
+              <option key={value} value={value}>{label}</option>
+            ))}
+          </select>
+          <button
+            disabled={addingBean || !beanName.trim()}
+            className="px-4 py-2.5 rounded-xl bg-[var(--color-primary)] text-[var(--color-primary-fg)] font-semibold text-sm disabled:opacity-60"
+          >
+            {addingBean ? 'Adding…' : 'Add bean'}
+          </button>
+        </form>
+        {beanError && <p className="text-sm text-red-600 mt-2">{beanError}</p>}
       </div>
 
       <form onSubmit={handleSave} className="mt-8 flex flex-col gap-5">

@@ -51,7 +51,11 @@ shopsRouter.get('/meta', async (_req, res) => {
 });
 
 shopsRouter.get('/mine', requireAuth, async (req, res) => {
-  const shops = await prisma.shop.findMany({ where: { ownerId: req.user.sub }, orderBy: { name: 'asc' } });
+  const shops = await prisma.shop.findMany({
+    where: { ownerId: req.user.sub },
+    include: { beans: { orderBy: { createdAt: 'asc' } } },
+    orderBy: { name: 'asc' },
+  });
   res.json({ shops });
 });
 
@@ -81,7 +85,10 @@ shopsRouter.post('/admin/remind-owners', requireAuth, requireAdmin, async (_req,
 });
 
 shopsRouter.get('/:slug', async (req, res) => {
-  const shop = await prisma.shop.findUnique({ where: { slug: req.params.slug } });
+  const shop = await prisma.shop.findUnique({
+    where: { slug: req.params.slug },
+    include: { beans: { orderBy: { createdAt: 'asc' } } },
+  });
   if (!shop) return res.status(404).json({ error: 'Shop not found' });
   res.json({ shop });
 });
@@ -216,4 +223,53 @@ shopsRouter.post('/:slug/photo', requireAuth, requireShopOwner, writeLimiter, (r
       res.status(500).json({ error: 'Failed to upload photo' });
     }
   });
+});
+
+shopsRouter.delete('/:slug/photo', requireAuth, requireShopOwner, writeLimiter, async (req, res) => {
+  const { url } = req.body;
+  if (!url) return res.status(400).json({ error: 'url is required' });
+
+  const existingImages = Array.isArray(req.shop.images) ? req.shop.images : [];
+  if (!existingImages.includes(url)) return res.status(404).json({ error: 'Photo not found on this shop' });
+
+  const images = existingImages.filter((img) => img !== url);
+  const image = req.shop.image === url ? (images[0] ?? null) : req.shop.image;
+
+  const shop = await prisma.shop.update({
+    where: { id: req.shop.id },
+    data: { images, image },
+  });
+
+  try {
+    const bucket = getStorageBucket();
+    const filename = decodeURIComponent(new URL(url).pathname.split('/').slice(2).join('/'));
+    await bucket.file(filename).delete();
+  } catch (e) {
+    console.error('Failed to delete storage file (non-fatal):', e.message);
+  }
+
+  res.json({ shop });
+});
+
+const ROASTS = ['light', 'medium', 'dark'];
+
+shopsRouter.post('/:slug/beans', requireAuth, requireShopOwner, writeLimiter, async (req, res) => {
+  const { name, roast, origin } = req.body;
+  if (!name || !name.trim()) return res.status(400).json({ error: 'name is required' });
+  if (roast && !ROASTS.includes(roast)) return res.status(400).json({ error: 'Invalid roast value' });
+  if (origin && !ORIGIN_COUNTRIES.includes(origin)) return res.status(400).json({ error: 'Invalid origin value' });
+
+  const bean = await prisma.bean.create({
+    data: { shopId: req.shop.id, name: name.trim(), roast: roast || null, origin: origin || null },
+  });
+
+  res.status(201).json({ bean });
+});
+
+shopsRouter.delete('/:slug/beans/:beanId', requireAuth, requireShopOwner, async (req, res) => {
+  const bean = await prisma.bean.findUnique({ where: { id: Number(req.params.beanId) } });
+  if (!bean || bean.shopId !== req.shop.id) return res.status(404).json({ error: 'Bean not found' });
+
+  await prisma.bean.delete({ where: { id: bean.id } });
+  res.json({ ok: true });
 });

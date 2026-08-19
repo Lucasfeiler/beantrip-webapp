@@ -264,6 +264,22 @@ export default function ShopDetail() {
         </p>
       )}
 
+      {shop.beans?.length > 0 && (
+        <div className="mt-5">
+          <p className="text-sm font-semibold">{t('shop.beansHeading')}</p>
+          <div className="flex flex-wrap gap-2 mt-2">
+            {shop.beans.map((b) => (
+              <span key={b.id} className="text-sm bg-[var(--color-card)] border border-[var(--color-border)] rounded-full px-3 py-1.5">
+                {b.name}
+                {(b.roast || b.origin) && (
+                  <span className="text-[var(--color-muted-fg)] capitalize"> · {[b.roast, b.origin?.replace('-', ' ')].filter(Boolean).join(' · ')}</span>
+                )}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+
       <div className="flex items-center gap-4 mt-6">
         <a
           href={
