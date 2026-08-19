@@ -132,6 +132,7 @@ export default function Layout({ children }) {
 
   return (
     <div className="min-h-screen flex flex-col">
+      <meta name="description" content="Beantrip helps you discover the world's best specialty coffee shops. Browse reviews, filter by roast type and brewing method, and find your perfect cup." />
       <header className="border-b border-[var(--color-border)] bg-[var(--color-bg)]/80 backdrop-blur sticky top-0 z-40">
         <div className="max-w-6xl mx-auto px-5 sm:px-8 h-16 flex items-center justify-between gap-6">
           <Link to="/" className="font-display text-xl font-semibold tracking-tight shrink-0">

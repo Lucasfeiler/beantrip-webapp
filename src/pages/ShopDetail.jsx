@@ -8,6 +8,20 @@ import { useVisits } from '../context/VisitsContext';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 
+// Overrides the site-wide <meta name="description"> in place instead of
+// rendering a second one -- React doesn't dedupe meta tags across separate
+// component trees, so two instances would otherwise both stay in the DOM.
+function MetaDescription({ content }) {
+  useEffect(() => {
+    const el = document.querySelector('meta[name="description"]');
+    if (!el) return;
+    const previous = el.getAttribute('content');
+    el.setAttribute('content', content);
+    return () => el.setAttribute('content', previous);
+  }, [content]);
+  return null;
+}
+
 const dayKeys = { mon: 'shop.dayMon', tue: 'shop.dayTue', wed: 'shop.dayWed', thu: 'shop.dayThu', fri: 'shop.dayFri', sat: 'shop.daySat', sun: 'shop.daySun' };
 const tasteKeys = { bright: 'shop.tasteBright', earthy: 'shop.tasteEarthy' };
 const originKeys = {
@@ -137,8 +151,36 @@ export default function ShopDetail() {
     }
   };
 
+  const metaDescription = shop.description
+    ? shop.description.slice(0, 160)
+    : `${shop.name} — specialty coffee in ${shop.neighborhood ? `${shop.neighborhood}, ` : ''}${shop.city}.`;
+
+  const structuredData = {
+    '@context': 'https://schema.org',
+    '@type': 'CafeOrCoffeeShop',
+    name: shop.name,
+    image: shop.image ? `https://beantrip.com${shop.image}` : undefined,
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: shop.address,
+      addressLocality: shop.city,
+    },
+    ...(shop.lat != null && shop.lng != null
+      ? { geo: { '@type': 'GeoCoordinates', latitude: shop.lat, longitude: shop.lng } }
+      : {}),
+    ...(shop.rating > 0
+      ? { aggregateRating: { '@type': 'AggregateRating', ratingValue: shop.rating, reviewCount: shop.reviewCount } }
+      : {}),
+    ...(shop.website ? { url: shop.website } : {}),
+  };
+  const structuredDataJson = JSON.stringify(structuredData).replace(/</g, '\\u003c');
+
   return (
     <div className="max-w-3xl mx-auto px-5 sm:px-8 py-8">
+      <title>{`${shop.name} — Beantrip`}</title>
+      <MetaDescription content={metaDescription} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: structuredDataJson }} />
+
       <Link to="/explore" className="text-sm font-semibold text-[var(--color-accent)] hover:underline">
         {t('shop.backToExplore')}
       </Link>
