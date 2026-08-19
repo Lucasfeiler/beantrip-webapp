@@ -58,6 +58,10 @@ function publicUser(user, visitCount = 0) {
     gender: user.gender,
     favoriteRoast: user.favoriteRoast,
     favoriteBrewMethod: user.favoriteBrewMethod,
+    ageRange: user.ageRange,
+    coffeeSpend: user.coffeeSpend,
+    referralSource: user.referralSource,
+    occupation: user.occupation,
     onboardingSeen: user.onboardingSeen,
     tourSeen: user.tourSeen,
     createdAt: user.createdAt,
@@ -155,9 +159,17 @@ authRouter.get('/me', requireAuth, async (req, res) => {
 const GENDERS = ['male', 'female', 'non-binary', 'prefer-not-to-say'];
 const ROASTS = ['light', 'medium', 'dark'];
 const BREW_METHODS = ['espresso', 'pour-over', 'cold-brew', 'french-press', 'aeropress', 'v60'];
+const AGE_RANGES = ['18-24', '25-34', '35-44', '45-54', '55+'];
+const COFFEE_SPENDS = ['under-5', '5-10', '10-15', '15-plus'];
+const REFERRAL_SOURCES = ['word-of-mouth', 'social-media', 'search', 'other'];
+const OCCUPATIONS = ['remote-worker', 'student', 'office-worker', 'other'];
 
 authRouter.patch('/me', requireAuth, async (req, res) => {
-  const { name, location, bio, gender, favoriteRoast, favoriteBrewMethod, onboardingSeen, tourSeen } = req.body;
+  const {
+    name, location, bio, gender, favoriteRoast, favoriteBrewMethod,
+    ageRange, coffeeSpend, referralSource, occupation,
+    onboardingSeen, tourSeen,
+  } = req.body;
   if (name !== undefined && !name.trim()) {
     return res.status(400).json({ error: 'Name cannot be empty' });
   }
@@ -170,6 +182,18 @@ authRouter.patch('/me', requireAuth, async (req, res) => {
   if (favoriteBrewMethod !== undefined && favoriteBrewMethod !== null && !BREW_METHODS.includes(favoriteBrewMethod)) {
     return res.status(400).json({ error: 'Invalid brew method value' });
   }
+  if (ageRange !== undefined && ageRange !== null && !AGE_RANGES.includes(ageRange)) {
+    return res.status(400).json({ error: 'Invalid age range value' });
+  }
+  if (coffeeSpend !== undefined && coffeeSpend !== null && !COFFEE_SPENDS.includes(coffeeSpend)) {
+    return res.status(400).json({ error: 'Invalid coffee spend value' });
+  }
+  if (referralSource !== undefined && referralSource !== null && !REFERRAL_SOURCES.includes(referralSource)) {
+    return res.status(400).json({ error: 'Invalid referral source value' });
+  }
+  if (occupation !== undefined && occupation !== null && !OCCUPATIONS.includes(occupation)) {
+    return res.status(400).json({ error: 'Invalid occupation value' });
+  }
 
   const user = await prisma.user.update({
     where: { id: req.user.sub },
@@ -180,6 +204,10 @@ authRouter.patch('/me', requireAuth, async (req, res) => {
       ...(gender !== undefined ? { gender } : {}),
       ...(favoriteRoast !== undefined ? { favoriteRoast } : {}),
       ...(favoriteBrewMethod !== undefined ? { favoriteBrewMethod } : {}),
+      ...(ageRange !== undefined ? { ageRange } : {}),
+      ...(coffeeSpend !== undefined ? { coffeeSpend } : {}),
+      ...(referralSource !== undefined ? { referralSource } : {}),
+      ...(occupation !== undefined ? { occupation } : {}),
       ...(onboardingSeen !== undefined ? { onboardingSeen: !!onboardingSeen } : {}),
       ...(tourSeen !== undefined ? { tourSeen: !!tourSeen } : {}),
     },

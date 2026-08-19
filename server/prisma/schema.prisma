@@ -22,6 +22,10 @@ model User {
   gender             String?
   favoriteRoast      String?
   favoriteBrewMethod String?
+  ageRange           String?
+  coffeeSpend        String?
+  referralSource     String?
+  occupation         String?
   onboardingSeen     Boolean  @default(false)
   tourSeen           Boolean  @default(false)
   createdAt    DateTime   @default(now())

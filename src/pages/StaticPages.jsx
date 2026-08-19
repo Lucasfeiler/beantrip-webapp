@@ -14,7 +14,7 @@ function H2({ children }) {
 
 export function Privacy() {
   return (
-    <StaticPage title="Privacy Policy" updated="July 2026">
+    <StaticPage title="Privacy Policy" updated="August 2026">
       <p>
         Beantrip ("we", "us") helps you discover specialty coffee shops. This page explains what
         information we collect, why, and what control you have over it.
@@ -24,6 +24,10 @@ export function Privacy() {
       <p>When you create an account: your email address, name, and a hashed version of your password
         (we never store your password itself).</p>
       <p>What you add to your profile: a location and bio you write, and a profile photo you upload.</p>
+      <p>What you tell us about yourself (all optional, asked at sign-up or editable anytime in your
+        Profile): gender, age range, your typical spend per coffee visit, your occupation, your
+        favorite roast and brewing method, and how you heard about Beantrip. You can skip any of these
+        or leave them blank — nothing here is required to use the app.</p>
       <p>What you do in the app: shops you favorite or mark as visited, reviews and ratings you post,
         and shop suggestions you submit.</p>
       <p>Device and notification data: if you turn on push notifications, we store a device token so we
@@ -34,8 +38,12 @@ export function Privacy() {
 
       <H2>How we use it</H2>
       <p>To run the core features of the app — showing your profile, your saved and visited shops, your
-        reviews, and personalized nearby results — and to send you notifications you've opted into.
-        We don't use your data for advertising, and we don't sell your data to anyone.</p>
+        reviews, and personalized nearby results and recommendations — and to send you notifications
+        you've opted into. The optional profile details above help us understand who's using Beantrip
+        so we can improve recommendations and, going forward, may also be used to make in-app
+        promotions and offers more relevant to you. We don't sell your personal data to third parties,
+        and if we start sharing profile data with an advertising partner for targeting purposes, we'll
+        update this policy first and ask for your consent where required by law.</p>
 
       <H2>Who we share it with</H2>
       <p>We use a small number of service providers to run Beantrip: Google (Maps, Places, and photo
@@ -48,10 +56,11 @@ export function Privacy() {
         visited shops, and photo.</p>
 
       <H2>Your choices</H2>
-      <p>You can view and edit your profile information, change your email, reset your password, turn
-        notifications on or off, and delete your account entirely — all from the Profile page, without
-        needing to contact us. If you'd like to reach us about anything else, see the contact details on
-        our <a href="/impressum" className="text-[var(--color-accent)] font-semibold hover:underline">Impressum</a> page.</p>
+      <p>You can view and edit your profile information — including all the optional details above —
+        change your email, reset your password, turn notifications on or off, and delete your account
+        entirely — all from the Profile page, without needing to contact us. If you'd like to reach us
+        about anything else, see the contact details on our{' '}
+        <a href="/impressum" className="text-[var(--color-accent)] font-semibold hover:underline">Impressum</a> page.</p>
 
       <H2>Cookies and local storage</H2>
       <p>We don't use advertising or tracking cookies. Your sign-in session is kept in your browser's

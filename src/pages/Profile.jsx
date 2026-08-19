@@ -33,6 +33,28 @@ const brewMethods = [
   { value: 'v60', label: 'V60' },
 ];
 
+const ageRanges = [
+  { value: '18-24', label: '18–24' },
+  { value: '25-34', label: '25–34' },
+  { value: '35-44', label: '35–44' },
+  { value: '45-54', label: '45–54' },
+  { value: '55+', label: '55+' },
+];
+
+const coffeeSpends = [
+  { value: 'under-5', label: 'Under €5' },
+  { value: '5-10', label: '€5–10' },
+  { value: '10-15', label: '€10–15' },
+  { value: '15-plus', label: '€15+' },
+];
+
+const occupations = [
+  { value: 'remote-worker', label: 'Remote worker' },
+  { value: 'student', label: 'Student' },
+  { value: 'office-worker', label: 'Office worker' },
+  { value: 'other', label: 'Other' },
+];
+
 function formatJoinDate(dateString) {
   if (!dateString) return null;
   return new Date(dateString).toLocaleDateString(undefined, { day: 'numeric', month: 'long', year: 'numeric' });
@@ -357,6 +379,74 @@ export default function Profile() {
                 disabled={savingTaste}
                 className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition-colors disabled:opacity-60 ${
                   user.favoriteBrewMethod === o.value
+                    ? 'bg-[var(--color-primary)] text-[var(--color-primary-fg)] border-[var(--color-primary)]'
+                    : 'border-[var(--color-border)] hover:bg-[var(--color-bg)]'
+                }`}
+              >
+                {o.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-4 bg-[var(--color-card)] border border-[var(--color-border)] rounded-xl p-4">
+        <p className="text-sm font-semibold">About you</p>
+        <p className="text-xs text-[var(--color-muted-fg)] mt-1">
+          Optional — helps us understand who's using Beantrip so we can improve it. See our{' '}
+          <a href="/privacy" className="text-[var(--color-accent)] hover:underline">Privacy Policy</a> for details.
+        </p>
+        <div className="mt-3">
+          <p className="text-xs font-semibold text-[var(--color-muted-fg)] mb-1.5">Age range</p>
+          <div className="flex flex-wrap gap-1.5">
+            {ageRanges.map((o) => (
+              <button
+                key={o.value}
+                type="button"
+                onClick={() => handleTasteChange('ageRange', o.value)}
+                disabled={savingTaste}
+                className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition-colors disabled:opacity-60 ${
+                  user.ageRange === o.value
+                    ? 'bg-[var(--color-primary)] text-[var(--color-primary-fg)] border-[var(--color-primary)]'
+                    : 'border-[var(--color-border)] hover:bg-[var(--color-bg)]'
+                }`}
+              >
+                {o.label}
+              </button>
+            ))}
+          </div>
+        </div>
+        <div className="mt-3">
+          <p className="text-xs font-semibold text-[var(--color-muted-fg)] mb-1.5">Typical spend per coffee visit</p>
+          <div className="flex flex-wrap gap-1.5">
+            {coffeeSpends.map((o) => (
+              <button
+                key={o.value}
+                type="button"
+                onClick={() => handleTasteChange('coffeeSpend', o.value)}
+                disabled={savingTaste}
+                className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition-colors disabled:opacity-60 ${
+                  user.coffeeSpend === o.value
+                    ? 'bg-[var(--color-primary)] text-[var(--color-primary-fg)] border-[var(--color-primary)]'
+                    : 'border-[var(--color-border)] hover:bg-[var(--color-bg)]'
+                }`}
+              >
+                {o.label}
+              </button>
+            ))}
+          </div>
+        </div>
+        <div className="mt-3">
+          <p className="text-xs font-semibold text-[var(--color-muted-fg)] mb-1.5">What best describes you</p>
+          <div className="flex flex-wrap gap-1.5">
+            {occupations.map((o) => (
+              <button
+                key={o.value}
+                type="button"
+                onClick={() => handleTasteChange('occupation', o.value)}
+                disabled={savingTaste}
+                className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition-colors disabled:opacity-60 ${
+                  user.occupation === o.value
                     ? 'bg-[var(--color-primary)] text-[var(--color-primary-fg)] border-[var(--color-primary)]'
                     : 'border-[var(--color-border)] hover:bg-[var(--color-bg)]'
                 }`}
