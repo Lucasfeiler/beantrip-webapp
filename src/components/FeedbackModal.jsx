@@ -17,6 +17,7 @@ export default function FeedbackModal() {
   const [category, setCategory] = useState('idea');
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
+  const [missing, setMissing] = useState(null);
   const [message, setMessage] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -46,13 +47,36 @@ export default function FeedbackModal() {
     setVisible(false);
   };
 
+  const CATEGORIES = [
+    { value: 'idea', label: t('feedback.categoryIdea') },
+    { value: 'bug', label: t('feedback.categoryBug') },
+    { value: 'general', label: t('feedback.categoryGeneral') },
+  ];
+  const MISSING_OPTIONS = [
+    { value: 'cities', label: t('feedback.missingCities') },
+    { value: 'details', label: t('feedback.missingDetails') },
+    { value: 'search', label: t('feedback.missingSearch') },
+    { value: 'social', label: t('feedback.missingSocial') },
+    { value: 'other', label: t('feedback.missingOther') },
+  ];
+
+  const composeMessage = () => {
+    const parts = [];
+    const missingLabel = MISSING_OPTIONS.find((o) => o.value === missing)?.label;
+    if (missingLabel) parts.push(`${t('feedback.missingLabel')} ${missingLabel}`);
+    if (message.trim()) parts.push(message.trim());
+    return parts.join('\n');
+  };
+
+  const composedMessage = composeMessage();
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!message.trim()) return;
+    if (!composedMessage) return;
     setError('');
     setSubmitting(true);
     try {
-      await api.submitFeedback({ category, rating: rating || null, message, page: location.pathname });
+      await api.submitFeedback({ category, rating: rating || null, message: composedMessage, page: location.pathname });
       localStorage.setItem(SUBMITTED_KEY, '1');
       setSubmitted(true);
       setTimeout(() => setVisible(false), 2200);
@@ -62,12 +86,6 @@ export default function FeedbackModal() {
       setSubmitting(false);
     }
   };
-
-  const CATEGORIES = [
-    { value: 'idea', label: t('feedback.categoryIdea') },
-    { value: 'bug', label: t('feedback.categoryBug') },
-    { value: 'general', label: t('feedback.categoryGeneral') },
-  ];
 
   if (!visible) return null;
 
@@ -136,10 +154,29 @@ export default function FeedbackModal() {
                 ))}
               </div>
 
+              <div>
+                <span className="text-sm font-medium">{t('feedback.missingLabel')}</span>
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {MISSING_OPTIONS.map((o) => (
+                    <button
+                      key={o.value}
+                      type="button"
+                      onClick={() => setMissing(missing === o.value ? null : o.value)}
+                      className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition-colors ${
+                        missing === o.value
+                          ? 'bg-[var(--color-primary)] text-[var(--color-primary-fg)] border-[var(--color-primary)]'
+                          : 'border-[var(--color-border)] hover:bg-[var(--color-card)]'
+                      }`}
+                    >
+                      {o.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
               <textarea
-                required
                 autoFocus
-                rows={3}
+                rows={2}
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 placeholder={t('feedback.messagePlaceholder')}
@@ -150,7 +187,7 @@ export default function FeedbackModal() {
 
               <div className="flex items-center gap-3">
                 <button
-                  disabled={submitting || !message.trim()}
+                  disabled={submitting || !composedMessage}
                   type="submit"
                   className="px-5 py-2.5 rounded-xl bg-[var(--color-primary)] text-[var(--color-primary-fg)] font-semibold text-sm hover:opacity-90 transition-opacity disabled:opacity-60"
                 >

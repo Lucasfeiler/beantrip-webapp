@@ -7,6 +7,27 @@ function formatDate(dateString) {
   return new Date(dateString).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' });
 }
 
+function ChipGroup({ options, value, onChange }) {
+  return (
+    <div className="flex flex-wrap gap-2 mt-2">
+      {options.map((o) => (
+        <button
+          key={o.value}
+          type="button"
+          onClick={() => onChange(value === o.value ? null : o.value)}
+          className={`px-3.5 py-1.5 rounded-full text-sm font-semibold border transition-colors ${
+            value === o.value
+              ? 'bg-[var(--color-primary)] text-[var(--color-primary-fg)] border-[var(--color-primary)]'
+              : 'border-[var(--color-border)] hover:bg-[var(--color-card)]'
+          }`}
+        >
+          {o.label}
+        </button>
+      ))}
+    </div>
+  );
+}
+
 export default function Feedback() {
   const { t } = useLanguage();
   const CATEGORIES = [
@@ -14,9 +35,24 @@ export default function Feedback() {
     { value: 'bug', label: t('feedback.categoryBug') },
     { value: 'general', label: t('feedback.categoryGeneral') },
   ];
+  const MISSING_OPTIONS = [
+    { value: 'cities', label: t('feedback.missingCities') },
+    { value: 'details', label: t('feedback.missingDetails') },
+    { value: 'search', label: t('feedback.missingSearch') },
+    { value: 'social', label: t('feedback.missingSocial') },
+    { value: 'other', label: t('feedback.missingOther') },
+  ];
+  const FREQUENCY_OPTIONS = [
+    { value: 'daily', label: t('feedback.frequencyDaily') },
+    { value: 'few-week', label: t('feedback.frequencyFewWeek') },
+    { value: 'weekly', label: t('feedback.frequencyWeekly') },
+    { value: 'rarely', label: t('feedback.frequencyRarely') },
+  ];
   const [category, setCategory] = useState('idea');
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
+  const [missing, setMissing] = useState(null);
+  const [frequency, setFrequency] = useState(null);
   const [message, setMessage] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -27,13 +63,25 @@ export default function Feedback() {
     api.shippedFeedback().then(({ items }) => setShipped(items)).catch(() => setShipped([]));
   }, []);
 
+  const composeMessage = () => {
+    const parts = [];
+    const missingLabel = MISSING_OPTIONS.find((o) => o.value === missing)?.label;
+    const frequencyLabel = FREQUENCY_OPTIONS.find((o) => o.value === frequency)?.label;
+    if (missingLabel) parts.push(`${t('feedback.missingLabel')} ${missingLabel}`);
+    if (frequencyLabel) parts.push(`${t('feedback.frequencyLabel')} ${frequencyLabel}`);
+    if (message.trim()) parts.push(message.trim());
+    return parts.join('\n');
+  };
+
+  const composedMessage = composeMessage();
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!message.trim()) return;
+    if (!composedMessage) return;
     setError('');
     setSubmitting(true);
     try {
-      await api.submitFeedback({ category, rating: rating || null, message });
+      await api.submitFeedback({ category, rating: rating || null, message: composedMessage });
       setSubmitted(true);
     } catch (err) {
       setError(err.message);
@@ -102,11 +150,20 @@ export default function Feedback() {
           </div>
         </div>
 
+        <div>
+          <span className="text-sm font-medium">{t('feedback.missingLabel')}</span>
+          <ChipGroup options={MISSING_OPTIONS} value={missing} onChange={setMissing} />
+        </div>
+
+        <div>
+          <span className="text-sm font-medium">{t('feedback.frequencyLabel')}</span>
+          <ChipGroup options={FREQUENCY_OPTIONS} value={frequency} onChange={setFrequency} />
+        </div>
+
         <label className="flex flex-col gap-1.5">
-          <span className="text-sm font-medium">{t('feedback.messageLabel')}</span>
+          <span className="text-sm font-medium">{t('feedback.messageLabel')} <span className="text-[var(--color-muted-fg)] font-normal">{t('feedback.optional')}</span></span>
           <textarea
-            required
-            rows={5}
+            rows={4}
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             placeholder={t('feedback.messagePlaceholder')}
@@ -117,7 +174,7 @@ export default function Feedback() {
         {error && <p className="text-sm text-red-600">{error}</p>}
 
         <button
-          disabled={submitting || !message.trim()}
+          disabled={submitting || !composedMessage}
           type="submit"
           className="px-6 py-3 rounded-xl bg-[var(--color-primary)] text-[var(--color-primary-fg)] font-semibold text-sm hover:opacity-90 transition-opacity disabled:opacity-60"
         >
