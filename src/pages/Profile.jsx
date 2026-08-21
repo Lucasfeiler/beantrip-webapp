@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { useLanguage } from '../context/LanguageContext';
+import { useLanguage, LANGUAGES } from '../context/LanguageContext';
 import { api } from '../lib/api';
 import { requestNotificationToken } from '../lib/firebase';
 
@@ -261,20 +261,18 @@ export default function Profile() {
 
       <div className="mb-6 flex items-center justify-between">
         <span className="text-sm font-semibold">{t('profile.language')}</span>
-        <div className="flex items-center rounded-full border border-[var(--color-border)] text-xs font-semibold overflow-hidden">
-          {['en', 'de'].map((l) => (
-            <button
-              key={l}
-              type="button"
-              onClick={() => setLang(l)}
-              className={`px-3 py-1.5 transition-colors ${
-                lang === l ? 'bg-[var(--color-primary)] text-[var(--color-primary-fg)]' : 'text-[var(--color-muted-fg)] hover:bg-[var(--color-card)]'
-              }`}
-            >
-              {l.toUpperCase()}
-            </button>
+        <select
+          value={lang}
+          onChange={(e) => setLang(e.target.value)}
+          aria-label="Language"
+          className="px-3 py-1.5 rounded-full text-xs font-semibold border border-[var(--color-border)] bg-transparent text-[var(--color-fg)] hover:bg-[var(--color-card)] transition-colors cursor-pointer focus:outline-none"
+        >
+          {LANGUAGES.map((l) => (
+            <option key={l.value} value={l.value} className="bg-[var(--color-bg)] text-[var(--color-fg)]">
+              {l.label}
+            </option>
           ))}
-        </div>
+        </select>
       </div>
 
       {!user.emailVerified && (

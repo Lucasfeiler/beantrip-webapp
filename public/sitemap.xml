@@ -53,10 +53,6 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://beantrip.com/shop/blackbird-coffee</loc>
-    <priority>0.8</priority>
-  </url>
-  <url>
     <loc>https://beantrip.com/shop/milch-kekse</loc>
     <priority>0.8</priority>
   </url>
@@ -73,15 +69,7 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://beantrip.com/shop/cafe-kosmos</loc>
-    <priority>0.8</priority>
-  </url>
-  <url>
     <loc>https://beantrip.com/shop/vits-der-kaffee</loc>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://beantrip.com/shop/aroma-kaffeebar</loc>
     <priority>0.8</priority>
   </url>
   <url>
@@ -94,10 +82,6 @@
   </url>
   <url>
     <loc>https://beantrip.com/shop/tushita-teehaus</loc>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://beantrip.com/shop/sorry-johnny-kaffeebar</loc>
     <priority>0.8</priority>
   </url>
   <url>
@@ -258,10 +242,6 @@
   </url>
   <url>
     <loc>https://beantrip.com/shop/blumental-berlin</loc>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://beantrip.com/shop/balz-und-balz-hamburg</loc>
     <priority>0.8</priority>
   </url>
   <url>
@@ -606,6 +586,10 @@
   </url>
   <url>
     <loc>https://beantrip.com/shop/the-barn-glockenbachviertel</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/n03-coffee</loc>
     <priority>0.8</priority>
   </url>
 </urlset>
