@@ -80,6 +80,7 @@ export default function Feedback() {
   const [frequency, setFrequency] = useState(null);
   const [city, setCity] = useState(null);
   const [feature, setFeature] = useState(null);
+  const [mustHave, setMustHave] = useState(null);
   const [recommend, setRecommend] = useState(null);
   const [premium, setPremium] = useState(null);
   const [message, setMessage] = useState('');
@@ -102,6 +103,7 @@ export default function Feedback() {
     add('feedback.frequencyLabel', FREQUENCY_OPTIONS, frequency);
     add('feedback.cityLabel', CITY_OPTIONS, city);
     add('feedback.featureLabel', FEATURE_OPTIONS, feature);
+    add('feedback.mustHaveLabel', FEATURE_OPTIONS, mustHave);
     add('feedback.recommendLabel', RECOMMEND_OPTIONS, recommend);
     add('feedback.premiumLabel', PREMIUM_OPTIONS, premium);
     if (message.trim()) parts.push(message.trim());
@@ -203,6 +205,11 @@ export default function Feedback() {
         <div>
           <span className="text-sm font-medium">{t('feedback.featureLabel')}</span>
           <ChipGroup options={FEATURE_OPTIONS} value={feature} onChange={setFeature} />
+        </div>
+
+        <div>
+          <span className="text-sm font-medium">{t('feedback.mustHaveLabel')}</span>
+          <ChipGroup options={FEATURE_OPTIONS} value={mustHave} onChange={setMustHave} />
         </div>
 
         <div>
