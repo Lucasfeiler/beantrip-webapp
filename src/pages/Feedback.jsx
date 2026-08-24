@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { api } from '../lib/api';
 import { useLanguage } from '../context/LanguageContext';
+import { useShops } from '../context/ShopsContext';
 
 function formatDate(dateString) {
   return new Date(dateString).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' });
@@ -30,6 +31,7 @@ function ChipGroup({ options, value, onChange }) {
 
 export default function Feedback() {
   const { t } = useLanguage();
+  const { cities } = useShops();
   const CATEGORIES = [
     { value: 'idea', label: t('feedback.categoryIdea') },
     { value: 'bug', label: t('feedback.categoryBug') },
@@ -48,11 +50,38 @@ export default function Feedback() {
     { value: 'weekly', label: t('feedback.frequencyWeekly') },
     { value: 'rarely', label: t('feedback.frequencyRarely') },
   ];
+  const CITY_OPTIONS = [
+    ...cities.map((c) => ({ value: c, label: c })),
+    { value: 'other', label: t('feedback.cityOther') },
+  ];
+  const FEATURE_OPTIONS = [
+    { value: 'explore', label: t('nav.explore') },
+    { value: 'map', label: t('nav.map') },
+    { value: 'nearMe', label: t('nav.nearMe') },
+    { value: 'passport', label: t('nav.passport') },
+    { value: 'news', label: t('nav.news') },
+    { value: 'events', label: t('nav.events') },
+    { value: 'gear', label: t('nav.gear') },
+  ];
+  const RECOMMEND_OPTIONS = [
+    { value: 'yes', label: t('feedback.recommendYes') },
+    { value: 'maybe', label: t('feedback.recommendMaybe') },
+    { value: 'no', label: t('feedback.recommendNo') },
+  ];
+  const PREMIUM_OPTIONS = [
+    { value: 'yes', label: t('feedback.premiumYes') },
+    { value: 'maybe', label: t('feedback.premiumMaybe') },
+    { value: 'no', label: t('feedback.premiumNo') },
+  ];
   const [category, setCategory] = useState('idea');
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
   const [missing, setMissing] = useState(null);
   const [frequency, setFrequency] = useState(null);
+  const [city, setCity] = useState(null);
+  const [feature, setFeature] = useState(null);
+  const [recommend, setRecommend] = useState(null);
+  const [premium, setPremium] = useState(null);
   const [message, setMessage] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -65,10 +94,16 @@ export default function Feedback() {
 
   const composeMessage = () => {
     const parts = [];
-    const missingLabel = MISSING_OPTIONS.find((o) => o.value === missing)?.label;
-    const frequencyLabel = FREQUENCY_OPTIONS.find((o) => o.value === frequency)?.label;
-    if (missingLabel) parts.push(`${t('feedback.missingLabel')} ${missingLabel}`);
-    if (frequencyLabel) parts.push(`${t('feedback.frequencyLabel')} ${frequencyLabel}`);
+    const add = (labelKey, options, value) => {
+      const label = options.find((o) => o.value === value)?.label;
+      if (label) parts.push(`${t(labelKey)} ${label}`);
+    };
+    add('feedback.missingLabel', MISSING_OPTIONS, missing);
+    add('feedback.frequencyLabel', FREQUENCY_OPTIONS, frequency);
+    add('feedback.cityLabel', CITY_OPTIONS, city);
+    add('feedback.featureLabel', FEATURE_OPTIONS, feature);
+    add('feedback.recommendLabel', RECOMMEND_OPTIONS, recommend);
+    add('feedback.premiumLabel', PREMIUM_OPTIONS, premium);
     if (message.trim()) parts.push(message.trim());
     return parts.join('\n');
   };
@@ -158,6 +193,26 @@ export default function Feedback() {
         <div>
           <span className="text-sm font-medium">{t('feedback.frequencyLabel')}</span>
           <ChipGroup options={FREQUENCY_OPTIONS} value={frequency} onChange={setFrequency} />
+        </div>
+
+        <div>
+          <span className="text-sm font-medium">{t('feedback.cityLabel')}</span>
+          <ChipGroup options={CITY_OPTIONS} value={city} onChange={setCity} />
+        </div>
+
+        <div>
+          <span className="text-sm font-medium">{t('feedback.featureLabel')}</span>
+          <ChipGroup options={FEATURE_OPTIONS} value={feature} onChange={setFeature} />
+        </div>
+
+        <div>
+          <span className="text-sm font-medium">{t('feedback.recommendLabel')}</span>
+          <ChipGroup options={RECOMMEND_OPTIONS} value={recommend} onChange={setRecommend} />
+        </div>
+
+        <div>
+          <span className="text-sm font-medium">{t('feedback.premiumLabel')}</span>
+          <ChipGroup options={PREMIUM_OPTIONS} value={premium} onChange={setPremium} />
         </div>
 
         <label className="flex flex-col gap-1.5">
