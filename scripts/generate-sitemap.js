@@ -26,16 +26,18 @@ function urlEntry(loc, priority) {
 async function main() {
   const { shops } = await fetch(`${API_URL}/api/shops`).then((r) => r.json());
   const located = shops.filter((s) => !s.placeholder);
+  const cities = Array.from(new Set(shops.map((s) => s.city))).sort();
 
   const entries = [
     ...STATIC_PATHS.map((p) => urlEntry(`${SITE_URL}${p.path}`, p.priority)),
+    ...cities.map((c) => urlEntry(`${SITE_URL}/explore/${c.toLowerCase()}`, '0.8')),
     ...located.map((s) => urlEntry(`${SITE_URL}/shop/${s.slug}`, '0.8')),
   ];
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${entries.join('\n')}\n</urlset>\n`;
 
   fs.writeFileSync(OUT_FILE, xml);
-  console.log(`Wrote sitemap.xml with ${entries.length} URLs (${located.length} shops).`);
+  console.log(`Wrote sitemap.xml with ${entries.length} URLs (${cities.length} cities, ${located.length} shops).`);
 }
 
 main().catch((err) => {

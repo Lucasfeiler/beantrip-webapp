@@ -218,7 +218,7 @@ export default function Home() {
           {cities.map((city) => (
             <Link
               key={city}
-              to={`/explore?city=${encodeURIComponent(city)}`}
+              to={`/explore/${city.toLowerCase()}`}
               className="group relative shrink-0 snap-start w-40 sm:w-48 rounded-2xl overflow-hidden h-28 flex items-end p-4 border border-[var(--color-border)] hover:shadow-md transition-shadow"
             >
               <img

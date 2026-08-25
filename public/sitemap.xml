@@ -37,6 +37,26 @@
     <priority>0.3</priority>
   </url>
   <url>
+    <loc>https://beantrip.com/explore/berlin</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/explore/hamburg</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/explore/munich</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/explore/vienna</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/explore/zurich</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://beantrip.com/shop/man-vs-machine-muellerstrasse</loc>
     <priority>0.8</priority>
   </url>

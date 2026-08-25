@@ -42,6 +42,7 @@ export default function App() {
                   <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="/explore" element={<Explore />} />
+                    <Route path="/explore/:citySlug" element={<Explore />} />
                     <Route path="/shop/:slug" element={<ShopDetail />} />
                     <Route path="/map" element={<MapPage />} />
                     <Route path="/near-me" element={<NearMe />} />

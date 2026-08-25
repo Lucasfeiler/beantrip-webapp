@@ -2,25 +2,12 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { api } from '../lib/api';
 import PhotoGallery from '../components/PhotoGallery';
+import PageMeta from '../components/PageMeta';
 import { isTopVoted } from '../components/ShopCard';
 import { useFavorites } from '../context/FavoritesContext';
 import { useVisits } from '../context/VisitsContext';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
-
-// Overrides the site-wide <meta name="description"> in place instead of
-// rendering a second one -- React doesn't dedupe meta tags across separate
-// component trees, so two instances would otherwise both stay in the DOM.
-function MetaDescription({ content }) {
-  useEffect(() => {
-    const el = document.querySelector('meta[name="description"]');
-    if (!el) return;
-    const previous = el.getAttribute('content');
-    el.setAttribute('content', content);
-    return () => el.setAttribute('content', previous);
-  }, [content]);
-  return null;
-}
 
 const dayKeys = { mon: 'shop.dayMon', tue: 'shop.dayTue', wed: 'shop.dayWed', thu: 'shop.dayThu', fri: 'shop.dayFri', sat: 'shop.daySat', sun: 'shop.daySun' };
 const tasteKeys = { bright: 'shop.tasteBright', earthy: 'shop.tasteEarthy' };
@@ -177,8 +164,7 @@ export default function ShopDetail() {
 
   return (
     <div className="max-w-3xl mx-auto px-5 sm:px-8 py-8">
-      <title>{`${shop.name} — Beantrip`}</title>
-      <MetaDescription content={metaDescription} />
+      <PageMeta title={`${shop.name} — Beantrip`} description={metaDescription} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: structuredDataJson }} />
 
       <Link to="/explore" className="text-sm font-semibold text-[var(--color-accent)] hover:underline">
