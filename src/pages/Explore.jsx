@@ -5,6 +5,35 @@ import { useLanguage } from '../context/LanguageContext';
 import ShopCard from '../components/ShopCard';
 import PageMeta from '../components/PageMeta';
 
+const ROAST_TAGS = ['light', 'medium', 'dark'];
+const BREW_TAGS = ['espresso', 'pour-over', 'cold-brew', 'french-press', 'aeropress', 'filter', 'ristretto', 'macchiato', 'flat-white', 'cappuccino'];
+const VIBE_TAGS = ['lively', 'modern', 'minimalist'];
+
+function TagGroup({ label, tags, selected, onToggle }) {
+  if (tags.length === 0) return null;
+  return (
+    <div>
+      <p className="text-xs font-semibold text-[var(--color-muted-fg)] uppercase tracking-wide mb-1.5">{label}</p>
+      <div className="flex flex-wrap gap-1.5">
+        {tags.map((tag) => (
+          <button
+            key={tag}
+            type="button"
+            onClick={() => onToggle(tag)}
+            className={`px-3 py-1.5 rounded-full text-xs font-semibold border capitalize transition-colors ${
+              selected.includes(tag)
+                ? 'bg-[var(--color-primary)] text-[var(--color-primary-fg)] border-[var(--color-primary)]'
+                : 'border-[var(--color-border)] hover:bg-[var(--color-bg)]'
+            }`}
+          >
+            {tag.replace('-', ' ')}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function Explore() {
   const { shops, cities, allTags, loading } = useShops();
   const { t } = useLanguage();
@@ -28,20 +57,37 @@ export default function Explore() {
   }, [citySlug, legacyCityParam, navigate]);
 
   const [query, setQuery] = useState('');
-  const [activeTag, setActiveTag] = useState('');
+  const [selectedTags, setSelectedTags] = useState([]);
   const [openNow, setOpenNow] = useState(false);
+  const [sortBy, setSortBy] = useState('');
+
+  const toggleTag = (tag) => {
+    setSelectedTags((tags) => (tags.includes(tag) ? tags.filter((t) => t !== tag) : [...tags, tag]));
+  };
+
+  const otherTags = allTags.filter((t) => !ROAST_TAGS.includes(t) && !BREW_TAGS.includes(t) && !VIBE_TAGS.includes(t));
 
   const todayKey = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'][new Date().getDay()];
 
   const filtered = useMemo(() => {
-    return shops.filter((s) => {
+    const result = shops.filter((s) => {
       if (cityParam && s.city !== cityParam) return false;
-      if (activeTag && !s.tags.includes(activeTag)) return false;
-      if (query && !`${s.name} ${s.neighborhood} ${s.address}`.toLowerCase().includes(query.toLowerCase())) return false;
+      if (selectedTags.length > 0 && !selectedTags.every((tag) => s.tags?.includes(tag))) return false;
+      if (query && !`${s.name} ${s.neighborhood} ${s.address} ${(s.tags ?? []).join(' ')} ${s.description ?? ''}`.toLowerCase().includes(query.toLowerCase())) return false;
       if (openNow && !(s.hours && s.hours[todayKey])) return false;
       return true;
     });
-  }, [shops, cityParam, activeTag, query, openNow, todayKey]);
+
+    if (sortBy === 'rating') {
+      result.sort((a, b) => b.rating - a.rating || b.reviewCount - a.reviewCount);
+    } else if (sortBy === 'reviews') {
+      result.sort((a, b) => b.reviewCount - a.reviewCount);
+    } else if (sortBy === 'name') {
+      result.sort((a, b) => a.name.localeCompare(b.name));
+    }
+
+    return result;
+  }, [shops, cityParam, selectedTags, query, openNow, todayKey, sortBy]);
 
   if (loading) {
     return <div className="max-w-6xl mx-auto px-5 sm:px-8 py-20 text-center text-[var(--color-muted-fg)]">{t('explore.loading')}</div>;
@@ -103,15 +149,32 @@ export default function Explore() {
           </select>
 
           <select
-            value={activeTag}
-            onChange={(e) => setActiveTag(e.target.value)}
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value)}
             className="px-4 py-1.5 rounded-full text-sm font-medium border border-[var(--color-border)] bg-[var(--color-card)] focus:outline-none"
           >
-            <option value="">{t('explore.allFilters')}</option>
-            {allTags.map((tag) => (
-              <option key={tag} value={tag}>{tag}</option>
-            ))}
+            <option value="">{t('explore.sortRelevance')}</option>
+            <option value="rating">{t('explore.sortRating')}</option>
+            <option value="reviews">{t('explore.sortReviews')}</option>
+            <option value="name">{t('explore.sortName')}</option>
           </select>
+
+          {(selectedTags.length > 0 || query || openNow) && (
+            <button
+              type="button"
+              onClick={() => { setSelectedTags([]); setQuery(''); setOpenNow(false); }}
+              className="px-4 py-1.5 rounded-full text-sm font-medium text-[var(--color-accent)] hover:underline"
+            >
+              {t('explore.clearFilters')}
+            </button>
+          )}
+        </div>
+
+        <div className="flex flex-col gap-3 bg-[var(--color-card)] border border-[var(--color-border)] rounded-xl p-4">
+          <TagGroup label={t('explore.roastLabel')} tags={ROAST_TAGS.filter((t) => allTags.includes(t))} selected={selectedTags} onToggle={toggleTag} />
+          <TagGroup label={t('explore.brewLabel')} tags={BREW_TAGS.filter((t) => allTags.includes(t))} selected={selectedTags} onToggle={toggleTag} />
+          <TagGroup label={t('explore.vibeLabel')} tags={VIBE_TAGS.filter((t) => allTags.includes(t))} selected={selectedTags} onToggle={toggleTag} />
+          <TagGroup label={t('explore.otherLabel')} tags={otherTags} selected={selectedTags} onToggle={toggleTag} />
         </div>
       </div>
 
