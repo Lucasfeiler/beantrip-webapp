@@ -18,7 +18,7 @@ export const translations = {
     'nav.signOut': 'Sign out',
     'footer.privacy': 'Privacy',
     'footer.terms': 'Terms',
-    'footer.impressum': 'Impressum',
+    'footer.impressum': 'Legal Notice',
 
     'home.feedbackBannerPrefix': '☕ Beantrip is still a work in progress —',
     'home.feedbackBannerLink': 'tell us what to build next',
@@ -444,7 +444,7 @@ export const translations = {
     'nav.signOut': 'Uitloggen',
     'footer.privacy': 'Privacy',
     'footer.terms': 'Voorwaarden',
-    'footer.impressum': 'Impressum',
+    'footer.impressum': 'Colofon',
 
     'home.feedbackBannerPrefix': '☕ Beantrip is nog volop in ontwikkeling —',
     'home.feedbackBannerLink': 'laat ons weten wat we hierna moeten bouwen',

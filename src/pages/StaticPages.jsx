@@ -1,4 +1,5 @@
 import PageMeta from '../components/PageMeta';
+import { useLanguage } from '../context/LanguageContext';
 
 function StaticPage({ title, updated, metaDescription, canonical, children }) {
   return (
@@ -16,6 +17,7 @@ function H2({ children }) {
 }
 
 export function Privacy() {
+  const { t } = useLanguage();
   return (
     <StaticPage
       title="Privacy Policy"
@@ -68,7 +70,7 @@ export function Privacy() {
         change your email, reset your password, turn notifications on or off, and delete your account
         entirely — all from the Profile page, without needing to contact us. If you'd like to reach us
         about anything else, see the contact details on our{' '}
-        <a href="/impressum" className="text-[var(--color-accent)] font-semibold hover:underline">Impressum</a> page.</p>
+        <a href="/impressum" className="text-[var(--color-accent)] font-semibold hover:underline">{t('footer.impressum')}</a> page.</p>
 
       <H2>Cookies and local storage</H2>
       <p>Your sign-in session and preferences (like your language choice) are kept in your browser's
@@ -86,6 +88,7 @@ export function Privacy() {
 }
 
 export function Terms() {
+  const { t } = useLanguage();
   return (
     <StaticPage
       title="Terms of Service"
@@ -129,15 +132,16 @@ export function Terms() {
 
       <H2>Contact</H2>
       <p>Questions about these terms? See the contact details on our{' '}
-        <a href="/impressum" className="text-[var(--color-accent)] font-semibold hover:underline">Impressum</a> page.</p>
+        <a href="/impressum" className="text-[var(--color-accent)] font-semibold hover:underline">{t('footer.impressum')}</a> page.</p>
     </StaticPage>
   );
 }
 
 export function Impressum() {
+  const { t } = useLanguage();
   return (
     <StaticPage
-      title="Impressum"
+      title={t('footer.impressum')}
       canonical="/impressum"
       metaDescription="Legal disclosure and contact details for Beantrip, in accordance with German law (§ 5 TMG)."
     >
