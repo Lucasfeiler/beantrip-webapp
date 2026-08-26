@@ -1,6 +1,9 @@
-function StaticPage({ title, updated, children }) {
+import PageMeta from '../components/PageMeta';
+
+function StaticPage({ title, updated, metaDescription, canonical, children }) {
   return (
     <div className="max-w-2xl mx-auto px-5 sm:px-8 py-16">
+      <PageMeta title={`${title} — Beantrip`} description={metaDescription} canonical={canonical} />
       <h1 className="font-display text-3xl font-semibold mb-2">{title}</h1>
       {updated && <p className="text-xs text-[var(--color-muted-fg)] mb-6">Last updated {updated}</p>}
       <div className="prose prose-sm text-[var(--color-muted-fg)] space-y-4">{children}</div>
@@ -14,7 +17,12 @@ function H2({ children }) {
 
 export function Privacy() {
   return (
-    <StaticPage title="Privacy Policy" updated="August 2026">
+    <StaticPage
+      title="Privacy Policy"
+      updated="August 2026"
+      canonical="/privacy"
+      metaDescription="How Beantrip collects, uses, and protects your data, and the choices you have about it."
+    >
       <p>
         Beantrip ("we", "us") helps you discover specialty coffee shops. This page explains what
         information we collect, why, and what control you have over it.
@@ -79,7 +87,12 @@ export function Privacy() {
 
 export function Terms() {
   return (
-    <StaticPage title="Terms of Service" updated="July 2026">
+    <StaticPage
+      title="Terms of Service"
+      updated="July 2026"
+      canonical="/terms"
+      metaDescription="The terms you agree to when creating an account or using Beantrip."
+    >
       <p>By creating an account or using Beantrip, you agree to these terms.</p>
 
       <H2>Your account</H2>
@@ -123,7 +136,11 @@ export function Terms() {
 
 export function Impressum() {
   return (
-    <StaticPage title="Impressum">
+    <StaticPage
+      title="Impressum"
+      canonical="/impressum"
+      metaDescription="Legal disclosure and contact details for Beantrip, in accordance with German law (§ 5 TMG)."
+    >
       <H2>Angaben gemäß § 5 TMG</H2>
       <p>
         Lucas Feiler<br />
