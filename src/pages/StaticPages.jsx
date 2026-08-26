@@ -145,7 +145,7 @@ export function Impressum() {
       canonical="/impressum"
       metaDescription="Legal disclosure and contact details for Beantrip, in accordance with German law (§ 5 TMG)."
     >
-      <H2>Angaben gemäß § 5 TMG</H2>
+      <H2>Information pursuant to § 5 TMG (German Telemedia Act)</H2>
       <p>
         Lucas Feiler<br />
         Auf dem Kyberg 9<br />
