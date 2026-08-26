@@ -129,6 +129,10 @@ export default function Layout({ children }) {
     initAdTracking();
   }, []);
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
+
   return (
     <div className="min-h-screen flex flex-col">
       <meta name="description" content="Beantrip helps you discover the world's best specialty coffee shops. Browse reviews, filter by roast type and brewing method, and find your perfect cup." />
