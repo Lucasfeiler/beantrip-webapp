@@ -72,6 +72,12 @@ export default function Home() {
 
   const cityCount = (city) => shops.filter((s) => s.city === city).length;
 
+  const FEATURED_CITY_LIMIT = 6;
+  const featuredCities = [...cities]
+    .sort((a, b) => cityCount(b) - cityCount(a))
+    .slice(0, FEATURED_CITY_LIMIT);
+  const hasMoreCities = cities.length > FEATURED_CITY_LIMIT;
+
   const visitedIds = new Set(visitedShops.map((s) => s.id));
   const favoriteShops = shops.filter((s) => favorites.has(s.id));
   const favoriteTagFreq = {};
@@ -215,7 +221,7 @@ export default function Home() {
           {t('home.browseByCitySubtitle')}
         </p>
         <div className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-2 -mx-5 px-5 sm:mx-0 sm:px-0 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
-          {cities.map((city) => (
+          {featuredCities.map((city) => (
             <Link
               key={city}
               to={`/explore/${city.toLowerCase()}`}
@@ -234,6 +240,15 @@ export default function Home() {
               </div>
             </Link>
           ))}
+          {hasMoreCities && (
+            <Link
+              to="/explore"
+              className="group shrink-0 snap-start w-40 sm:w-48 rounded-2xl overflow-hidden h-28 flex flex-col items-center justify-center gap-1 border border-[var(--color-border)] bg-[var(--color-card)] hover:shadow-md transition-shadow text-center px-3"
+            >
+              <span className="font-display font-semibold text-sm group-hover:text-[var(--color-accent)] transition-colors">{t('home.viewAllCities')}</span>
+              <span className="text-xs text-[var(--color-muted-fg)]">{cities.length} {t('home.citiesTotal')}</span>
+            </Link>
+          )}
         </div>
       </section>
 
