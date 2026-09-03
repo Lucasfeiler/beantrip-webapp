@@ -87,7 +87,6 @@ export default function Home() {
               <img
                 src={`/images/cities/${city.toLowerCase()}.jpg`}
                 alt={city}
-                loading="lazy"
                 className="absolute inset-0 w-full h-full object-cover transition-transform group-hover:scale-105"
               />
               <div className="absolute inset-0" style={{ background: 'linear-gradient(180deg, rgba(0,0,0,0) 30%, rgba(0,0,0,0.75) 100%)' }} />
