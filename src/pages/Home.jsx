@@ -6,6 +6,11 @@ import { useLanguage } from '../context/LanguageContext';
 
 const FEEDBACK_BANNER_KEY = 'beantrip:feedback-banner-dismissed';
 
+// London's original filename got cached by the CDN with a bad response
+// before the real photo was uploaded, and that cache key won't clear --
+// renamed to a fresh, never-poisoned filename instead of waiting it out.
+const CITY_IMAGE_OVERRIDES = { London: 'london-photo' };
+
 export default function Home() {
   const { shops, cities, loading } = useShops();
   const { user, loading: authLoading } = useAuth();
@@ -85,7 +90,7 @@ export default function Home() {
               }`}
             >
               <img
-                src={`/images/cities/${city.toLowerCase()}.jpg`}
+                src={`/images/cities/${CITY_IMAGE_OVERRIDES[city] || city.toLowerCase()}.jpg`}
                 alt={city}
                 className="absolute inset-0 w-full h-full object-cover transition-transform group-hover:scale-105"
               />
