@@ -2,39 +2,15 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useShops } from '../context/ShopsContext';
 import { useAuth } from '../context/AuthContext';
-import { useFavorites } from '../context/FavoritesContext';
 import { useLanguage } from '../context/LanguageContext';
-import { api } from '../lib/api';
-import ShopCard from '../components/ShopCard';
-
-// Explicit onboarding taste settings count double a tag merely shared with
-// something the user already favorited -- a stated preference is a stronger
-// signal than an inferred one.
-function personalizedScore(shop, user, favoriteTagFreq) {
-  if (!user) return 0;
-  const tags = shop.tags ?? [];
-  let score = 0;
-  if (user.favoriteRoast && tags.includes(user.favoriteRoast)) score += 2;
-  if (user.favoriteBrewMethod && tags.includes(user.favoriteBrewMethod)) score += 2;
-  tags.forEach((tag) => { if (favoriteTagFreq[tag]) score += 1; });
-  return score;
-}
-
-function topTags(shopList, limit = 2) {
-  const freq = {};
-  shopList.forEach((s) => (s.tags ?? []).forEach((t) => { freq[t] = (freq[t] ?? 0) + 1; }));
-  return Object.entries(freq).sort((a, b) => b[1] - a[1]).slice(0, limit).map(([t]) => t);
-}
 
 const FEEDBACK_BANNER_KEY = 'beantrip:feedback-banner-dismissed';
 
 export default function Home() {
   const { shops, cities, loading } = useShops();
   const { user, loading: authLoading } = useAuth();
-  const { favorites } = useFavorites();
   const { t } = useLanguage();
   const navigate = useNavigate();
-  const [visitedShops, setVisitedShops] = useState([]);
   const [showFeedbackBanner, setShowFeedbackBanner] = useState(
     () => localStorage.getItem(FEEDBACK_BANNER_KEY) !== 'true'
   );
@@ -62,14 +38,6 @@ export default function Home() {
     }
   }, [authLoading, user, navigate]);
 
-  useEffect(() => {
-    if (!user || user.accountType === 'business') {
-      setVisitedShops([]);
-      return;
-    }
-    api.listVisits().then(({ shops }) => setVisitedShops(shops)).catch(() => setVisitedShops([]));
-  }, [user]);
-
   const cityCount = (city) => shops.filter((s) => s.city === city).length;
 
   const FEATURED_CITY_LIMIT = 6;
@@ -77,24 +45,6 @@ export default function Home() {
     .sort((a, b) => cityCount(b) - cityCount(a))
     .slice(0, FEATURED_CITY_LIMIT);
   const hasMoreCities = cities.length > FEATURED_CITY_LIMIT;
-
-  const visitedIds = new Set(visitedShops.map((s) => s.id));
-  const favoriteShops = shops.filter((s) => favorites.has(s.id));
-  const favoriteTagFreq = {};
-  favoriteShops.forEach((s) => (s.tags ?? []).forEach((tag) => { favoriteTagFreq[tag] = (favoriteTagFreq[tag] ?? 0) + 1; }));
-
-  const personalized = !!(user?.favoriteRoast || user?.favoriteBrewMethod || favoriteShops.length > 0);
-  const featured = shops
-    .filter((s) => !s.placeholder && !visitedIds.has(s.id) && !favorites.has(s.id))
-    .map((s) => ({ shop: s, score: personalizedScore(s, user, favoriteTagFreq) }))
-    .sort((a, b) => b.score - a.score || b.shop.rating - a.shop.rating || b.shop.reviewCount - a.shop.reviewCount)
-    .slice(0, 6)
-    .map((entry) => entry.shop);
-
-  const recommendedTags = topTags(visitedShops);
-  const recommended = recommendedTags.length === 0 ? [] : shops
-    .filter((s) => !s.placeholder && !visitedIds.has(s.id) && s.tags?.some((t) => recommendedTags.includes(t)))
-    .slice(0, 6);
 
   if (loading || (user?.accountType === 'business' && user.onboardingSeen)) {
     return <div className="max-w-6xl mx-auto px-5 sm:px-8 py-20 text-center text-[var(--color-muted-fg)]">{t('home.loading')}</div>;
@@ -251,35 +201,6 @@ export default function Home() {
           )}
         </div>
       </section>
-
-      <section className="max-w-6xl mx-auto px-5 sm:px-8 pb-16">
-        <div className="flex items-end justify-between mb-6">
-          <div>
-            <h2 className="font-display text-2xl font-semibold mb-1">{personalized ? t('home.pickedForYou') : t('home.featuredShops')}</h2>
-            <p className="text-sm text-[var(--color-muted-fg)]">{personalized ? t('home.pickedForYouSubtitle') : t('home.featuredSubtitle')}</p>
-          </div>
-          <Link to="/explore" className="text-sm font-semibold text-[var(--color-accent)] hover:underline shrink-0">
-            {t('home.viewAll')}
-          </Link>
-        </div>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {featured.map((shop) => (
-            <ShopCard key={shop.id} shop={shop} />
-          ))}
-        </div>
-      </section>
-
-      {recommended.length > 0 && (
-        <section className="max-w-6xl mx-auto px-5 sm:px-8 pb-16">
-          <h2 className="font-display text-2xl font-semibold mb-1">{t('home.moreLikeTried')}</h2>
-          <p className="text-sm text-[var(--color-muted-fg)] mb-6">{t('home.moreLikeTriedSubtitle')}</p>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {recommended.map((shop) => (
-              <ShopCard key={shop.id} shop={shop} />
-            ))}
-          </div>
-        </section>
-      )}
     </>
   );
 }
