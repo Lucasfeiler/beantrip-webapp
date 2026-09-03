@@ -85,10 +85,6 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://beantrip.com/shop/bel-etage</loc>
-    <priority>0.8</priority>
-  </url>
-  <url>
     <loc>https://beantrip.com/shop/vits-der-kaffee</loc>
     <priority>0.8</priority>
   </url>
@@ -613,10 +609,6 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://beantrip.com/shop/wildmosers-restaurant-cafe-am-marienplatz-munchen</loc>
-    <priority>0.8</priority>
-  </url>
-  <url>
     <loc>https://beantrip.com/shop/botanista-cafe-club</loc>
     <priority>0.8</priority>
   </url>
@@ -625,19 +617,11 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://beantrip.com/shop/neuhauser</loc>
-    <priority>0.8</priority>
-  </url>
-  <url>
     <loc>https://beantrip.com/shop/madam-anna-ekke-glockenbach-brunch-dinner</loc>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://beantrip.com/shop/fausto-kaffeerosterei-gmbh</loc>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://beantrip.com/shop/argana-taste-of-morocco</loc>
     <priority>0.8</priority>
   </url>
   <url>
