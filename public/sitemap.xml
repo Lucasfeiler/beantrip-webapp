@@ -433,10 +433,6 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://beantrip.com/shop/miini-kafi-zurich</loc>
-    <priority>0.8</priority>
-  </url>
-  <url>
     <loc>https://beantrip.com/shop/mame-zurich</loc>
     <priority>0.8</priority>
   </url>
@@ -546,10 +542,6 @@
   </url>
   <url>
     <loc>https://beantrip.com/shop/kafischnaps-zurich</loc>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://beantrip.com/shop/frau-gerolds-garten-zurich</loc>
     <priority>0.8</priority>
   </url>
   <url>
@@ -1010,10 +1002,6 @@
   </url>
   <url>
     <loc>https://beantrip.com/shop/windback</loc>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://beantrip.com/shop/fruhstuck-3000</loc>
     <priority>0.8</priority>
   </url>
   <url>
@@ -1517,10 +1505,6 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://beantrip.com/shop/carlotta</loc>
-    <priority>0.8</priority>
-  </url>
-  <url>
     <loc>https://beantrip.com/shop/kennington-lane-cafe</loc>
     <priority>0.8</priority>
   </url>
@@ -1534,10 +1518,6 @@
   </url>
   <url>
     <loc>https://beantrip.com/shop/victoria-house-coffee-food</loc>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://beantrip.com/shop/brother-marcus-borough</loc>
     <priority>0.8</priority>
   </url>
   <url>
@@ -1561,10 +1541,6 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://beantrip.com/shop/salt-yard-borough</loc>
-    <priority>0.8</priority>
-  </url>
-  <url>
     <loc>https://beantrip.com/shop/lumi-camden</loc>
     <priority>0.8</priority>
   </url>
@@ -1578,10 +1554,6 @@
   </url>
   <url>
     <loc>https://beantrip.com/shop/sip-rise-cafe-bakery</loc>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://beantrip.com/shop/milk-beach-soho</loc>
     <priority>0.8</priority>
   </url>
   <url>
@@ -1625,19 +1597,11 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://beantrip.com/shop/hoppers-shoreditch</loc>
-    <priority>0.8</priority>
-  </url>
-  <url>
     <loc>https://beantrip.com/shop/origin-coffee-charlotte-road</loc>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://beantrip.com/shop/mowchi-camden</loc>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://beantrip.com/shop/the-soho-social</loc>
     <priority>0.8</priority>
   </url>
   <url>
@@ -1670,10 +1634,6 @@
   </url>
   <url>
     <loc>https://beantrip.com/shop/premises-cafe-bistro</loc>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://beantrip.com/shop/the-tin-shed</loc>
     <priority>0.8</priority>
   </url>
   <url>
@@ -1897,10 +1857,6 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://beantrip.com/shop/brekkie-cafe-restaurant</loc>
-    <priority>0.8</priority>
-  </url>
-  <url>
     <loc>https://beantrip.com/shop/saint-nine-coffee</loc>
     <priority>0.8</priority>
   </url>
@@ -2073,10 +2029,6 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://beantrip.com/shop/bread-bite-camden</loc>
-    <priority>0.8</priority>
-  </url>
-  <url>
     <loc>https://beantrip.com/shop/gibson-s</loc>
     <priority>0.8</priority>
   </url>
@@ -2213,10 +2165,6 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://beantrip.com/shop/narrow-kitchen</loc>
-    <priority>0.8</priority>
-  </url>
-  <url>
     <loc>https://beantrip.com/shop/21-grams-fulham</loc>
     <priority>0.8</priority>
   </url>
@@ -2281,10 +2229,6 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://beantrip.com/shop/sen-viet-mare-street</loc>
-    <priority>0.8</priority>
-  </url>
-  <url>
     <loc>https://beantrip.com/shop/meletius-speciality-coffee-roasters</loc>
     <priority>0.8</priority>
   </url>
@@ -2314,6 +2258,658 @@
   </url>
   <url>
     <loc>https://beantrip.com/shop/jamocha-coffee</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/feather-heart</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/the-cyclist</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/vanston-cafe</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/chaiiwala-dalston</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/cocofee</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/frame-finsbury</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/astro-cafe-brunch</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/amor-s-cafe</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/the-haberdashery</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/amorino</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/rosemary-crouch-end</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/watchhouse-hampstead-heath</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/boulangerie-bon-matin</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/butter-beans</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/cafe-chaiwala-tooting-by-arshad-khan</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/black-eye-coffee</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/curious-goat</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/coffee-matters</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/elder-press-cafe</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/brekky-brunch</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/carbon-kopi</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/the-hoarder-coffee-west-brompton</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/alia-s-cafe</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/brunch-and-brew</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/blabar-nordic-living</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/momentum</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/mooca-cafe</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/velasquez-and-van-wezel</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/the-alberts-deli</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/royal-teas</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/dna-cafe-bar</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/sift-bakes-brews</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/blackhorse-workshop-cafe</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/intermission-coffee</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/the-beehive</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/tiramisu-cafe</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/arches-cafe</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/pulp</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/the-coffee-studio-greenwich</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/dropshot-coffee</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/karakchi-london</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/chocoberry-ealing</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/intrepid-bakers-n8-tg-anassa-ltd</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/map-studio-cafe</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/milk-no-milk</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/hopper-coffee-wandsworth</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/quarantacinque-bethnal-green</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/revival-house</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/green-house-coffee</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/the-hut-by-the-heath</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/blanco-chiswick</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/tania-s-of-hampstead</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/billy-s-cafe</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/pistachios-in-the-park-cafe-east-greenwich-pleasaunce</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/18grams-coffee-love</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/acacia</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/piptree</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/n4-coffee-fruit</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/lytte-coffee</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/yellow-warbler</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/etre</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/town-cafe</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/chaaye-khana-colliers-wood</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/rastro-cafe</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/kolly-coffee</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/strelitzia</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/haru-coffee</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/golden-cafe</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/the-mirror-cafe</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/the-muddy-puddle</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/rubar-cafe-greenwich-riverside</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/tin-cafe</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/long-short</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/muntjac</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/riffs</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/genius-coffee-roasters-speciality-coffee-roasters</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/long-black-richmond</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/rupert-teddy</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/dream-cafe</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/caffeinate</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/three-apes-coffee</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/the-haven-italian-coffee-shop</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/fodder-previously-kentish-town-stores</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/konveni-matcha-cafe</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/deja-brew-cafe-blackhorse-road</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/organicos-coffee-wine</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/little-oak-coffee</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/nice-sip</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/eva-crouch-hill</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/served-wimbledon-coffee-juice</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/froth-coffee</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/the-chunky-pigeon</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/rise-bloom-east-dulwich</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/liten-coffee</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/twenty7</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/the-bridge-cafe-hammersmith</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/carbon-kopi-2</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/lilac-eatery-and-coffee-house</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/moonstone-cafe</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/ciel-cafe</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/the-robin-cafe-richmond</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/kaffee</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/rebel-coffee</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/rogues-quarter</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/namaste-coffee</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/coffee-island</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/merro</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/the-drip</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/deluxe-coffeeworks</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/the-lab93-coffee</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/ruttle-rowe</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/sugar-and-lemon</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/forty</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/the-civet-house</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/cafe-la-tulipe</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/arthur-s-coffee-house</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/aavo-chai-coffee</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/fig-house</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/blueprint-coffee-tooting</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/sienna</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/butter-up-coffee</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/cafe-avenue-bethnal-green</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/rolling-oats</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/rondor-coffee</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/the-gorilla-cafe</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/the-fire-station-cafe</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/bon</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/mandala-cafe-bethnal-green</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/m-coffee-beans</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/kaffa-coffee</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/cafe-110</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/wolk-coffee</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/drop-in</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/farm-flynn</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/lil-bake</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/snackshark</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/dear-coffee-lover</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/arome-cafe</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/7-cafe</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/buna-brew</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/my-little-cup</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/morning-neighbour-coffee</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/suzette</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/dilectio-coffee</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/green-area-roastery</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/water-lane-coffee</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/bossa-nova-cafe</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/awakener-specialty-coffee</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/feel-good-coffee-house</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/coffeelovers</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/kismet-cafe-art-gallery-event-space</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/adada-cafe</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/brad-dills</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/yba-brazil-acai-bar-coffee</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/panda-s-coffee-house</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/donna-s-place</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/sweet-tooth-cafe</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/earlsfield-grocer</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/jaunty-coffee</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/everyday-sunshine</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/nido-cafe</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/olivia-cafe</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://beantrip.com/shop/the-good-mews</loc>
     <priority>0.8</priority>
   </url>
 </urlset>

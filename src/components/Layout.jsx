@@ -4,7 +4,6 @@ import { useAuth } from '../context/AuthContext';
 import { useLanguage, LANGUAGES } from '../context/LanguageContext';
 import NotificationPrompt from './NotificationPrompt';
 import FeedbackModal from './FeedbackModal';
-import CookieConsent from './CookieConsent';
 import { initAdTracking } from '../lib/adTracking';
 
 const ONBOARDING_EXEMPT_PATHS = ['/onboarding', '/reset-password', '/verify-email'];
@@ -213,23 +212,8 @@ export default function Layout({ children }) {
 
       <FeedbackModal />
       <NotificationPrompt />
-      <CookieConsent />
 
       <footer className="border-t border-[var(--color-border)] mt-20">
-        <div className="max-w-6xl mx-auto px-5 sm:px-8 pt-10 flex justify-center sm:justify-start">
-          <a
-            href="https://play.google.com/store/apps/details?id=com.beantrip.app"
-            target="_blank"
-            rel="noreferrer"
-            aria-label="Get it on Google Play"
-          >
-            <img
-              src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png"
-              alt="Get it on Google Play"
-              className="h-14"
-            />
-          </a>
-        </div>
         <div className="max-w-6xl mx-auto px-5 sm:px-8 py-10 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-[var(--color-muted-fg)]">
           <p>© 2026 Beantrip</p>
           <div className="flex items-center gap-6">

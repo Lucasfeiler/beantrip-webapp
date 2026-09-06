@@ -74,12 +74,10 @@ export function Privacy() {
 
       <H2>Cookies and local storage</H2>
       <p>Your sign-in session and preferences (like your language choice) are kept in your browser's
-        local storage, not a cookie, and aren't shared with third parties. When you first visit
-        Beantrip, we ask whether you're okay with optional cookies used for analytics and advertising.
-        We only load those if you say yes, and you can decline without losing access to any feature of
-        the app. At the time of writing we haven't yet connected an advertising platform, so declining
-        or accepting currently has no practical effect — but the setting is in place so tracking never
-        starts without your permission once we do.</p>
+        local storage, not a cookie, and aren't shared with third parties. We don't currently use any
+        analytics or advertising cookies, and no tracking of any kind happens when you use Beantrip. If
+        that changes in the future, we'll ask for your permission first and update this policy before
+        anything starts.</p>
 
       <H2>Changes to this policy</H2>
       <p>If this policy changes in a meaningful way, we'll update the date at the top of this page.</p>
