@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { useLanguage, LANGUAGES } from '../context/LanguageContext';
 import NotificationPrompt from './NotificationPrompt';
 import FeedbackModal from './FeedbackModal';
+import QRCheckIn from './QRCheckIn';
 import { initAdTracking } from '../lib/adTracking';
 
 const ONBOARDING_EXEMPT_PATHS = ['/onboarding', '/reset-password', '/verify-email'];
@@ -212,6 +213,7 @@ export default function Layout({ children }) {
 
       <FeedbackModal />
       <NotificationPrompt />
+      <QRCheckIn />
 
       <footer className="border-t border-[var(--color-border)] mt-20">
         <div className="max-w-6xl mx-auto px-5 sm:px-8 py-10 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-[var(--color-muted-fg)]">

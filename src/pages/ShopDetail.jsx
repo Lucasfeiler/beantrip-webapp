@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { api } from '../lib/api';
 import PhotoGallery from '../components/PhotoGallery';
 import PageMeta from '../components/PageMeta';
@@ -20,12 +20,14 @@ const originKeys = {
 export default function ShopDetail() {
   const { slug } = useParams();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { user } = useAuth();
   const { t } = useLanguage();
   const { isFavorite, toggleFavorite } = useFavorites();
   const { isVisited, toggleVisit } = useVisits();
 
   const [shop, setShop] = useState(null);
+  const [justCheckedIn, setJustCheckedIn] = useState(false);
   const [notFound, setNotFound] = useState(false);
   const [reviews, setReviews] = useState([]);
   const [reviewForm, setReviewForm] = useState({ rating: 5, text: '' });
@@ -73,6 +75,24 @@ export default function ShopDetail() {
     loadUserPhotos();
     api.trackShopEvent(slug, 'view').catch(() => {});
   }, [slug]);
+
+  // QR check-in: scanning a shop's code lands here with ?checkin=1 -- mark
+  // it visited automatically instead of making the user tap again. Anyone
+  // not signed in yet keeps the param (so signing in and coming back still
+  // completes the check-in) until it's actually acted on.
+  const pendingCheckIn = searchParams.get('checkin') === '1';
+  useEffect(() => {
+    if (!shop || !user || !pendingCheckIn) return;
+    if (!isVisited(shop.id)) {
+      toggleVisit(shop.id);
+      setJustCheckedIn(true);
+    }
+    setSearchParams((params) => {
+      params.delete('checkin');
+      return params;
+    }, { replace: true });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [shop, user, pendingCheckIn]);
 
   const trackClick = (target) => () => {
     api.trackShopEvent(slug, 'click', target).catch(() => {});
@@ -170,6 +190,17 @@ export default function ShopDetail() {
       <Link to="/explore" className="text-sm font-semibold text-[var(--color-accent)] hover:underline">
         {t('shop.backToExplore')}
       </Link>
+
+      {justCheckedIn && (
+        <div className="mt-4 bg-[var(--color-accent)] text-[var(--color-accent-fg)] rounded-xl px-4 py-3 text-sm font-semibold">
+          ✓ Checked in at {shop.name}
+        </div>
+      )}
+      {pendingCheckIn && !user && (
+        <div className="mt-4 bg-[var(--color-card)] border border-[var(--color-border)] rounded-xl px-4 py-3 text-sm">
+          <Link to="/auth" className="text-[var(--color-accent)] font-semibold hover:underline">Sign in</Link> to save this check-in.
+        </div>
+      )}
 
       <PhotoGallery shop={shop} className="w-full h-56 sm:h-72 rounded-2xl mt-4" />
 
