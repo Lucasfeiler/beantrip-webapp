@@ -29,6 +29,10 @@
     <priority>0.5</priority>
   </url>
   <url>
+    <loc>https://beantrip.com/guides/best-coffee-shops-munich</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://beantrip.com/add-shop</loc>
     <priority>0.4</priority>
   </url>
