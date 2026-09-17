@@ -161,6 +161,7 @@ export default function ShopDetail() {
   const metaDescription = shop.description
     ? shop.description.slice(0, 160)
     : `${shop.name} — specialty coffee in ${shop.neighborhood ? `${shop.neighborhood}, ` : ''}${shop.city}.`;
+  const metaTitle = `${shop.name} — Specialty Coffee Shop in ${shop.city} | Beantrip`;
 
   const structuredData = {
     '@context': 'https://schema.org',
@@ -184,11 +185,11 @@ export default function ShopDetail() {
 
   return (
     <div className="max-w-3xl mx-auto px-5 sm:px-8 py-8">
-      <PageMeta title={`${shop.name} — Beantrip`} description={metaDescription} />
+      <PageMeta title={metaTitle} description={metaDescription} canonical={`/shop/${shop.slug}`} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: structuredDataJson }} />
 
-      <Link to="/explore" className="text-sm font-semibold text-[var(--color-accent)] hover:underline">
-        {t('shop.backToExplore')}
+      <Link to={`/explore/${shop.city.toLowerCase()}`} className="text-sm font-semibold text-[var(--color-accent)] hover:underline">
+        {t('shop.backToCity')} {shop.city}
       </Link>
 
       {justCheckedIn && (

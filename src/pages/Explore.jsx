@@ -93,13 +93,40 @@ export default function Explore() {
     return <div className="max-w-6xl mx-auto px-5 sm:px-8 py-20 text-center text-[var(--color-muted-fg)]">{t('explore.loading')}</div>;
   }
 
-  const cityCount = cityParam ? shops.filter((s) => s.city === cityParam).length : 0;
+  const cityShops = cityParam ? shops.filter((s) => s.city === cityParam) : [];
+  const cityCount = cityShops.length;
+
+  // Top neighborhoods by shop count, for real per-city intro copy instead
+  // of a generic sentence with a number swapped in.
+  const cityNeighborhoods = cityParam
+    ? Object.entries(
+        cityShops.reduce((acc, s) => {
+          if (s.neighborhood) acc[s.neighborhood] = (acc[s.neighborhood] ?? 0) + 1;
+          return acc;
+        }, {})
+      )
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 4)
+        .map(([name]) => name)
+    : [];
+
+  function formatList(items) {
+    if (items.length === 0) return '';
+    if (items.length === 1) return items[0];
+    return `${items.slice(0, -1).join(', ')} and ${items[items.length - 1]}`;
+  }
+
   const pageTitle = cityParam
     ? `Specialty Coffee in ${cityParam} — Beantrip`
     : 'Explore the Coffee Scene — Beantrip';
   const pageDescription = cityParam
     ? `Discover ${cityCount} specialty coffee shops in ${cityParam}. Browse reviews, filter by roast type and brewing method, and find your next favorite spot.`
     : t('explore.subtitle');
+  const introText = cityParam
+    ? cityNeighborhoods.length > 0
+      ? `${cityCount} specialty coffee shops across ${cityParam}, including spots in ${formatList(cityNeighborhoods)}. Filter by roast type, brewing method, or vibe to find your next favorite.`
+      : pageDescription
+    : pageDescription;
 
   return (
     <div className="max-w-6xl mx-auto px-5 sm:px-8 py-12">
@@ -111,7 +138,7 @@ export default function Explore() {
       <h1 className="font-display text-3xl sm:text-4xl font-semibold">
         {cityParam ? `Specialty Coffee in ${cityParam}` : t('explore.title')}
       </h1>
-      <p className="text-[var(--color-muted-fg)] mt-2">{pageDescription}</p>
+      <p className="text-[var(--color-muted-fg)] mt-2">{introText}</p>
 
       <div className="mt-6 flex flex-col gap-4">
         <input

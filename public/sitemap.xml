@@ -889,14 +889,6 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://beantrip.com/shop/yuna</loc>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://beantrip.com/shop/yada-yada-breakfast-club</loc>
-    <priority>0.8</priority>
-  </url>
-  <url>
     <loc>https://beantrip.com/shop/cafe-friedrichs</loc>
     <priority>0.8</priority>
   </url>
@@ -906,10 +898,6 @@
   </url>
   <url>
     <loc>https://beantrip.com/shop/whynot-kaffee</loc>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://beantrip.com/shop/good-morning-monday</loc>
     <priority>0.8</priority>
   </url>
   <url>
@@ -1505,10 +1493,6 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://beantrip.com/shop/kennington-lane-cafe</loc>
-    <priority>0.8</priority>
-  </url>
-  <url>
     <loc>https://beantrip.com/shop/scarlett-green</loc>
     <priority>0.8</priority>
   </url>
@@ -1518,10 +1502,6 @@
   </url>
   <url>
     <loc>https://beantrip.com/shop/victoria-house-coffee-food</loc>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://beantrip.com/shop/regency-cafe</loc>
     <priority>0.8</priority>
   </url>
   <url>
@@ -1630,10 +1610,6 @@
   </url>
   <url>
     <loc>https://beantrip.com/shop/zamarut-speciality-coffee</loc>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://beantrip.com/shop/premises-cafe-bistro</loc>
     <priority>0.8</priority>
   </url>
   <url>
@@ -2005,10 +1981,6 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://beantrip.com/shop/twins-coffee</loc>
-    <priority>0.8</priority>
-  </url>
-  <url>
     <loc>https://beantrip.com/shop/the-roasting-shed</loc>
     <priority>0.8</priority>
   </url>
@@ -2290,10 +2262,6 @@
   </url>
   <url>
     <loc>https://beantrip.com/shop/amor-s-cafe</loc>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://beantrip.com/shop/the-haberdashery</loc>
     <priority>0.8</priority>
   </url>
   <url>

@@ -68,6 +68,7 @@ export const translations = {
     'explore.loading': 'Loading shops…',
 
     'shop.backToExplore': '← Back to explore',
+    'shop.backToCity': '← Back to',
     'shop.backToExploreLink': 'Back to explore',
     'shop.save': 'Save',
     'shop.saved': 'Saved',
@@ -286,6 +287,7 @@ export const translations = {
     'explore.loading': 'Cafés werden geladen…',
 
     'shop.backToExplore': '← Zurück zur Übersicht',
+    'shop.backToCity': '← Zurück nach',
     'shop.backToExploreLink': 'Zurück zur Übersicht',
     'shop.save': 'Speichern',
     'shop.saved': 'Gespeichert',
@@ -504,6 +506,7 @@ export const translations = {
     'explore.loading': 'Koffiezaken laden…',
 
     'shop.backToExplore': '← Terug naar overzicht',
+    'shop.backToCity': '← Terug naar',
     'shop.backToExploreLink': 'Terug naar overzicht',
     'shop.save': 'Opslaan',
     'shop.saved': 'Opgeslagen',
@@ -722,6 +725,7 @@ export const translations = {
     'explore.loading': 'Cargando cafeterías…',
 
     'shop.backToExplore': '← Volver a explorar',
+    'shop.backToCity': '← Volver a',
     'shop.backToExploreLink': 'Volver a explorar',
     'shop.save': 'Guardar',
     'shop.saved': 'Guardado',
