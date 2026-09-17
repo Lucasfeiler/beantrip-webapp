@@ -203,7 +203,7 @@ export default function ShopDetail() {
         </div>
       )}
 
-      <PhotoGallery shop={shop} className="w-full h-56 sm:h-72 rounded-2xl mt-4" />
+      <PhotoGallery shop={shop} className="w-full h-56 sm:h-72 rounded-2xl mt-4" priority />
 
       <div className="flex items-start justify-between gap-4 mt-6">
         <div>
