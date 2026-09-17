@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { useShops } from '../context/ShopsContext';
 import { useLanguage } from '../context/LanguageContext';
 import ShopCard from '../components/ShopCard';
@@ -139,6 +139,15 @@ export default function Explore() {
         {cityParam ? `Specialty Coffee in ${cityParam}` : t('explore.title')}
       </h1>
       <p className="text-[var(--color-muted-fg)] mt-2">{introText}</p>
+
+      {cityParam === 'Munich' && (
+        <Link
+          to="/guides/best-coffee-shops-munich"
+          className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-[var(--color-accent)] hover:underline"
+        >
+          Read our guide: Best Coffee Shops in Munich (2026) →
+        </Link>
+      )}
 
       <div className="mt-6 flex flex-col gap-4">
         <input

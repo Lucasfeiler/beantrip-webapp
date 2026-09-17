@@ -26,6 +26,7 @@ import EventDetail from './pages/EventDetail';
 import Passport from './pages/Passport';
 import Gear from './pages/Gear';
 import Feedback from './pages/Feedback';
+import BestCoffeeMunich from './pages/BestCoffeeMunich';
 import SplashScreen from './components/SplashScreen';
 import { Privacy, Terms, Impressum } from './pages/StaticPages';
 
@@ -43,6 +44,7 @@ export default function App() {
                     <Route path="/" element={<Home />} />
                     <Route path="/explore" element={<Explore />} />
                     <Route path="/explore/:citySlug" element={<Explore />} />
+                    <Route path="/guides/best-coffee-shops-munich" element={<BestCoffeeMunich />} />
                     <Route path="/shop/:slug" element={<ShopDetail />} />
                     <Route path="/map" element={<MapPage />} />
                     <Route path="/near-me" element={<NearMe />} />
